@@ -42,17 +42,17 @@ import org.java_websocket.server.WebSocketServer;
 /**
  * A simple WebSocketServer implementation. Keeps track of a "chatroom".
  */
-public class ChatServer extends WebSocketServer {
+public class WebPoker extends WebSocketServer {
 
-  public ChatServer(int port) throws UnknownHostException {
+  public WebPoker(int port) throws UnknownHostException {
     super(new InetSocketAddress(port));
   }
 
-  public ChatServer(InetSocketAddress address) {
+  public WebPoker(InetSocketAddress address) {
     super(address);
   }
 
-  public ChatServer(int port, Draft_6455 draft) {
+  public WebPoker(int port, Draft_6455 draft) {
     super(new InetSocketAddress(port), Collections.<Draft>singletonList(draft));
   }
 
@@ -90,7 +90,7 @@ public class ChatServer extends WebSocketServer {
       port = Integer.parseInt(args[0]);
     } catch (Exception ex) {
     }
-    ChatServer s = new ChatServer(port);
+    WebPoker s = new WebPoker(port);
     s.start();
     System.out.println("ChatServer started on port: " + s.getPort());
 
