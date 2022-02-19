@@ -1,4 +1,9 @@
-//https:/thub.com/TooTallNate/Java-WebSocket/tree/master/src/main/example
+
+// This code is based upon, and derived from the this repository
+//            https:/thub.com/TooTallNate/Java-WebSocket/tree/master/src/main/example
+
+
+
 /*
  * Copyright (c) 2010-2020 Nathan Rajlich
  *
