@@ -6,8 +6,11 @@
 </head>
 <body>
   <p> this is an example to show how websockets work for a class demonstration.</p>
-  <p>name: <input id="send_text " type="text">
+  <p>message: <input id="send_text" type="text">
            <input type="button" name="send_button" value="send" onclick="send()"></p>
+           
+    
+  <div id="textbox"></div>
 </body>
 </html>
 <script>
@@ -23,14 +26,12 @@ console.log("open");
 }   
 
 connection.onmessage = function(evt) {
-  console.log("***ONMESSAGE");
-  var f = document.getElementById("chatbox").contentDocument;
-  var text = "";
-  var msg = JSON.parse(evt.data);
+  var msg;
+  msg = evt.data;
   console.log("Message received: ");
   console.dir(msg);
      
-  document.getElementById("userlistbox").innerHTML = ul;
+  document.getElementById("textbox").innerText = document.getElementById("textbox").innerText + '\n'+ msg;
      
 }
 
@@ -41,7 +42,7 @@ function send() {
     text: document.getElementById("send_text").value,
   };
   connection.send(JSON.stringify(msg));
-  //document.getElementById("text").value = "";
+  
 }
 
 </script>

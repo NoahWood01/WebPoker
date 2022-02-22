@@ -67,13 +67,13 @@ public class WebPoker extends WebSocketServer {
     broadcast("new connection: " + handshake
         .getResourceDescriptor()); //This method sends a message to all clients connected
     System.out.println(
-        conn.getRemoteSocketAddress().getAddress().getHostAddress() + " entered the room!");
+        conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
   }
 
   @Override
   public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-    broadcast(conn + " has left the room!");
-    System.out.println(conn + " has left the room!");
+    broadcast(conn + " has closed");
+    System.out.println(conn + " has closed");
   }
 
   @Override
