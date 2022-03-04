@@ -8,6 +8,7 @@ cd WebPoker
 mvn clean
 mvn compile
 mvn package
-java -cp target/your_file.jar your.package.name.YourClass
-
+mvn exec:java -Dexec.mainClass=uta.cse3310.WebPoker
 ```
+Use a webbrowser to open up the file you need from the file system with file://
+
