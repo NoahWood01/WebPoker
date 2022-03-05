@@ -2,7 +2,8 @@
 // This code is based upon, and derived from the this repository
 //            https:/thub.com/TooTallNate/Java-WebSocket/tree/master/src/main/example
 
-
+// http server include is a GPL licensed package from
+//            http://www.freeutils.net/source/jlhttp/
 
 /*
  * Copyright (c) 2010-2020 Nathan Rajlich
@@ -44,6 +45,8 @@ import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
+//import uta.cse3310.HttpServer;
+
 /**
  * A simple WebSocketServer implementation. Keeps track of a "chatroom".
  */
@@ -63,9 +66,9 @@ public class WebPoker extends WebSocketServer {
 
   @Override
   public void onOpen(WebSocket conn, ClientHandshake handshake) {
-    conn.send("Welcome to the server!"); //This method sends a message to the new client
+    conn.send("Welcome to the server!"); // This method sends a message to the new client
     broadcast("new connection: " + handshake
-        .getResourceDescriptor()); //This method sends a message to all clients connected
+        .getResourceDescriptor()); // This method sends a message to all clients connected
     System.out.println(
         conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
   }
@@ -88,17 +91,23 @@ public class WebPoker extends WebSocketServer {
     System.out.println(conn + ": " + message);
   }
 
-
   public static void main(String[] args) throws InterruptedException, IOException {
-    int port = 8887; // 843 flash policy port
-    try {
-      port = Integer.parseInt(args[0]);
-    } catch (Exception ex) {
-    }
+
+    // Create and start the http server
+
+    HttpServer H = new HttpServer(8081, "./html");
+    H.start();
+    // create and start the websocket server
+
+    int port = 8887;
+
     WebPoker s = new WebPoker(port);
     s.start();
-    System.out.println("ChatServer started on port: " + s.getPort());
+    System.out.println("WebPokerServer started on port: " + s.getPort());
 
+
+    
+    // Below code reads from stdin, making for a pleasant way to exit
     BufferedReader sysin = new BufferedReader(new InputStreamReader(System.in));
     while (true) {
       String in = sysin.readLine();
@@ -114,7 +123,8 @@ public class WebPoker extends WebSocketServer {
   public void onError(WebSocket conn, Exception ex) {
     ex.printStackTrace();
     if (conn != null) {
-      // some errors like port binding failed may not be assignable to a specific websocket
+      // some errors like port binding failed may not be assignable to a specific
+      // websocket
     }
   }
 

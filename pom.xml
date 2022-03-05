@@ -30,6 +30,11 @@
       <artifactId>Java-WebSocket</artifactId>
       <version>1.5.2</version>
     </dependency>
+    <dependency>
+      <groupId>net.freeutils</groupId>
+      <artifactId>jlhttp</artifactId>
+      <version>2.6</version>
+    </dependency>
   </dependencies>
 
   <build>
