@@ -10,5 +10,11 @@ mvn compile
 mvn package
 mvn exec:java -Dexec.mainClass=uta.cse3310.WebPoker
 ```
-Use a webbrowser to open up the file you need from the file system with file://
+point a webbrowser to 127.0.0.1:8080/example.html
+
+The projects will be hosted on
+
+http://webpoker.info/
+
+
 
