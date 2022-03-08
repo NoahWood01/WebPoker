@@ -1,10 +1,8 @@
 package uta.cse3310;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
 
 import net.freeutils.httpserver.HTTPServer;
 import net.freeutils.httpserver.HTTPServer.ContextHandler;
