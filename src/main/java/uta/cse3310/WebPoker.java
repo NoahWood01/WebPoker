@@ -45,12 +45,18 @@ import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
-//import uta.cse3310.HttpServer;
-
 /**
  * A simple WebSocketServer implementation. Keeps track of a "chatroom".
  */
 public class WebPoker extends WebSocketServer {
+
+  int numPlayers;
+  Game game;
+  private Player player;
+
+  public void setNumPlayers(int N) {
+    numPlayers = N;
+  }
 
   public WebPoker(int port) throws UnknownHostException {
     super(new InetSocketAddress(port));
@@ -71,6 +77,23 @@ public class WebPoker extends WebSocketServer {
         .getResourceDescriptor()); // This method sends a message to all clients connected
     System.out.println(
         conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
+
+
+    // Since this is a new connection, it is also a new player
+    numPlayers = numPlayers + 1; // player id's start at 1
+    player = new Player(numPlayers);
+    if (numPlayers == 1) {
+      game = new Game();
+    }
+
+    // this is the only time we send info to a single client.
+    // it needs to know what it's player ID.
+    conn.send(player.asJSONString());
+    game.addPlayer(player);
+
+    // and as always, we send the game state to everyone
+    broadcast(game.exportStateAsJSON());
+    System.out.println("the game state" + game.exportStateAsJSON());
   }
 
   @Override
@@ -81,7 +104,13 @@ public class WebPoker extends WebSocketServer {
 
   @Override
   public void onMessage(WebSocket conn, String message) {
-    broadcast(message);
+
+    // all incoming messages are processed by the game
+    game.processMessage(message);
+    // and the results of that message are sent to everyone
+    // as the "state of the game"
+
+    broadcast(game.exportStateAsJSON());
     System.out.println(conn + ": " + message);
   }
 
@@ -105,8 +134,6 @@ public class WebPoker extends WebSocketServer {
     s.start();
     System.out.println("WebPokerServer started on port: " + s.getPort());
 
-
-    
     // Below code reads from stdin, making for a pleasant way to exit
     BufferedReader sysin = new BufferedReader(new InputStreamReader(System.in));
     while (true) {
@@ -133,6 +160,7 @@ public class WebPoker extends WebSocketServer {
     System.out.println("Server started!");
     setConnectionLostTimeout(0);
     setConnectionLostTimeout(100);
+    setNumPlayers(0);
   }
 
 }
