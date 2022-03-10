@@ -1,46 +1,50 @@
 <!doctype html>
 <html>
-  <meta charset="utf-8">
+<meta charset="utf-8">
+
 <head>
   <title>CSE3310 Websocket Example</title>
 </head>
+
 <body>
   <p> this is an example to show how websockets work for a class demonstration.</p>
   <p>message: <input id="send_text" type="text">
-           <input type="button" name="send_button" value="send" onclick="send()"></p>
+    <input type="button" name="send_button" value="send" onclick="send()">
+  </p>
   <div id="textbox"></div>
 </body>
+
 </html>
 <script>
- 
-var connection = null;
 
-var serverUrl;
-serverUrl = "ws://localhost:8887";
+  var connection = null;
 
-connection = new WebSocket(serverUrl, "json");
-connection.onopen = function(evt) {
-console.log("open");
-}   
+  var serverUrl;
+  serverUrl = "ws://localhost:8887";
 
-connection.onmessage = function(evt) {
-  var msg;
-  msg = evt.data;
-  console.log("Message received: ");
-  console.dir(msg);
-     
-  document.getElementById("textbox").innerText = document.getElementById("textbox").innerText + '\n'+ msg;
-     
-}
+  connection = new WebSocket(serverUrl, "json");
+  connection.onopen = function (evt) {
+    console.log("open");
+  }
+
+  connection.onmessage = function (evt) {
+    var msg;
+    msg = evt.data;
+    console.log("Message received: ");
+    console.dir(msg);
+
+    document.getElementById("textbox").innerText = document.getElementById("textbox").innerText + '\n' + msg;
+
+  }
 
 
-function send() {
-  console.log("send");
-  var msg = {
-    text: document.getElementById("send_text").value,
-  };
-  connection.send(JSON.stringify(msg));
-  
-}
+  function send() {
+    console.log("send");
+    var msg = {
+      text: document.getElementById("send_text").value,
+    };
+    connection.send(JSON.stringify(msg));
+
+  }
 
 </script>

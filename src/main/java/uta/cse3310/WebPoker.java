@@ -83,6 +83,7 @@ public class WebPoker extends WebSocketServer {
     numPlayers = numPlayers + 1; // player id's start at 1
     player = new Player(numPlayers);
     if (numPlayers == 1) {
+      System.out.println("starting a new game");
       game = new Game();
     }
 
