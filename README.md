@@ -21,3 +21,7 @@ Where are the jarfiles?
 ```bash
 % find ~/ -name "*.jar"
 ```
+
+
+https://www.me.uk/cards/makeadeck.cgi
+
