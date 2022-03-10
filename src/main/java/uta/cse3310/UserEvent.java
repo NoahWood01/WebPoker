@@ -8,7 +8,7 @@ public class UserEvent {
         NAME, STAND, HIT, CALL
     };
 
-    String exportStateAsJSON() {
+    String exportAsJSON() {
         Gson gson = new Gson();
         return gson.toJson(this);
     }
