@@ -17,4 +17,7 @@ The projects will be hosted on
 http://webpoker.info/
 
 
-
+Where are the jarfiles?
+```bash
+% find ~/ -name "*.jar"
+```
