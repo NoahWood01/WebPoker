@@ -72,9 +72,9 @@ public class WebPoker extends WebSocketServer {
 
   @Override
   public void onOpen(WebSocket conn, ClientHandshake handshake) {
-    conn.send("Welcome to the server!"); // This method sends a message to the new client
-    broadcast("new connection: " + handshake
-        .getResourceDescriptor()); // This method sends a message to all clients connected
+    //conn.send("Welcome to the server!"); // This method sends a message to the new client
+    //broadcast("new connection: " + handshake
+     //   .getResourceDescriptor()); // This method sends a message to all clients connected
     System.out.println(
         conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
 

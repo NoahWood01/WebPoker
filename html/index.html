@@ -11,6 +11,16 @@
   <p>message: <input id="send_text" type="text">
     <input type="button" name="send_button" value="send" onclick="send()">
   </p>
+  <p>name: <input id="sendName" type="text">
+    <input type="button" name="sendName" value="Name" onclick="sendName()">
+  </p>
+
+  <img id="card1" src="3C.svg" style="width:auto;">
+  <img id="card2" src="3D.svg" style="width:auto;">
+  <img id="card3" src="3H.svg" style="width:auto;">
+  <img id="card4" src="4C.svg" style="width:auto;">
+  <img id="card5" src="5C.svg" style="width:auto;">
+
   <div id="textbox"></div>
 </body>
 
@@ -27,19 +37,55 @@
     console.log("open");
   }
 
+  var cardIdx = 0;
+  var playerID = 0;
+
   connection.onmessage = function (evt) {
     var msg;
     msg = evt.data;
+
     console.log("Message received: ");
-    console.dir(msg);
+    document.getElementById("textbox").innerText = document.getElementById("textbox").innerText + '\n\n' + "Message Received" + "\n" + msg;
 
-    document.getElementById("textbox").innerText = document.getElementById("textbox").innerText + '\n' + msg;
+    // This is a hack for this example.
+    // The only time the WebPoker server sends data just
+    // to this client is at the beginging, when the connection
+    // is first made.  The first communication tells us which
+    // connection number we are, which is very import.
+    // So, we detect this situation where it is not game state
 
+    // Take the msg and turn it into a javascript object
+    const obj = JSON.parse(msg);
+    if (!obj.players) {
+      console.log("players not in it")
+      playerID = obj.Id;
+      console.log("player ID = " + playerID);
+      document.getElementById("textbox").innerText =
+        document.getElementById("textbox").innerText + '\n\n' + "Player ID is " + playerID;
+    }
+    else {
+      // process the game state
+      // this will just have one card change every time a new game state comes in.
+      cardLUT = ["3C.svg", "2B.svg", "3S.svg", "KC.svg", "6D.svg", "2J.svg", "2S.svg"];
+      document.getElementById("card4").src = cardLUT[cardIdx];
+      cardIdx = cardIdx + 1;
+      if (cardIdx > 5)
+        cardIdx = 0;
+    }
   }
+
 
 
   function send() {
     console.log("send");
+    var msg = {
+      text: document.getElementById("send_text").value,
+    };
+    connection.send(JSON.stringify(msg));
+
+  }
+  function sendName() {
+    console.log("sending the name");
     var msg = {
       text: document.getElementById("send_text").value,
     };
