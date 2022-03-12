@@ -7,11 +7,12 @@ public class Player {
     int Id;
     String Name;
     uta.cse3310.Card Cards[];
+    String LastMessageToPlayer;
 
     public Player(int id) {
         Id = id;
         Name = "not set";
-        // there is a lot smarter way to do this,
+        // there is a lot smarter ways to do this,
         // but at least this is obvious
         Cards = new Card[5];
         for (int i = 0; i < 5; i++) {
@@ -20,6 +21,11 @@ public class Player {
             Cards[i].value = Card.Value.valueOf("FIVE");
         }
 
+    }
+
+    public void SetName(String N) {
+        Name = N;
+        LastMessageToPlayer="Welcome " + N + " to the game.";
     }
 
     public String asJSONString() {

@@ -72,12 +72,13 @@ public class WebPoker extends WebSocketServer {
 
   @Override
   public void onOpen(WebSocket conn, ClientHandshake handshake) {
-    //conn.send("Welcome to the server!"); // This method sends a message to the new client
-    //broadcast("new connection: " + handshake
-     //   .getResourceDescriptor()); // This method sends a message to all clients connected
+    // conn.send("Welcome to the server!"); // This method sends a message to the
+    // new client
+    // broadcast("new connection: " + handshake
+    // .getResourceDescriptor()); // This method sends a message to all clients
+    // connected
     System.out.println(
         conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
-
 
     // Since this is a new connection, it is also a new player
     numPlayers = numPlayers + 1; // player id's start at 1
@@ -88,7 +89,7 @@ public class WebPoker extends WebSocketServer {
     }
 
     // this is the only time we send info to a single client.
-    // it needs to know what it's player ID.
+    // it needs to know it's player ID.
     conn.send(player.asJSONString());
     game.addPlayer(player);
 

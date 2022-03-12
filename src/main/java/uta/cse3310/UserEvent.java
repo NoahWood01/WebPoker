@@ -12,10 +12,9 @@ public class UserEvent {
         }
     };
 
-    String exportAsJSON() {
-        Gson gson = new Gson();
-        return gson.toJson(this);
-    }
+    UserEventType event;
+    int playerID;
+    String name;
 
     public UserEvent() {
     }

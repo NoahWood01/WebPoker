@@ -11,9 +11,11 @@
   <p>message: <input id="send_text" type="text">
     <input type="button" name="send_button" value="send" onclick="send()">
   </p>
-  <p>name: <input id="sendName" type="text">
-    <input type="button" name="sendName" value="Name" onclick="sendName()">
-  </p>
+  <div id="nameInput">
+    <p>name: <input id="sendName" type="text">
+      <input type="button" name="sendName" value="Name" onclick="sendName()">
+    </p>
+  </div>
 
   <img id="card1" src="3C.svg" style="width:auto;">
   <img id="card2" src="3D.svg" style="width:auto;">
@@ -57,39 +59,59 @@
     // Take the msg and turn it into a javascript object
     const obj = JSON.parse(msg);
     if (!obj.players) {
-      console.log("players not in it")
+
       playerID = obj.Id;
       console.log("player ID = " + playerID);
       document.getElementById("textbox").innerText =
         document.getElementById("textbox").innerText + '\n\n' + "Player ID is " + playerID;
     }
     else {
+
       // process the game state
       // this will just have one card change every time a new game state comes in.
+      // the term LUT means "look up table".  you will see it sometimes in code written last 
+      // century.
       cardLUT = ["3C.svg", "2B.svg", "3S.svg", "KC.svg", "6D.svg", "2J.svg", "2S.svg"];
       document.getElementById("card4").src = cardLUT[cardIdx];
       cardIdx = cardIdx + 1;
-      if (cardIdx > 5)
+      if (cardIdx > 6)
         cardIdx = 0;
     }
+    console.log("the cardIdx is " + cardIdx)
   }
 
 
 
   function send() {
-    console.log("send");
+
     var msg = {
       text: document.getElementById("send_text").value,
     };
     connection.send(JSON.stringify(msg));
-
+    console.log(JSON.stringify(msg));
   }
   function sendName() {
-    console.log("sending the name");
+
     var msg = {
-      text: document.getElementById("send_text").value,
+      event: "NAME",
+      name: document.getElementById("sendName").value,
+      playerID: JSON.PlayerID
     };
     connection.send(JSON.stringify(msg));
+    console.log(JSON.stringify(msg));
+
+
+    // this shows how to hid html elements.
+    // like when the name is entered
+    //  it might be better to hide after the server has accepted it
+    // but this is just a demonstration
+
+    var x = document.getElementById("nameInput");
+    if (x.style.display === "none") {
+      x.style.display = "block";
+    } else {
+      x.style.display = "none";
+    }
 
   }
 
