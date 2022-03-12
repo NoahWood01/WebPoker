@@ -126,11 +126,11 @@ public class WebPoker extends WebSocketServer {
 
     // Create and start the http server
 
-    HttpServer H = new HttpServer(8081, "./html");
+    HttpServer H = new HttpServer(8080, "./html");
     H.start();
     // create and start the websocket server
 
-    int port = 8887;
+    int port = 8880;
 
     WebPoker s = new WebPoker(port);
     s.start();
