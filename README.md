@@ -1,9 +1,7 @@
 # WebPoker
-CSE3310 UTA Spring 2022 Student Group Project
+CSE3310 UTA Spring 2022 Student Group Project - Bud Davis
 
 GROUP 5
-
-Bud Davis
 
 Alyssa Hammonds
 
