@@ -2,6 +2,11 @@
 CSE3310 UTA Spring 2022 Student Group Project
 
 GROUP 5
+Alyssa Hammonds
+Avery Strong
+Jonathan Anderson
+Noah Wood
+
 
 From the command line
 ```bash
