@@ -1,6 +1,7 @@
 # WebPoker
 CSE3310 UTA Spring 2022 Student Group Project
 
+GROUP 5
 
 From the command line
 ```bash
