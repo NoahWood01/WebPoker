@@ -163,6 +163,7 @@ public class WebPoker extends WebSocketServer {
     setConnectionLostTimeout(0);
     setConnectionLostTimeout(100);
     setNumPlayers(0);
+    Game game = new Game();
   }
 
 }
