@@ -44,17 +44,19 @@ import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * A simple WebSocketServer implementation. Keeps track of a "chatroom".
  */
 public class WebPoker extends WebSocketServer {
 
-  int numPlayers;
-  Game game;
-  private Player player;
+  private int numPlayers;
+  private Game game;
 
-  public void setNumPlayers(int N) {
+
+  private void setNumPlayers(int N) {
     numPlayers = N;
   }
 
@@ -82,12 +84,13 @@ public class WebPoker extends WebSocketServer {
 
     // Since this is a new connection, it is also a new player
     numPlayers = numPlayers + 1; // player id's start at 1
-    player = new Player(numPlayers);
+    Player player = new Player(numPlayers);
     if (numPlayers == 1) {
       System.out.println("starting a new game");
       game = new Game();
     }
 
+    conn.setAttachment(numPlayers);
     // this is the only time we send info to a single client.
     // it needs to know it's player ID.
     conn.send(player.asJSONString());
@@ -100,8 +103,16 @@ public class WebPoker extends WebSocketServer {
 
   @Override
   public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-    broadcast(conn + " has closed");
+
     System.out.println(conn + " has closed");
+
+    int idx = conn.getAttachment();
+    game.removePlayer(idx);
+    System.out.println("removed player index " + idx);
+
+    // The state is now changed, so every client needs to be informed
+    broadcast(game.exportStateAsJSON());
+    System.out.println("the game state" + game.exportStateAsJSON());
   }
 
   @Override
@@ -120,6 +131,17 @@ public class WebPoker extends WebSocketServer {
   public void onMessage(WebSocket conn, ByteBuffer message) {
     broadcast(message.array());
     System.out.println(conn + ": " + message);
+  }
+
+  public class upDate extends TimerTask {
+    @Override
+    public void run() {
+      if (game != null) {
+        if (game.update()) {
+          broadcast(game.exportStateAsJSON());
+        }
+      }
+    }
   }
 
   public static void main(String[] args) throws InterruptedException, IOException {
@@ -163,6 +185,9 @@ public class WebPoker extends WebSocketServer {
     setConnectionLostTimeout(0);
     setConnectionLostTimeout(100);
     setNumPlayers(0);
+    // once a second call update
+    // may want to start this in the main() function??
+    new java.util.Timer().scheduleAtFixedRate(new upDate(), 0, 1000);
     Game game = new Game();
   }
 
