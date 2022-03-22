@@ -4,6 +4,7 @@
 
 <head>
   <title>CSE3310 Websocket Example</title>
+  <link rel="stylesheet" href="page_style.css">
 </head>
 
 <body>
@@ -33,7 +34,7 @@
 
   var serverUrl;
   serverUrl ="ws://" + window.location.hostname + ":8880";
-  
+
   connection = new WebSocket(serverUrl, "json");
   connection.onopen = function (evt) {
     console.log("open");
@@ -69,7 +70,7 @@
 
       // process the game state
       // this will just have one card change every time a new game state comes in.
-      // the term LUT means "look up table".  you will see it sometimes in code written last 
+      // the term LUT means "look up table".  you will see it sometimes in code written last
       // century.
       cardLUT = ["3C.svg", "2B.svg", "3S.svg", "KC.svg", "6D.svg", "2J.svg", "2S.svg"];
       document.getElementById("card4").src = cardLUT[cardIdx];
