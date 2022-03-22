@@ -6,15 +6,24 @@ import com.google.gson.GsonBuilder;
 public class UserEvent {
 
     public enum UserEventType {
-        NAME, STAND, HIT, CALL;
+        NAME, STAND, DRAW, BET, FOLD;
 
         private UserEventType() {
         }
     };
 
     UserEventType event;
+    // play_game assumes playerID will start at 0
     int playerID;
     String name;
+
+    // exception will be thrown if
+    // amount_to_draw and the same number
+    // of indexes are given
+    int amount_to_draw;
+    // 3 represents the max amount of cards to
+    // trade in
+    int give_card_indexes[] = {-1,-1,-1};
 
     public UserEvent() {
     }

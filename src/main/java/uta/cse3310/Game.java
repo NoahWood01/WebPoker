@@ -54,6 +54,7 @@ public class Game {
     // right now set up with just command line
     // this will need to be multi threaded
     // most likely a player per thread
+    // where each thread get the UserEvents
     // returns the winner
     public void play_game()
     {
@@ -70,17 +71,72 @@ public class Game {
                 deck.remove(0);
             }
         }
+
         // 1st betting round
 
+
+
         // Draw round
+        // note: this is not tested
+
+        // max of 3 cards exchanged
+        // VARIABLE IN UserEvent TO KEEP TRACK
+        // this starts with player zero in the list
+        for( turn = 0; turn < players.size(); turn++)
+        {
+            // only legal actions here are DRAW or STAND
+            // get user event and check if it was from the player.
+            UserEvent event = new UserEvent();
+            while(true)
+            {
+                // get the event HERE
+                // add code to get it
+                if(event.playerID == turn && (event.event != UserEventType.DRAW
+                    || event.event != UserEventType.STAND))
+                {
+                    if(event.event == UserEventType.STAND)
+                    {
+                        // this will end turn and proceed to next player
+                        break;
+                    }
+                    else
+                    {
+                        // iterate for the amount to draw specified
+                        // from the event and based on the indeces
+                        // that is in the event
+                        for(int i = 0; i < event.amount_to_draw; i++)
+                        {
+                            try
+                            {
+                                // add current card at given index to end of deck
+                                deck.add(players.get(turn).Cards[event.give_card_indexes[i]]);
+                                players.get(turn).Cards[event.give_card_indexes[i]] = get_card(deck);
+                            }
+                            catch (ArrayIndexOutOfBoundsException e)
+                            {
+                                // debug
+                                System.out.println("DRAW Card error: -1 in index");
+                            }
+                        }
+                        // this will end turn and proceed to next player
+                        break;
+                    }
+                }
+            }
+        }
+
 
         // 2nd betting round
 
+
         // showdown
+
+
+
     }
 
-    // gets a random card from the passed in deck
-    private Card get_random_card(ArrayList<Card> deck)
+    // gets a card from the front of passed in deck
+    private Card get_card(ArrayList<Card> deck)
     {
         Card card = deck.get(0);
         deck.remove(0);
@@ -113,6 +169,7 @@ public class Game {
         }
 
         // print cards
+        // debug
         System.out.println();
         for(Card card: deck)
         {

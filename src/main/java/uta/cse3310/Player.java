@@ -8,6 +8,14 @@ public class Player {
     String Name;
     uta.cse3310.Card Cards[];
     String LastMessageToPlayer;
+    // amount player has bet in the game
+    int totalBet;
+    // amount player has bet this round
+    // used to make sure all players not
+    // folded bet the same amount
+    int currentBet;
+    // boolean to check if the player has folded in the round
+    boolean folded = false;
 
     public Player(int id) {
         Id = id;
