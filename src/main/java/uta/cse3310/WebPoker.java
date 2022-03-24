@@ -74,18 +74,15 @@ public class WebPoker extends WebSocketServer {
 
   @Override
   public void onOpen(WebSocket conn, ClientHandshake handshake) {
-    // conn.send("Welcome to the server!"); // This method sends a message to the
-    // new client
-    // broadcast("new connection: " + handshake
-    // .getResourceDescriptor()); // This method sends a message to all clients
-    // connected
+
+
     System.out.println(
         conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
 
     // Since this is a new connection, it is also a new player
-    numPlayers = numPlayers + 1; // player id's start at 1
+    numPlayers = numPlayers + 1; // player id's start at 0
     Player player = new Player(numPlayers);
-    if (numPlayers == 1) {
+    if (numPlayers == 0) {
       System.out.println("starting a new game");
       game = new Game();
     }
@@ -150,6 +147,7 @@ public class WebPoker extends WebSocketServer {
 
     HttpServer H = new HttpServer(8080, "./html");
     H.start();
+
     // create and start the websocket server
 
     int port = 8880;
@@ -184,7 +182,7 @@ public class WebPoker extends WebSocketServer {
     System.out.println("Server started!");
     setConnectionLostTimeout(0);
     setConnectionLostTimeout(100);
-    setNumPlayers(0);
+    setNumPlayers(-1);
     // once a second call update
     // may want to start this in the main() function??
     new java.util.Timer().scheduleAtFixedRate(new upDate(), 0, 1000);

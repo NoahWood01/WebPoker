@@ -96,7 +96,7 @@
     var msg = {
       event: "NAME",
       name: document.getElementById("sendName").value,
-      playerID: JSON.PlayerID
+      playerID: playerID
     };
     connection.send(JSON.stringify(msg));
     console.log(JSON.stringify(msg));
