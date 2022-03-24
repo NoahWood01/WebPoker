@@ -73,10 +73,17 @@
       // the term LUT means "look up table".  you will see it sometimes in code written last
       // century.
       cardLUT = ["3C.svg", "2B.svg", "3S.svg", "KC.svg", "6D.svg", "2J.svg", "2S.svg"];
+      /*
       document.getElementById("card4").src = cardLUT[cardIdx];
       cardIdx = cardIdx + 1;
       if (cardIdx > 6)
         cardIdx = 0;
+        */
+        var player = obj.players[0];
+        console.log(player.Cards[0]);
+        var card = player.Cards[0];
+        //console.log(card.suite)
+
     }
     console.log("the cardIdx is " + cardIdx)
   }
