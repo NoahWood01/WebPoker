@@ -35,7 +35,7 @@
   var serverUrl;
   serverUrl ="ws://" + window.location.hostname + ":8880";
 
-  connection = new WebSocket(serverUrl, "json");
+  connection = new WebSocket(serverUrl);
   connection.onopen = function (evt) {
     console.log("open");
   }
