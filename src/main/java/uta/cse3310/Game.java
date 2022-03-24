@@ -20,13 +20,21 @@ public class Game {
     // total chips betted
     int pot;
 
-    String exportStateAsJSON() {
+    public String exportStateAsJSON() {
         Gson gson = new Gson();
         return gson.toJson(this);
     }
 
     public void addPlayer(Player p) {
         players.add(p);
+    }
+
+    public void removePlayer(int playerid) {
+        // given it's player number, this method
+        // deletes the player from the players array
+        // and does whatever else is needed to remove
+        // the player from the game.
+        players.remove(playerid - 1);
     }
 
     public void processMessage(String msg) {
@@ -42,6 +50,19 @@ public class Game {
 
     }
 
+    public boolean update() {
+
+
+        // this function is called on a periodic basis (once a second) by a timer
+        // it is to allow time based situations to be handled in the game
+        // if the game state is changed, it returns a true.
+        return false;
+        // expecting that returning a true will trigger a send of the game
+        // state to everyone
+
+    }
+
+    
     public Game() {
         System.out.println("creating a Game Object");
         create_deck(deck);
