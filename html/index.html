@@ -17,13 +17,18 @@
       <input type="button" name="sendName" value="Name" onclick="sendName()">
     </p>
   </div>
+  <div>
+      <p id="turnNumber" style="width:auto;">Turn: -1</p>
+      <p id="pot" style="width:auto;">Total Pot: -1</p>
+      <p id="playersTotalBets" style="width:auto;">Player (NAME) Total Bet: -1 Round Bet: -1</p>
+  </div>
   <p> Your Cards:</p>
   <img id="card1" src="3C.svg" style="width:auto;">
   <img id="card2" src="3D.svg" style="width:auto;">
   <img id="card3" src="3H.svg" style="width:auto;">
   <img id="card4" src="4C.svg" style="width:auto;">
   <img id="card5" src="5C.svg" style="width:auto;">
-
+<div>
   <input type="button" name="sendStand" value="Stand" onclick="sendEvent(1)">
   <p>Draw cards (gives the card numbers (ex: 1 2 3): <input id="send_index" type="text">
       <input type="button" name="sendDraw" value="Draw" onclick="sendEvent(2)">
@@ -32,7 +37,7 @@
       <input type="button" name="sendBet" value="Bet" onclick="sendEvent(3)">
   </p>
   <input type="button" name="sendFold" value="Fold" onclick="sendEvent(4)">
-
+</div>
   <div id="textbox"></div>
 </body>
 
@@ -90,6 +95,23 @@
       if (cardIdx > 6)
         cardIdx = 0;
         */
+
+        // display whose turn it is
+        document.getElementById("turnNumber").innerHTML = "Turn: Player " + obj.turn;
+
+        // display the amount in the pot
+        document.getElementById("pot").innerHTML = "Total Pot: " + obj.pot;
+
+        // display the total bets of all players
+        var playerTotalBetString = "";
+        for(var i = 0; i < obj.players.length; i++)
+        {
+            playerTotalBetString += "Player " + i + " (" +obj.players[i].Name;
+            playerTotalBetString += ") Total Bet: " + obj.players[i].totalBet;
+            playerTotalBetString += " Round Bet: " + obj.players[i].currentBet;
+            playerTotalBetString += " | ";
+        }
+        document.getElementById("playersTotalBets").innerHTML = playerTotalBetString;
 
         // display the player's cards
         var player = obj.players[playerID];
@@ -199,7 +221,7 @@
           playerID: playerID,
           name: document.getElementById("sendName").value,
           amount_to_bet: amount,
-          amount_to_draw: amount_to_draw,
+          amount_to_draw: amountDraw,
           give_card_indexes: indexes
       };
       connection.send(JSON.stringify(UserEvent));
