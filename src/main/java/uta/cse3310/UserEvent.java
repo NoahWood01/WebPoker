@@ -17,10 +17,10 @@ public class UserEvent {
     int playerID;
     String name;
 
+    int amount_to_bet;
     // exception will be thrown if
     // amount_to_draw and the same number
     // of indexes are given
-    int amount_to_draw;
     // 3 represents the max amount of cards to
     // trade in
     int give_card_indexes[] = {-1,-1,-1};
