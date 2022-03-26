@@ -153,6 +153,7 @@
       // send a UserEvent in JSON
       var eventType;
       var amount = 0;
+      var amountDraw = 0;
       var indexes = [-1,-1,-1];
       // event type is STAND
       if(option == 1)
@@ -173,6 +174,7 @@
           {
               max = arr.length
           }
+          amountDraw = max;
           for(var i = 0; i < max; i++)
           {
               // store the indexes as ints
@@ -197,6 +199,7 @@
           playerID: playerID,
           name: document.getElementById("sendName").value,
           amount_to_bet: amount,
+          amount_to_draw: amount_to_draw,
           give_card_indexes: indexes
       };
       connection.send(JSON.stringify(UserEvent));
@@ -217,6 +220,7 @@
       event: "NAME",
       name: document.getElementById("sendName").value,
       playerID: playerID,
+      amount_to_bet: 0,
       amount_to_draw: 0,
       give_card_indexes: [-1,-1,-1]
     };
