@@ -8,12 +8,18 @@
 </head>
 
 <body>
-  <p> Welcome to WebPoker with Group 5 of CSE3310.</p>
-  <p>message: <input id="send_text" type="text">
+  <p> 
+    Welcome to WebPoker with Group 5 of CSE3310.
+  </p>
+  <p>
+    message: 
+    <input id="send_text" type="text">
     <input type="button" name="send_button" value="send" onclick="send()">
   </p>
   <div id="nameInput">
-    <p>name: <input id="sendName" type="text">
+    <p>
+      name: 
+      <input id="sendName" type="text">
       <input type="button" name="sendName" value="Name" onclick="sendName()">
     </p>
   </div>
@@ -23,27 +29,30 @@
       <p id="playersTotalBets" style="width:auto;">Player (NAME) Total Bet: -1 Round Bet: -1</p>
   </div>
   <p> Your Cards:</p>
-  <img id="card1" src="3C.svg" style="width:auto;">
-  <img id="card2" src="3D.svg" style="width:auto;">
-  <img id="card3" src="3H.svg" style="width:auto;">
-  <img id="card4" src="4C.svg" style="width:auto;">
-  <img id="card5" src="5C.svg" style="width:auto;">
-<div>
-  <input type="button" name="sendStand" value="Stand" onclick="sendEvent(1)">
-  <p>Draw cards (gives the card numbers (ex: 1 2 3): <input id="send_index" type="text">
+  <img id="card1" src="" style="width:auto;">
+  <img id="card2" src="" style="width:auto;">
+  <img id="card3" src="" style="width:auto;">
+  <img id="card4" src="" style="width:auto;">
+  <img id="card5" src="" style="width:auto;">
+  <div>
+    <input type="button" name="sendStand" value="Stand" onclick="sendEvent(1)">
+    <p>
+      Draw cards (gives the card numbers (ex: 1 2 3): 
+      <input id="send_index" type="text">
       <input type="button" name="sendDraw" value="Draw" onclick="sendEvent(2)">
-  </p>
-  <p>Bet: <input id="send_bet" type="text">
+    </p>
+    <p>
+      Bet: 
+      <input id="send_bet" type="text">
       <input type="button" name="sendBet" value="Bet" onclick="sendEvent(3)">
-  </p>
-  <input type="button" name="sendFold" value="Fold" onclick="sendEvent(4)">
-</div>
+    </p>
+    <input type="button" name="sendFold" value="Fold" onclick="sendEvent(4)">
+  </div>
   <div id="textbox"></div>
 </body>
 
 </html>
 <script>
-
   var connection = null;
 
   var serverUrl;
@@ -73,7 +82,7 @@
 
     // Take the msg and turn it into a javascript object
     const obj = JSON.parse(msg);
-    if (!obj.players) {
+    if (!obj.players) {   // States the object is not empty
 
       playerID = obj.Id;
       console.log("player ID = " + playerID);
@@ -115,50 +124,13 @@
 
         // display the player's cards
         var player = obj.players[playerID];
-        for(var i = 0; i < 5; i++)
-        {
-            var card = player.Cards[i];
-            var str = "";
-            if(card.value == "ACE")
-                str += "A";
-            else if(card.value == "TWO")
-                str += "2";
-            else if(card.value == "THREE")
-                str += "3";
-            else if(card.value == "FOUR")
-                str += "4";
-            else if(card.value == "FIVE")
-                str += "5";
-            else if(card.value == "SIX")
-                str += "6";
-            else if(card.value == "SEVEN")
-                str += "7";
-            else if(card.value == "EIGHT")
-                str += "8";
-            else if(card.value == "NINE")
-                str += "9";
-            else if(card.value == "TEN")
-                str += "T";
-            else if(card.value == "JACK")
-                str += "J";
-            else if(card.value == "QUEEN")
-                str += "Q";
-            else if(card.value == "KING")
-                str += "K";
 
-            if( card.suite.toString = "SPADES")
-                str += "S";
-            else if( card.suite.toString = "HEARTS")
-                str += "H";
-            else if( card.suite.toString = "CLUBS")
-                str += "C";
-            else if( card.suite.toString = "DIAMONDS")
-                str += "D";
+        for(var i = 0; i < 5; i++){
+          var str = player.Cards[i].value + player.Cards[i].suite + ".svg";
 
-            str += ".svg";
-            var number = i + 1;
-            var cardnumber = "card" + number;
-            document.getElementById(cardnumber).src = str;
+          var number = i + 1;
+          var cardnumber = "card" + number;
+          document.getElementById(cardnumber).src = str;
         }
     }
     console.log("the cardIdx is " + cardIdx)
@@ -170,38 +142,37 @@
   // 3 is Bet
   // 4 is fold
   // passed as an argument from button
-  function sendEvent(option)
-  {
+  function sendEvent(option){
       // send a UserEvent in JSON
       var eventType;
       var amount = 0;
       var amountDraw = 0;
-      var indexes = [-1,-1,-1];
+      var indexes = [0, 0, 0];
+
       // event type is STAND
-      if(option == 1)
-      {
-          eventType = "STAND";
-      }
+      if(option == 1){ eventType = "STAND"; }
+
       // event type is DRAW
-      else if(option == 2)
-      {
+      else if(option == 2){
           eventType = "DRAW";
+
           // get the indexes of the cards
           var str = document.getElementById("send_index").value;
-          arr = str.split(' ');
-          // can only get a max of 3 cards
+          arr = str.split("");
           var max = 3;
+
+          for(var i = 0; i < arr.length; i++){ 
+            indexes[i] = parseInt(arr[i], 10); 
+            console.log(indexes[i]);
+          }
+
+          // can only get a max of 3 cards
+          
           // verify no more than 3
-          if(arr.length <= 3)
-          {
-              max = arr.length
-          }
-          amountDraw = max;
-          for(var i = 0; i < max; i++)
-          {
-              // store the indexes as ints
-              indexes[i] = parseInt(arr[i],10);
-          }
+          //if(arr.length <= max){ amountDraw = arr.length; }
+          //else{ amountDraw = max; } 
+
+            // store the indexes as ints 
       }
       // event type is BET
       else if(option == 3)
@@ -210,34 +181,30 @@
           amount = parseInt(document.getElementById("send_bet").value,10);
       }
       // event type is BET
-      else if(option == 4)
-      {
-          eventType = "FOLD";
-      }
+      else if(option == 4) { eventType = "FOLD"; }
 
       // create the object to be sent to the game server
-      const UserEvent = {
+      const msg = {
           event: eventType,
-          playerID: playerID,
           name: document.getElementById("sendName").value,
+          playerID: playerID,
           amount_to_bet: amount,
           amount_to_draw: amountDraw,
           give_card_indexes: indexes
       };
-      connection.send(JSON.stringify(UserEvent));
-      console.log(JSON.stringify(UserEvent));
+      connection.send(JSON.stringify(msg));
+      console.log(JSON.stringify(msg));
   }
 
   function send() {
-
     var msg = {
       text: document.getElementById("send_text").value,
     };
     connection.send(JSON.stringify(msg));
     console.log(JSON.stringify(msg));
   }
-  function sendName() {
 
+  function sendName(){
     var msg = {
       event: "NAME",
       name: document.getElementById("sendName").value,
@@ -248,7 +215,6 @@
     };
     connection.send(JSON.stringify(msg));
     console.log(JSON.stringify(msg));
-
 
     // this shows how to hid html elements.
     // like when the name is entered

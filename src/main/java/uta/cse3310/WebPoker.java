@@ -51,12 +51,7 @@ import java.util.TimerTask;
  * A simple WebSocketServer implementation. Keeps track of a "chatroom".
  */
 public class WebPoker extends WebSocketServer {
-
-  private int numPlayers;
-  private Game game;
-
-
-  private void setNumPlayers(int N) {
+private void setNumPlayers(int N) {
     numPlayers = N;
   }
 
@@ -74,12 +69,14 @@ public class WebPoker extends WebSocketServer {
 
   @Override
   public void onOpen(WebSocket conn, ClientHandshake handshake) {
+    System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
 
+    numPlayers++;
 
-    System.out.println(
-        conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
+    conn.setAttachment(numPlayers);
+/*
+  // Since this is a new connection, it is also a new player
 
-    // Since this is a new connection, it is also a new player
     numPlayers = numPlayers + 1; // player id's start at 0
     Player player = new Player(numPlayers);
     if (numPlayers == 0) {
@@ -87,7 +84,7 @@ public class WebPoker extends WebSocketServer {
       game = new Game();
     }
 
-    conn.setAttachment(numPlayers);
+    
     // this is the only time we send info to a single client.
     // it needs to know it's player ID.
     conn.send(player.asJSONString());
@@ -95,7 +92,10 @@ public class WebPoker extends WebSocketServer {
 
     // and as always, we send the game state to everyone
     broadcast(game.exportStateAsJSON());
+
+
     System.out.println("the game state" + game.exportStateAsJSON());
+*/
   }
 
   @Override
@@ -114,9 +114,8 @@ public class WebPoker extends WebSocketServer {
 
   @Override
   public void onMessage(WebSocket conn, String message) {
-
     // all incoming messages are processed by the game
-    game.processMessage(message);
+    game.processMessage(numPlayers, message);
     // and the results of that message are sent to everyone
     // as the "state of the game"
 
@@ -139,6 +138,28 @@ public class WebPoker extends WebSocketServer {
         }
       }
     }
+  }
+
+
+  @Override
+  public void onError(WebSocket conn, Exception ex) {
+    ex.printStackTrace();
+    if (conn != null) {
+      // some errors like port binding failed may not be assignable to a specific
+      // websocket
+    }
+  }
+
+  @Override
+  public void onStart() {
+    System.out.println("Server started!");
+    setConnectionLostTimeout(0);
+    setConnectionLostTimeout(100);
+    setNumPlayers(-1);
+    // once a second call update
+    // may want to start this in the main() function??
+    new java.util.Timer().scheduleAtFixedRate(new upDate(), 0, 1000);
+    game = new Game();
   }
 
   public static void main(String[] args) throws InterruptedException, IOException {
@@ -168,25 +189,12 @@ public class WebPoker extends WebSocketServer {
     }
   }
 
-  @Override
-  public void onError(WebSocket conn, Exception ex) {
-    ex.printStackTrace();
-    if (conn != null) {
-      // some errors like port binding failed may not be assignable to a specific
-      // websocket
-    }
-  }
+  /**********************************************
+   
+                    Attributes 
 
-  @Override
-  public void onStart() {
-    System.out.println("Server started!");
-    setConnectionLostTimeout(0);
-    setConnectionLostTimeout(100);
-    setNumPlayers(-1);
-    // once a second call update
-    // may want to start this in the main() function??
-    new java.util.Timer().scheduleAtFixedRate(new upDate(), 0, 1000);
-    Game game = new Game();
-  }
+  **********************************************/
 
+  private int numPlayers;
+  private Game game;
 }

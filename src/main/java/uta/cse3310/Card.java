@@ -1,20 +1,21 @@
 package uta.cse3310;
 
 public class Card {
-    public enum Suite {
-        HEARTS, CLUBS, DIAMONDS, SPADES
+    enum Suite {
+        HEARTS('H'), CLUBS('C'), DIAMONDS('D'), SPADES('S');
+
+        Suite(char s){ this.suite = s; }
+        char suite;
     }
 
-    public enum Value {
-        ACE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE,
-        TEN, JACK, QUEEN, KING
+    enum Value {
+        ACE('A'), TWO('2'), THREE('3'), FOUR('4'), FIVE('5'), SIX('6'), SEVEN('7'), EIGHT('8'), 
+        NINE('9'),TEN('T'), JACK('J'), QUEEN('Q'), KING('K');
+
+        Value(char v){ this.value = v; }
+        char value;
     }
 
-    public Suite suite;
-    public Value value;
-
-    public Card() {
-
-    }
-
+    char suite;
+    char value;
 }

@@ -10,24 +10,18 @@ import com.google.gson.GsonBuilder;
 import uta.cse3310.UserEvent.UserEventType;
 
 public class Game {
-
-    ArrayList<Player> players = new ArrayList<>();
-    int turn; // player ID that has the current turn
-
-    // stored cards not in players hands
-    public ArrayList<Card> deck = new ArrayList<>();
-
-    // total chips betted
-    int pot;
+    public Game() {
+        System.out.println("creating a Game Object");
+        create_deck();
+        shuffle_deck();
+    }
 
     public String exportStateAsJSON() {
         Gson gson = new Gson();
         return gson.toJson(this);
     }
 
-    public void addPlayer(Player p) {
-        players.add(p);
-    }
+    public void addPlayer(Player p) { players.add(p); }
 
     public void removePlayer(int playerid) {
         // given it's player number, this method
@@ -37,37 +31,50 @@ public class Game {
         players.remove(playerid - 1);
     }
 
-    public void processMessage(String msg) {
+    public void processMessage(int playerId, String msg){
 
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         // take the string we just received, and turn it into a user event
         UserEvent event = gson.fromJson(msg, UserEvent.class);
 
-        if (event.event == UserEventType.NAME) {
-            players.get(event.playerID).SetName(event.name);
+        System.out.println("\n\n" + msg + "\n\n");
+
+        if (event.event == UserEventType.NAME) create_player(playerId, event);
+        if (event.event == UserEventType.DRAW) new_cards(playerId, event);
+    }
+
+    public void new_cards(int playerId, UserEvent event){
+        int indexes[] = event.give_card_indexes;
+        for(int i = 0; i < indexes.length; i++){
+            if(indexes[i] > 0){     // 0 is default stating the card shouldnt change
+                players.get(playerId).hand.set(indexes[i] - 1, draw_card()); // Remove the card at the specified index
+            }                      
         }
 
+        players.get(playerId).set_cards();
     }
 
-    public boolean update() {
+    public void create_player(int playerId, UserEvent event){
+        Player player = new Player(playerId);
+        player.setName(event.name);
 
+        for(int i = 0; i < 5; i++) player.add_card(draw_card());
 
-        // this function is called on a periodic basis (once a second) by a timer
-        // it is to allow time based situations to be handled in the game
-        // if the game state is changed, it returns a true.
-        return false;
-        // expecting that returning a true will trigger a send of the game
-        // state to everyone
+        player.set_cards();
 
+        players.add(player);
     }
 
-    
-    public Game() {
-        System.out.println("creating a Game Object");
-        create_deck(deck);
-        shuffle_deck(deck);
-    }
+    /*
+        this function is called on a periodic basis (once a second) by a timer
+        it is to allow time based situations to be handled in the game
+        if the game state is changed, it returns a true.
+        
+        expecting that returning a true will trigger a send of the game
+        state to everyone
+    */
+    public boolean update(){ return false; }
 
     // start and play entire game in this method
     // will be called from the Game Object
@@ -77,6 +84,7 @@ public class Game {
     // most likely a player per thread
     // where each thread get the UserEvents
     // returns the winner
+/*
     public void play_game() {
         // deal cards for each player
         // and remove the from the deck
@@ -119,7 +127,7 @@ public class Game {
                             try {
                                 // add current card at given index to end of deck
                                 deck.add(players.get(turn).Cards[event.give_card_indexes[i]]);
-                                players.get(turn).Cards[event.give_card_indexes[i]] = get_card(deck);
+                                players.get(turn).Cards[event.give_card_indexes[i]] = draw_card(deck);
                             } catch (ArrayIndexOutOfBoundsException e) {
                                 // debug
                                 System.out.println("DRAW Card error: -1 in index");
@@ -137,18 +145,26 @@ public class Game {
         // showdown
 
     }
+*/
 
     // gets a card from the front of passed in deck
-    private Card get_card(ArrayList<Card> deck) {
+    public Card draw_card() {
         Card card = deck.get(0);
         deck.remove(0);
         return card;
     }
 
+    /**************************************
+    
+                Deck Builders
+
+    **************************************/
+
     // remove all player's Cards
     // and randomize the order in the shuffle_deck
     // will be 52 cards in size
-    private void shuffle_deck(ArrayList<Card> deck) {
+
+    public void empty_hands(){
         // remove player's cards for cases
         // when game is replayed
         for (Player p : players) {
@@ -159,36 +175,51 @@ public class Game {
                 // p.Cards[i] = NULL;
             }
         }
+    }
 
+    public void shuffle_deck(){
         // shuffle current deck
-        Collections.shuffle(deck);
-        if (deck.size() != 52) {
-            System.out.println("Error in deck shuffle, not 52 cards in deck.");
+        try{
+            Collections.shuffle(deck);
+            if (deck.size() != 52) throw new Exception("Error in deck shuffle, not 52 cards in deck.");
+        }catch(Exception e){
+            System.out.println(e);
         }
-
+/*
         // print cards
         // debug
         System.out.println();
         for (Card card : deck) {
             System.out.println(card.suite.toString() + " " + card.value.toString());
         }
-
+*/
     }
 
     // this adds all 52 cards to the deck in order
     // will need to shuffle in game
-    private void create_deck(ArrayList<Card> deck) {
+    public void create_deck(){
         // for each suite and each value add the card
         for (Card.Suite suite : Card.Suite.values()) {
             for (Card.Value value : Card.Value.values()) {
                 Card card = new Card();
-                card.suite = suite;
-                card.value = value;
+                card.suite = suite.suite;
+                card.value = value.value;
                 deck.add(card);
                 // print all cards for error checking
-                // System.out.println(card.suite.toString() +" "+card.value.toString());
+                // System.out.println(card.suite.toString() + " " + card.value.toString());
             }
         }
     }
+
+    /**********************************
+
+                Attributes
+
+    **********************************/
+
+    private ArrayList<Player> players = new ArrayList<>();  // players of the game
+    private ArrayList<Card> deck = new ArrayList<>();       // stored cards not in players hands
+    private int turn;                                       // player ID that has the current turn
+    private int pot;                                        // total of chips being bet
 
 }

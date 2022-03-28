@@ -8,8 +8,7 @@ public class UserEvent {
     public enum UserEventType {
         NAME, STAND, DRAW, BET, FOLD;
 
-        private UserEventType() {
-        }
+        private UserEventType(){}
     };
 
     UserEventType event;
@@ -24,7 +23,7 @@ public class UserEvent {
     int amount_to_draw;
     // 3 represents the max amount of cards to
     // trade in
-    int give_card_indexes[] = {-1,-1,-1};
+    int give_card_indexes[];
 
     public UserEvent() {
     }
