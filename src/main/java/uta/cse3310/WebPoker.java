@@ -73,29 +73,13 @@ private void setNumPlayers(int N) {
 
     numPlayers++;
 
+    Player player = new Player(numPlayers);         // New player is created and given their unique Id
+    game.addPlayer(player);                         // Player is added to the game
+
     conn.setAttachment(numPlayers);
-/*
-  // Since this is a new connection, it is also a new player
+    conn.send(player.asJSONString());               // We send the player to the client so the client knows who it is viewing
 
-    numPlayers = numPlayers + 1; // player id's start at 0
-    Player player = new Player(numPlayers);
-    if (numPlayers == 0) {
-      System.out.println("starting a new game");
-      game = new Game();
-    }
-
-    
-    // this is the only time we send info to a single client.
-    // it needs to know it's player ID.
-    conn.send(player.asJSONString());
-    game.addPlayer(player);
-
-    // and as always, we send the game state to everyone
-    broadcast(game.exportStateAsJSON());
-
-
-    System.out.println("the game state" + game.exportStateAsJSON());
-*/
+    System.out.println("\n\n" + player.asJSONString() + "\n\n");
   }
 
   @Override

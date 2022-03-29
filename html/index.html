@@ -24,17 +24,23 @@
     </p>
   </div>
   <div>
-      <p id="turnNumber" style="width:auto;">Turn: -1</p>
-      <p id="pot" style="width:auto;">Total Pot: -1</p>
-      <p id="playersTotalBets" style="width:auto;">Player (NAME) Total Bet: -1 Round Bet: -1</p>
+      <p id="turnNumber" style="width:auto;"></p>
+      <p id="info" style="width:auto;"></p>
+      <p id="pot" style="width:auto;"></p>
+      <p id="wallet" style="width:auto;"></p>
+      <p id="playersTotalBets" style="width:auto;"></p>
+      
   </div>
-  <p> Your Cards:</p>
+  <p> 
+    Your Cards:
+  </p>
   <img id="card1" src="" style="width:auto;">
   <img id="card2" src="" style="width:auto;">
   <img id="card3" src="" style="width:auto;">
   <img id="card4" src="" style="width:auto;">
   <img id="card5" src="" style="width:auto;">
   <div>
+    <input type="button" name="sendAnte" value="Ante" onclick="sendEvent(5)">
     <input type="button" name="sendStand" value="Stand" onclick="sendEvent(1)">
     <p>
       Draw cards (gives the card numbers (ex: 1 2 3): 
@@ -48,30 +54,26 @@
     </p>
     <input type="button" name="sendFold" value="Fold" onclick="sendEvent(4)">
   </div>
-  <div id="textbox"></div>
+  
 </body>
 
 </html>
 <script>
-  var connection = null;
+  var playerID;
+  var cardIdx = 0;
 
-  var serverUrl;
-  serverUrl ="ws://" + window.location.hostname + ":8880";
+  var serverUrl ="ws://" + window.location.hostname + ":8880";
+  var connection = new WebSocket(serverUrl);
 
-  connection = new WebSocket(serverUrl);
-  connection.onopen = function (evt) {
+  connection.onopen = function (evt){
     console.log("open");
   }
 
-  var cardIdx = 0;
-  var playerID = 0;
+  connection.onmessage = function(evt) {
 
-  connection.onmessage = function (evt) {
+    console.log("message: " + evt.data);
     var msg;
     msg = evt.data;
-
-    console.log("Message received: ");
-    document.getElementById("textbox").innerText = document.getElementById("textbox").innerText + '\n\n' + "Message Received" + "\n" + msg;
 
     // This is a hack for this example.
     // The only time the WebPoker server sends data just
@@ -82,40 +84,46 @@
 
     // Take the msg and turn it into a javascript object
     const obj = JSON.parse(msg);
-    if (!obj.players) {   // States the object is not empty
 
-      playerID = obj.Id;
-      console.log("player ID = " + playerID);
-      document.getElementById("textbox").innerText =
-        document.getElementById("textbox").innerText + '\n\n' + "Player ID is " + playerID;
+    // This is specifically for functionality sent from onOpen in WebSocket.java 
+
+    if(obj.name == "not set"){              
+        playerID = obj.id;
+        console.log("Player id: " + playerID);
     }
     else {
-
       // process the game state
       // this will just have one card change every time a new game state comes in.
       // the term LUT means "look up table".  you will see it sometimes in code written last
       // century.
 
-      /*
+/*
       cardLUT = ["3C.svg", "2B.svg", "3S.svg", "KC.svg", "6D.svg", "2J.svg", "2S.svg"];
 
       document.getElementById("card4").src = cardLUT[cardIdx];
       cardIdx = cardIdx + 1;
       if (cardIdx > 6)
         cardIdx = 0;
-        */
+*/
 
         // display whose turn it is
         document.getElementById("turnNumber").innerHTML = "Turn: Player " + obj.turn;
 
         // display the amount in the pot
         document.getElementById("pot").innerHTML = "Total Pot: " + obj.pot;
+        document.getElementById("info").innerHTML 
+          = "Player Wallet: " + obj.players[playerID].wallet  
+          + "\n"
+          + "Player Name: "   + obj.players[playerID].name 
+          + "\n"
+          + "Player Id: "     + obj.players[playerID].id;
+        
 
         // display the total bets of all players
         var playerTotalBetString = "";
         for(var i = 0; i < obj.players.length; i++)
         {
-            playerTotalBetString += "Player " + i + " (" +obj.players[i].Name;
+            playerTotalBetString += "Player " + i + " (" + obj.players[i].Name;
             playerTotalBetString += ") Total Bet: " + obj.players[i].totalBet;
             playerTotalBetString += " Round Bet: " + obj.players[i].currentBet;
             playerTotalBetString += " | ";
@@ -159,20 +167,11 @@
           // get the indexes of the cards
           var str = document.getElementById("send_index").value;
           arr = str.split("");
-          var max = 3;
+          var iteration = arr.length;
 
-          for(var i = 0; i < arr.length; i++){ 
-            indexes[i] = parseInt(arr[i], 10); 
-            console.log(indexes[i]);
-          }
+          if(arr.length > 3) iteration = 3;                                             // Prevent for loop from iterating more than 3 times
 
-          // can only get a max of 3 cards
-          
-          // verify no more than 3
-          //if(arr.length <= max){ amountDraw = arr.length; }
-          //else{ amountDraw = max; } 
-
-            // store the indexes as ints 
+          for(var i = 0; i < iteration; i++) indexes[i] = parseInt(arr[i], 10);         // parse and store the indexes as ints 
       }
       // event type is BET
       else if(option == 3)
@@ -182,6 +181,7 @@
       }
       // event type is BET
       else if(option == 4) { eventType = "FOLD"; }
+      else if(option == 5) { eventType = "ANTE"; }
 
       // create the object to be sent to the game server
       const msg = {

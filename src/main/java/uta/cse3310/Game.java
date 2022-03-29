@@ -16,10 +16,11 @@ public class Game {
         shuffle_deck();
     }
 
-    public String exportStateAsJSON() {
-        Gson gson = new Gson();
-        return gson.toJson(this);
-    }
+    /**************************************
+    
+                    Players
+
+    **************************************/
 
     public void addPlayer(Player p) { players.add(p); }
 
@@ -29,6 +30,27 @@ public class Game {
         // and does whatever else is needed to remove
         // the player from the game.
         players.remove(playerid - 1);
+    }
+
+    // Technically the player will have alreay been created but this method simply sets the player name
+    // As well as gives the playe a hand of cards
+    public void create_player(int playerId, UserEvent event){
+        players.get(playerId).setName(event.name);
+
+        for(int i = 0; i < 5; i++) players.get(playerId).add_card(draw_card());
+
+        players.get(playerId).set_cards();
+    }
+
+    /**************************************
+    
+                    Game Logic
+
+    **************************************/
+
+    public String exportStateAsJSON() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 
     public void processMessage(int playerId, String msg){
@@ -42,32 +64,13 @@ public class Game {
 
         if (event.event == UserEventType.NAME) create_player(playerId, event);
         if (event.event == UserEventType.DRAW) new_cards(playerId, event);
+        if (event.event == UserEventType.ANTE) place_ante(playerId);
+        if (event.event == UserEventType.BET)  place_bet(playerId, event);
     }
 
-    public void new_cards(int playerId, UserEvent event){
-        int indexes[] = event.give_card_indexes;
-        for(int i = 0; i < indexes.length; i++){
-            if(indexes[i] > 0){     // 0 is default stating the card shouldnt change
-                players.get(playerId).hand.set(indexes[i] - 1, draw_card()); // Remove the card at the specified index
-            }                      
-        }
-
-        players.get(playerId).set_cards();
-    }
-
-    public void create_player(int playerId, UserEvent event){
-        Player player = new Player(playerId);
-        player.setName(event.name);
-
-        for(int i = 0; i < 5; i++) player.add_card(draw_card());
-
-        player.set_cards();
-
-        players.add(player);
-    }
 
     /*
-        this function is called on a periodic basis (once a second) by a timer
+        this method is called on a periodic basis (once a second) by a timer
         it is to allow time based situations to be handled in the game
         if the game state is changed, it returns a true.
         
@@ -147,18 +150,29 @@ public class Game {
     }
 */
 
+    /**************************************
+    
+                Deck Builders
+
+    **************************************/
+
+    public void new_cards(int playerId, UserEvent event){
+        int indexes[] = event.give_card_indexes;
+        for(int i = 0; i < indexes.length; i++){
+            if(indexes[i] > 0){                                                 // 0 is default stating the card shouldnt change
+                players.get(playerId).hand.set(indexes[i] - 1, draw_card());    // Remove the card at the specified index
+            }                      
+        }
+
+        players.get(playerId).set_cards();
+    }
+
     // gets a card from the front of passed in deck
     public Card draw_card() {
         Card card = deck.get(0);
         deck.remove(0);
         return card;
     }
-
-    /**************************************
-    
-                Deck Builders
-
-    **************************************/
 
     // remove all player's Cards
     // and randomize the order in the shuffle_deck
@@ -181,18 +195,10 @@ public class Game {
         // shuffle current deck
         try{
             Collections.shuffle(deck);
-            if (deck.size() != 52) throw new Exception("Error in deck shuffle, not 52 cards in deck.");
+            if (deck.size() != 52) throw new Exception("Error in deck shuffle, not 52 cards in deck.");     // Error handling for an incorrect deck
         }catch(Exception e){
             System.out.println(e);
         }
-/*
-        // print cards
-        // debug
-        System.out.println();
-        for (Card card : deck) {
-            System.out.println(card.suite.toString() + " " + card.value.toString());
-        }
-*/
     }
 
     // this adds all 52 cards to the deck in order
@@ -213,6 +219,20 @@ public class Game {
 
     /**********************************
 
+                Betting
+
+    **********************************/
+
+    public void place_ante(int playerId){
+        players.get(playerId).wallet = players.get(playerId).wallet - 20;
+    }
+
+    public void place_bet(int playerId, UserEvent event){
+        players.get(playerId).wallet = players.get(playerId).wallet - event.amount_to_bet;
+    }
+
+    /**********************************
+
                 Attributes
 
     **********************************/
@@ -221,5 +241,4 @@ public class Game {
     private ArrayList<Card> deck = new ArrayList<>();       // stored cards not in players hands
     private int turn;                                       // player ID that has the current turn
     private int pot;                                        // total of chips being bet
-
 }

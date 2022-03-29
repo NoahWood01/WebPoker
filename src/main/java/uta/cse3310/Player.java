@@ -7,8 +7,9 @@ import java.util.ArrayList;
 
 public class Player {
     public Player(int id) {
-        this.Id = id;
-        this.Name = "not set";
+        this.id = id;
+        this.name = "not set";
+        this.wallet = 100;
     }
 
     /*************************************
@@ -17,10 +18,10 @@ public class Player {
 
     *************************************/
 
-    public void setId(int id){ this.Id = id; }
-    public void setName(String N) {
-        Name = N;
-        LastMessageToPlayer="Welcome " + N + " to the game.";
+    public void setId(int id){ this.id = id; }
+    public void setName(String name){
+        this.name = name;
+        LastMessageToPlayer="Welcome " + name + " to the game.";
     }
 
     public void add_card(Card card){ this.hand.add(card); }
@@ -31,8 +32,8 @@ public class Player {
 
     *************************************/
 
-    public int get_id(){ return this.Id; }
-    public String get_name(){ return this.Name; }
+    public int get_id(){ return this.id; }
+    public String get_name(){ return this.name; }
     public Card get_card(int i){ return this.hand.get(i); }
 
     /*************************************
@@ -57,16 +58,16 @@ public class Player {
 
     *************************************/
 
-    private int Id;
-    private String Name;
-    ArrayList<Card> hand = new ArrayList<>();
+    private int id;                                         // Identifiication so the game knows who the player is
+    int wallet;                                     // Players starting dollar amount
+    private int currentBet;                                 // amount player has bet this round
+    private int totalBet;                                   // amount player has bet in the game
+
+    private String name;                                    // Player name
+
+    ArrayList<Card> hand = new ArrayList<>();               // Array list for players hand to be passed to cards
     uta.cse3310.Card Cards[] = new uta.cse3310.Card[5];
+
     private String LastMessageToPlayer;
-    private boolean folded = false; // boolean to check if the player has folded in the round
-    private int totalBet;   // amount player has bet in the game
-    // used to make sure all players not
-    // folded bet the same amount
-    private int currentBet; // amount player has bet this round
-
-
+    private boolean folded = false;                         // boolean to check if the player has folded in the round
 }
