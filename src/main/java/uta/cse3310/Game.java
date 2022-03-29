@@ -17,12 +17,14 @@ public class Game {
     }
 
     /**************************************
-    
-                    Players
+     * 
+     * Players
+     * 
+     **************************************/
 
-    **************************************/
-
-    public void addPlayer(Player p) { players.add(p); }
+    public void addPlayer(Player p) {
+        players.add(p);
+    }
 
     public void removePlayer(int playerid) {
         // given it's player number, this method
@@ -32,28 +34,50 @@ public class Game {
         players.remove(playerid - 1);
     }
 
-    // Technically the player will have alreay been created but this method simply sets the player name
+    // Technically the player will have alreay been created but this method simply
+    // sets the player name
     // As well as gives the playe a hand of cards
-    public void create_player(int playerId, UserEvent event){
+    public void create_player(int playerId, UserEvent event) {
         players.get(playerId).setName(event.name);
 
-        for(int i = 0; i < 5; i++) players.get(playerId).add_card(draw_card());
+        for (int i = 0; i < 5; i++)
+            players.get(playerId).add_card(draw_card());
 
         players.get(playerId).set_cards();
     }
 
-    /**************************************
-    
-                    Game Logic
+    // turns
+    Player startingplayer;
+    Player currentplayer;
 
-    **************************************/
+    public Player getStartingPlayer() {
+        startingplayer = players.get(0);
+        currentplayer = startingplayer;
+        return startingplayer;
+    }
+
+    public void nextPlayer() // swap players
+    {
+        if (currentplayer == startingplayer || players.indexOf(currentplayer) < players.size()) {
+            currentplayer = players.get(players.indexOf(currentplayer) + 1); // next player
+        } else // go back to starting player / next round
+        {
+            currentplayer = startingplayer;
+        }
+    }
+
+    /**************************************
+     * 
+     * Game Logic
+     * 
+     **************************************/
 
     public String exportStateAsJSON() {
         Gson gson = new Gson();
         return gson.toJson(this);
     }
 
-    public void processMessage(int playerId, String msg){
+    public void processMessage(int playerId, String msg) {
 
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
@@ -62,22 +86,27 @@ public class Game {
 
         System.out.println("\n\n" + msg + "\n\n");
 
-        if (event.event == UserEventType.NAME) create_player(playerId, event);
-        if (event.event == UserEventType.DRAW) new_cards(playerId, event);
-        if (event.event == UserEventType.ANTE) place_ante(playerId);
-        if (event.event == UserEventType.BET)  place_bet(playerId, event);
+        if (event.event == UserEventType.NAME)
+            create_player(playerId, event);
+        if (event.event == UserEventType.DRAW)
+            new_cards(playerId, event);
+        if (event.event == UserEventType.ANTE)
+            place_ante(playerId);
+        if (event.event == UserEventType.BET)
+            place_bet(playerId, event);
     }
 
-
     /*
-        this method is called on a periodic basis (once a second) by a timer
-        it is to allow time based situations to be handled in the game
-        if the game state is changed, it returns a true.
-        
-        expecting that returning a true will trigger a send of the game
-        state to everyone
-    */
-    public boolean update(){ return false; }
+     * this method is called on a periodic basis (once a second) by a timer
+     * it is to allow time based situations to be handled in the game
+     * if the game state is changed, it returns a true.
+     * 
+     * expecting that returning a true will trigger a send of the game
+     * state to everyone
+     */
+    public boolean update() {
+        return false;
+    }
 
     // start and play entire game in this method
     // will be called from the Game Object
@@ -87,81 +116,81 @@ public class Game {
     // most likely a player per thread
     // where each thread get the UserEvents
     // returns the winner
-/*
-    public void play_game() {
-        // deal cards for each player
-        // and remove the from the deck
-        // to prevent duplicates
-        // cards will be added back to deck when
-        // shuffling or drawing
-        for (Player p : players) {
-            for (int i = 0; i < p.Cards.length; i++) {
-                p.Cards[i] = deck.get(0);
-                deck.remove(0);
-            }
-        }
-
-        // 1st betting round
-
-        // Draw round
-        // note: this is not tested
-
-        // max of 3 cards exchanged
-        // VARIABLE IN UserEvent TO KEEP TRACK
-        // this starts with player zero in the list
-        for (turn = 0; turn < players.size(); turn++) {
-            // only legal actions here are DRAW or STAND
-            // get user event and check if it was from the player.
-            UserEvent event = new UserEvent();
-            while (true) // infinite loop?
-            {
-                // get the event HERE
-                // add code to get it
-                if (event.playerID == turn && (event.event != UserEventType.DRAW
-                        || event.event != UserEventType.STAND)) {
-                    if (event.event == UserEventType.STAND) {
-                        // this will end turn and proceed to next player
-                        break;
-                    } else {
-                        // iterate for the amount to draw specified
-                        // from the event and based on the indeces
-                        // that is in the event
-                        for (int i = 0; i < event.amount_to_draw; i++) {
-                            try {
-                                // add current card at given index to end of deck
-                                deck.add(players.get(turn).Cards[event.give_card_indexes[i]]);
-                                players.get(turn).Cards[event.give_card_indexes[i]] = draw_card(deck);
-                            } catch (ArrayIndexOutOfBoundsException e) {
-                                // debug
-                                System.out.println("DRAW Card error: -1 in index");
-                            }
-                        }
-                        // this will end turn and proceed to next player
-                        break;
-                    }
-                }
-            }
-        }
-
-        // 2nd betting round
-
-        // showdown
-
-    }
-*/
+    /*
+     * public void play_game() {
+     * // deal cards for each player
+     * // and remove the from the deck
+     * // to prevent duplicates
+     * // cards will be added back to deck when
+     * // shuffling or drawing
+     * for (Player p : players) {
+     * for (int i = 0; i < p.Cards.length; i++) {
+     * p.Cards[i] = deck.get(0);
+     * deck.remove(0);
+     * }
+     * }
+     * 
+     * // 1st betting round
+     * 
+     * // Draw round
+     * // note: this is not tested
+     * 
+     * // max of 3 cards exchanged
+     * // VARIABLE IN UserEvent TO KEEP TRACK
+     * // this starts with player zero in the list
+     * for (turn = 0; turn < players.size(); turn++) {
+     * // only legal actions here are DRAW or STAND
+     * // get user event and check if it was from the player.
+     * UserEvent event = new UserEvent();
+     * while (true) // infinite loop?
+     * {
+     * // get the event HERE
+     * // add code to get it
+     * if (event.playerID == turn && (event.event != UserEventType.DRAW
+     * || event.event != UserEventType.STAND)) {
+     * if (event.event == UserEventType.STAND) {
+     * // this will end turn and proceed to next player
+     * break;
+     * } else {
+     * // iterate for the amount to draw specified
+     * // from the event and based on the indeces
+     * // that is in the event
+     * for (int i = 0; i < event.amount_to_draw; i++) {
+     * try {
+     * // add current card at given index to end of deck
+     * deck.add(players.get(turn).Cards[event.give_card_indexes[i]]);
+     * players.get(turn).Cards[event.give_card_indexes[i]] = draw_card(deck);
+     * } catch (ArrayIndexOutOfBoundsException e) {
+     * // debug
+     * System.out.println("DRAW Card error: -1 in index");
+     * }
+     * }
+     * // this will end turn and proceed to next player
+     * break;
+     * }
+     * }
+     * }
+     * }
+     * 
+     * // 2nd betting round
+     * 
+     * // showdown
+     * 
+     * }
+     */
 
     /**************************************
-    
-                Deck Builders
+     * 
+     * Deck Builders
+     * 
+     **************************************/
 
-    **************************************/
-
-    public void new_cards(int playerId, UserEvent event){
+    public void new_cards(int playerId, UserEvent event) {
         int indexes[] = event.give_card_indexes;
-        for(int i = 0; i < indexes.length; i++){
-            if(indexes[i] > 0){                                                 // 0 is default stating the card shouldnt change
-                players.get(playerId).hand.set(indexes[i] - 1, draw_card());    // Remove the card at the specified index
-            }                      
+        for (int i = 0; i < indexes.length; i++) {
+            if (indexes[i] > 0) { // 0 is default stating the card shouldnt change
+                players.get(playerId).hand.set(indexes[i] - 1, draw_card()); // Remove the card at the specified index
+            }
         }
 
         players.get(playerId).set_cards();
@@ -178,7 +207,7 @@ public class Game {
     // and randomize the order in the shuffle_deck
     // will be 52 cards in size
 
-    public void empty_hands(){
+    public void empty_hands() {
         // remove player's cards for cases
         // when game is replayed
         for (Player p : players) {
@@ -191,19 +220,21 @@ public class Game {
         }
     }
 
-    public void shuffle_deck(){
+    public void shuffle_deck() {
         // shuffle current deck
-        try{
+        try {
             Collections.shuffle(deck);
-            if (deck.size() != 52) throw new Exception("Error in deck shuffle, not 52 cards in deck.");     // Error handling for an incorrect deck
-        }catch(Exception e){
+            if (deck.size() != 52)
+                throw new Exception("Error in deck shuffle, not 52 cards in deck."); // Error handling for an incorrect
+                                                                                     // deck
+        } catch (Exception e) {
             System.out.println(e);
         }
     }
 
     // this adds all 52 cards to the deck in order
     // will need to shuffle in game
-    public void create_deck(){
+    public void create_deck() {
         // for each suite and each value add the card
         for (Card.Suite suite : Card.Suite.values()) {
             for (Card.Value value : Card.Value.values()) {
@@ -218,27 +249,27 @@ public class Game {
     }
 
     /**********************************
+     * 
+     * Betting
+     * 
+     **********************************/
 
-                Betting
-
-    **********************************/
-
-    public void place_ante(int playerId){
+    public void place_ante(int playerId) {
         players.get(playerId).wallet = players.get(playerId).wallet - 20;
     }
 
-    public void place_bet(int playerId, UserEvent event){
+    public void place_bet(int playerId, UserEvent event) {
         players.get(playerId).wallet = players.get(playerId).wallet - event.amount_to_bet;
     }
 
     /**********************************
+     * 
+     * Attributes
+     * 
+     **********************************/
 
-                Attributes
-
-    **********************************/
-
-    private ArrayList<Player> players = new ArrayList<>();  // players of the game
-    private ArrayList<Card> deck = new ArrayList<>();       // stored cards not in players hands
-    private int turn;                                       // player ID that has the current turn
-    private int pot;                                        // total of chips being bet
+    private ArrayList<Player> players = new ArrayList<>(); // players of the game
+    private ArrayList<Card> deck = new ArrayList<>(); // stored cards not in players hands
+    private int turn; // player ID that has the current turn
+    private int pot; // total of chips being bet
 }
