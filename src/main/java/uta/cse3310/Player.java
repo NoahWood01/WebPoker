@@ -2,7 +2,7 @@ package uta.cse3310;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
- 
+
 import java.util.ArrayList;
 
 public class Player {
@@ -13,7 +13,7 @@ public class Player {
     }
 
     /*************************************
-    
+
                     Setters
 
     *************************************/
@@ -27,7 +27,7 @@ public class Player {
     public void add_card(Card card){ this.hand.add(card); }
 
     /*************************************
-    
+
                     Getters
 
     *************************************/
@@ -37,7 +37,7 @@ public class Player {
     public Card get_card(int i){ return this.hand.get(i); }
 
     /*************************************
-    
+
                 Other methods
 
     *************************************/
@@ -53,13 +53,13 @@ public class Player {
     }
 
     /*************************************
-                                        
+
                     Attributes
 
     *************************************/
 
     private int id;                                         // Identifiication so the game knows who the player is
-    int wallet;                                     // Players starting dollar amount
+    int wallet;                                             // Players starting dollar amount
     private int currentBet;                                 // amount player has bet this round
     private int totalBet;                                   // amount player has bet in the game
 
