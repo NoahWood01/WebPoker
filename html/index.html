@@ -8,17 +8,17 @@
 </head>
 
 <body>
-  <p> 
+  <p>
     Welcome to WebPoker with Group 5 of CSE3310.
   </p>
   <p>
-    message: 
+    message:
     <input id="send_text" type="text">
     <input type="button" name="send_button" value="send" onclick="send()">
   </p>
   <div id="nameInput">
     <p>
-      name: 
+      name:
       <input id="sendName" type="text">
       <input type="button" name="sendName" value="Name" onclick="sendName()">
     </p>
@@ -29,9 +29,9 @@
       <p id="pot" style="width:auto;"></p>
       <p id="wallet" style="width:auto;"></p>
       <p id="playersTotalBets" style="width:auto;"></p>
-      
+
   </div>
-  <p> 
+  <p>
     Your Cards:
   </p>
   <img id="card1" src="" style="width:auto;">
@@ -43,18 +43,18 @@
     <input type="button" name="sendAnte" value="Ante" onclick="sendEvent(5)">
     <input type="button" name="sendStand" value="Stand" onclick="sendEvent(1)">
     <p>
-      Draw cards (gives the card numbers (ex: 1 2 3): 
+      Draw cards (gives the card numbers (ex: 1 2 3):
       <input id="send_index" type="text">
       <input type="button" name="sendDraw" value="Draw" onclick="sendEvent(2)">
     </p>
     <p>
-      Bet: 
+      Bet:
       <input id="send_bet" type="text">
       <input type="button" name="sendBet" value="Bet" onclick="sendEvent(3)">
     </p>
     <input type="button" name="sendFold" value="Fold" onclick="sendEvent(4)">
   </div>
-  
+
 </body>
 
 </html>
@@ -85,9 +85,9 @@
     // Take the msg and turn it into a javascript object
     const obj = JSON.parse(msg);
 
-    // This is specifically for functionality sent from onOpen in WebSocket.java 
+    // This is specifically for functionality sent from onOpen in WebSocket.java
 
-    if(obj.name == "not set"){              
+    if(obj.name == "not set"){
         playerID = obj.id;
         console.log("Player id: " + playerID);
     }
@@ -110,14 +110,14 @@
         document.getElementById("turnNumber").innerHTML = "Turn: Player " + obj.turn;
 
         // display the amount in the pot
-        document.getElementById("pot").innerHTML = "Total Pot: " + obj.pot;
-        document.getElementById("info").innerHTML 
-          = "Player Wallet: " + obj.players[playerID].wallet  
+        document.getElementById("pot").innerHTML = "Total Pot: " + obj.pot.prize;
+        document.getElementById("info").innerHTML
+          = "Player Wallet: " + obj.players[playerID].wallet
           + "\n"
-          + "Player Name: "   + obj.players[playerID].name 
+          + "Player Name: "   + obj.players[playerID].name
           + "\n"
           + "Player Id: "     + obj.players[playerID].id;
-        
+
 
         // display the total bets of all players
         var playerTotalBetString = "";
@@ -171,7 +171,7 @@
 
           if(arr.length > 3) iteration = 3;                                             // Prevent for loop from iterating more than 3 times
 
-          for(var i = 0; i < iteration; i++) indexes[i] = parseInt(arr[i], 10);         // parse and store the indexes as ints 
+          for(var i = 0; i < iteration; i++) indexes[i] = parseInt(arr[i], 10);         // parse and store the indexes as ints
       }
       // event type is BET
       else if(option == 3)

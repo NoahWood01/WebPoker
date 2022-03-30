@@ -14,6 +14,7 @@ public class Game {
         System.out.println("creating a Game Object");
         create_deck();
         shuffle_deck();
+        pot = new Pot();
     }
 
     /**************************************
@@ -185,10 +186,12 @@ public class Game {
 
     public void place_ante(int playerId) {
         players.get(playerId).wallet = players.get(playerId).wallet - 20;
+        pot.addToPot(20);
     }
 
     public void place_bet(int playerId, UserEvent event) {
         players.get(playerId).wallet = players.get(playerId).wallet - event.amount_to_bet;
+        pot.addToPot(event.amount_to_bet);
     }
 
     /**********************************
@@ -200,5 +203,5 @@ public class Game {
     private ArrayList<Player> players = new ArrayList<>(); // players of the game
     private ArrayList<Card> deck = new ArrayList<>(); // stored cards not in players hands
     private int turn; // player ID that has the current turn
-    private int pot; // total of chips being bet
+    private Pot pot; // total of chips being bet
 }
