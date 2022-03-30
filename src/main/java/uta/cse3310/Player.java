@@ -19,12 +19,17 @@ public class Player {
     *************************************/
 
     public void setId(int id){ this.id = id; }
-    public void setName(String name){
-        this.name = name;
-        LastMessageToPlayer="Welcome " + name + " to the game.";
+    public void set_current_bet(int bet){ this.currentBet += bet; }
+    public void setName(String name){ this.name = name; }
+    // This is redundant but I didnt feel like removing array list logic
+    public void set_cards(){
+        for(int i = 0; i < 5; i++) Cards[i] = hand.get(i);
     }
 
     public void add_card(Card card){ this.hand.add(card); }
+    public void add_wallet(int bet){ this.wallet += bet; }
+
+    public void subtract_wallet(int bet){ this.wallet -= bet; }
 
     /*************************************
 
@@ -42,14 +47,9 @@ public class Player {
 
     *************************************/
 
-    public String asJSONString() {
+    public String asJSONString(){
         Gson gson = new Gson();
         return gson.toJson(this);
-    }
-
-    // This is redundant but I didnt feel like removing array list logic
-    public void set_cards(){
-        for(int i = 0; i < 5; i++) Cards[i] = hand.get(i);
     }
 
     /*************************************
@@ -59,7 +59,7 @@ public class Player {
     *************************************/
 
     private int id;                                         // Identifiication so the game knows who the player is
-    int wallet;                                             // Players starting dollar amount
+    private int wallet;                                     // Players starting dollar amount
     private int currentBet;                                 // amount player has bet this round
     private int totalBet;                                   // amount player has bet in the game
 
@@ -68,6 +68,5 @@ public class Player {
     ArrayList<Card> hand = new ArrayList<>();               // Array list for players hand to be passed to cards
     uta.cse3310.Card Cards[] = new uta.cse3310.Card[5];
 
-    private String LastMessageToPlayer;
     private boolean folded = false;                         // boolean to check if the player has folded in the round
 }

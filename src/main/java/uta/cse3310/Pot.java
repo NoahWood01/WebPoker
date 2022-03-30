@@ -6,17 +6,17 @@ public class Pot{
 
     public Pot(){}
 
-    public void addToPot(int amount){
-        prize += amount;
+    public void add_to_pot(int amount){
+        pot += amount;
     }
 
-    public void emptyPot(){
-        prize = 0;
+    public void empty_pot(){
+        pot = 0;
     }
 
-    public int rewardPot(){
-        return prize;
+    public int reward_pot(){
+        return pot;
     }
 
-    private int prize;
+    private int pot;
 }

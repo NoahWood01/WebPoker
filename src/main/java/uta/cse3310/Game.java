@@ -23,9 +23,7 @@ public class Game {
      *
      **************************************/
 
-    public void addPlayer(Player p) {
-        players.add(p);
-    }
+    public void addPlayer(Player p){ players.add(p); }
 
     public void removePlayer(int playerid) {
         // given it's player number, this method
@@ -41,15 +39,12 @@ public class Game {
     public void create_player(int playerId, UserEvent event) {
         players.get(playerId).setName(event.name);
 
-        for (int i = 0; i < 5; i++)
-            players.get(playerId).add_card(draw_card());
+        for (int i = 0; i < 5; i++) players.get(playerId).add_card(draw_card());
+
+        place_ante(playerId);
 
         players.get(playerId).set_cards();
     }
-
-    // turns
-    Player startingplayer;
-    Player currentplayer;
 
     public Player getStartingPlayer() {
         startingplayer = players.get(0);
@@ -66,6 +61,9 @@ public class Game {
             currentplayer = startingplayer;
         }
     }
+
+    public void player_stand(int id){}
+    public void player_fold(int id){ empty_hand(players.get(id)); }
 
     /**************************************
      *
@@ -87,14 +85,11 @@ public class Game {
 
         System.out.println("\n\n" + msg + "\n\n");
 
-        if (event.event == UserEventType.NAME)
-            create_player(playerId, event);
-        if (event.event == UserEventType.DRAW)
-            new_cards(playerId, event);
-        if (event.event == UserEventType.ANTE)
-            place_ante(playerId);
-        if (event.event == UserEventType.BET)
-            place_bet(playerId, event);
+        if(event.event == UserEventType.NAME)  create_player(playerId, event);
+        if(event.event == UserEventType.STAND) player_stand(playerId);
+        if(event.event == UserEventType.FOLD)  player_fold(playerId);
+        if(event.event == UserEventType.BET)   place_bet(playerId, event);
+        if(event.event == UserEventType.DRAW)  new_cards(playerId, event);
     }
 
     /*
@@ -137,17 +132,9 @@ public class Game {
     // and randomize the order in the shuffle_deck
     // will be 52 cards in size
 
-    public void empty_hands() {
-        // remove player's cards for cases
-        // when game is replayed
-        for (Player p : players) {
-            for (int i = 0; i < p.Cards.length; i++) {
-                // add card back to deck
-                deck.add(p.Cards[i]);
-                // remove card from hand
-                // p.Cards[i] = NULL;
-            }
-        }
+    public void empty_hand(Player p){
+        p.hand.clear();
+        p.Cards = new uta.cse3310.Card[5];
     }
 
     public void shuffle_deck() {
@@ -184,24 +171,30 @@ public class Game {
      *
      **********************************/
 
-    public void place_ante(int playerId) {
-        players.get(playerId).wallet = players.get(playerId).wallet - 20;
-        pot.addToPot(20);
+    public void place_ante(int playerId){
+        players.get(playerId).subtract_wallet(20);
+        pot.add_to_pot(20);
     }
 
-    public void place_bet(int playerId, UserEvent event) {
-        players.get(playerId).wallet = players.get(playerId).wallet - event.amount_to_bet;
-        pot.addToPot(event.amount_to_bet);
+    public void place_bet(int playerId, UserEvent event){
+        players.get(playerId).subtract_wallet(event.amount_to_bet);
+        players.get(playerId).set_current_bet(event.amount_to_bet);
+        pot.add_to_pot(event.amount_to_bet);
     }
 
     /**********************************
-     *
-     * Attributes
-     *
-     **********************************/
+
+                Attributes
+     
+    **********************************/
 
     private ArrayList<Player> players = new ArrayList<>(); // players of the game
     private ArrayList<Card> deck = new ArrayList<>(); // stored cards not in players hands
+
+    // turns
+    Player startingplayer;
+    Player currentplayer;
+
     private int turn; // player ID that has the current turn
     private Pot pot; // total of chips being bet
 }

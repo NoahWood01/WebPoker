@@ -24,35 +24,30 @@
     </p>
   </div>
   <div>
-      <p id="turnNumber" style="width:auto;"></p>
-      <p id="info" style="width:auto;"></p>
-      <p id="pot" style="width:auto;"></p>
-      <p id="wallet" style="width:auto;"></p>
-      <p id="playersTotalBets" style="width:auto;"></p>
-
+      <p id="turnNumber"        style="width: auto;"></p>
+      <p id="info"              style="width: auto; white-space: pre-line;"></p>
+      <p id="playersTotalBets"  style="width: auto; white-space: pre-line;"></p>
+      <p id="pot"               style="width: auto;"></p>
   </div>
   <p>
     Your Cards:
   </p>
-  <img id="card1" src="" style="width:auto;">
-  <img id="card2" src="" style="width:auto;">
-  <img id="card3" src="" style="width:auto;">
-  <img id="card4" src="" style="width:auto;">
-  <img id="card5" src="" style="width:auto;">
-  <div>
-    <input type="button" name="sendAnte" value="Ante" onclick="sendEvent(5)">
-    <input type="button" name="sendStand" value="Stand" onclick="sendEvent(1)">
+  <img id="card1" src="" style="width: auto;">
+  <img id="card2" src="" style="width: auto;">
+  <img id="card3" src="" style="width: auto;">
+  <img id="card4" src="" style="width: auto;">
+  <img id="card5" src="" style="width: auto;">
+  <div id="stand_fold_display">
+    <input type="button" name="sendStand" value="Stand"   onclick="sendEvent(1)">
+    <input type="button" name="sendFold"  value="Fold"    onclick="sendEvent(2)">
+    <input type="button" name="sendBet"   value="Bet 05"  onclick="sendEvent(3)">
+    <input type="button" name="sendBet"   value="Bet 10"  onclick="sendEvent(4)">
+    <input type="button" name="sendBet"   value="Bet 20"  onclick="sendEvent(5)">
     <p>
       Draw cards (gives the card numbers (ex: 1 2 3):
       <input id="send_index" type="text">
-      <input type="button" name="sendDraw" value="Draw" onclick="sendEvent(2)">
+      <input type="button" name="sendDraw" value="Draw" onclick="sendEvent(6)">
     </p>
-    <p>
-      Bet:
-      <input id="send_bet" type="text">
-      <input type="button" name="sendBet" value="Bet" onclick="sendEvent(3)">
-    </p>
-    <input type="button" name="sendFold" value="Fold" onclick="sendEvent(4)">
   </div>
 
 </body>
@@ -70,7 +65,6 @@
   }
 
   connection.onmessage = function(evt) {
-
     console.log("message: " + evt.data);
     var msg;
     msg = evt.data;
@@ -97,51 +91,43 @@
       // the term LUT means "look up table".  you will see it sometimes in code written last
       // century.
 
-/*
-      cardLUT = ["3C.svg", "2B.svg", "3S.svg", "KC.svg", "6D.svg", "2J.svg", "2S.svg"];
+      // display whose turn it is
+      document.getElementById("turnNumber").innerHTML = "Turn: Player " + obj.turn;
 
-      document.getElementById("card4").src = cardLUT[cardIdx];
-      cardIdx = cardIdx + 1;
-      if (cardIdx > 6)
-        cardIdx = 0;
-*/
+      document.getElementById("info").innerHTML
+        = "Player Wallet: " + obj.players[playerID].wallet
+        + "\n"
+        + "Player Name: "   + obj.players[playerID].name
+        + "\n"
+        + "Player Id: "     + obj.players[playerID].id;
 
-        // display whose turn it is
-        document.getElementById("turnNumber").innerHTML = "Turn: Player " + obj.turn;
+      // display the amount in the pot
+      document.getElementById("pot").innerHTML = "Total Pot: " + obj.pot.pot;
 
-        // display the amount in the pot
-        document.getElementById("pot").innerHTML = "Total Pot: " + obj.pot.prize;
-        document.getElementById("info").innerHTML
-          = "Player Wallet: " + obj.players[playerID].wallet
-          + "\n"
-          + "Player Name: "   + obj.players[playerID].name
-          + "\n"
-          + "Player Id: "     + obj.players[playerID].id;
+      // display the total bets of all players
+      var playerTotalBetString = "";
+      for(var i = 0; i < obj.players.length; i++){
+        playerTotalBetString += "Player " + i + " (" + obj.players[i].name
+                             + ") Current Bet: " + obj.players[i].currentBet
+                             
+                             + "\n";
+      }
+      document.getElementById("playersTotalBets").innerHTML = playerTotalBetString;
 
+      // display the player's cards
+      var player = obj.players[playerID];
 
-        // display the total bets of all players
-        var playerTotalBetString = "";
-        for(var i = 0; i < obj.players.length; i++)
-        {
-            playerTotalBetString += "Player " + i + " (" + obj.players[i].Name;
-            playerTotalBetString += ") Total Bet: " + obj.players[i].totalBet;
-            playerTotalBetString += " Round Bet: " + obj.players[i].currentBet;
-            playerTotalBetString += " | ";
-        }
-        document.getElementById("playersTotalBets").innerHTML = playerTotalBetString;
+      for(var i = 0; i < 5; i++){
+        // if cards are null str becomes empty so nothing is displayed
+        if(player.Cards[i] == null){ str = ""; }              
+        else{ var str = player.Cards[i].value + player.Cards[i].suite + ".svg"; }
 
-        // display the player's cards
-        var player = obj.players[playerID];
-
-        for(var i = 0; i < 5; i++){
-          var str = player.Cards[i].value + player.Cards[i].suite + ".svg";
-
-          var number = i + 1;
-          var cardnumber = "card" + number;
-          document.getElementById(cardnumber).src = str;
-        }
+        var number = i + 1;
+        var cardnumber = "card" + number;
+        document.getElementById(cardnumber).src = str;
+      }
     }
-    console.log("the cardIdx is " + cardIdx)
+    console.log("the cardIdx is " + cardIdx);
   }
 
   // send info from the buttons where
@@ -151,49 +137,64 @@
   // 4 is fold
   // passed as an argument from button
   function sendEvent(option){
-      // send a UserEvent in JSON
-      var eventType;
-      var amount = 0;
-      var amountDraw = 0;
-      var indexes = [0, 0, 0];
+    // send a UserEvent in JSON
+    var eventType;
+    var amount = 0;
+    var amountDraw = 0;
+    var indexes = [0, 0, 0];
+    
+    if(option == 1){ 
+      eventType = "STAND"; 
 
-      // event type is STAND
-      if(option == 1){ eventType = "STAND"; }
+      var x = document.getElementById("stand_fold_display");
+      
+      if(x.style.display === "none"){ x.style.display = "block"; } 
+      else{ x.style.display = "none"; }
+    }         // event type is STAND
+    else if(option == 2){                           // event type is  FOLD
+      eventType = "FOLD"; 
 
-      // event type is DRAW
-      else if(option == 2){
-          eventType = "DRAW";
+      var x = document.getElementById("stand_fold_display");
+      
+      if(x.style.display === "none"){ x.style.display = "block"; } 
+      else{ x.style.display = "none"; }
+    }    
+    else if(option == 3){                           // event type is BET
+      eventType = "BET";
+      amount = 5;
+    }
+    else if(option == 4){                           // event type is BET
+      eventType = "BET";
+      amount = 10;
+    }
+    else if(option == 5){                           // event type is BET
+      eventType = "BET";
+      amount = 20;
+    }
+    else if(option == 6){                           // event type is DRAW
+      eventType = "DRAW";
 
-          // get the indexes of the cards
-          var str = document.getElementById("send_index").value;
-          arr = str.split("");
-          var iteration = arr.length;
+      // get the indexes of the cards
+      var str = document.getElementById("send_index").value;
+      arr = str.split("");
+      var iteration = arr.length;
 
-          if(arr.length > 3) iteration = 3;                                             // Prevent for loop from iterating more than 3 times
+      if(arr.length > 3) iteration = 3;                                             // Prevent for loop from iterating more than 3 times
 
-          for(var i = 0; i < iteration; i++) indexes[i] = parseInt(arr[i], 10);         // parse and store the indexes as ints
-      }
-      // event type is BET
-      else if(option == 3)
-      {
-          eventType = "BET";
-          amount = parseInt(document.getElementById("send_bet").value,10);
-      }
-      // event type is BET
-      else if(option == 4) { eventType = "FOLD"; }
-      else if(option == 5) { eventType = "ANTE"; }
-
-      // create the object to be sent to the game server
-      const msg = {
-          event: eventType,
-          name: document.getElementById("sendName").value,
-          playerID: playerID,
-          amount_to_bet: amount,
-          amount_to_draw: amountDraw,
-          give_card_indexes: indexes
-      };
-      connection.send(JSON.stringify(msg));
-      console.log(JSON.stringify(msg));
+      for(var i = 0; i < iteration; i++) indexes[i] = parseInt(arr[i], 10);         // parse and store the indexes as ints
+    }
+    
+    // create the object to be sent to the game server
+    const msg = {
+        event: eventType,
+        name: document.getElementById("sendName").value,
+        playerID: playerID,
+        amount_to_bet: amount,
+        amount_to_draw: amountDraw,
+        give_card_indexes: indexes
+    };
+    connection.send(JSON.stringify(msg));
+    console.log(JSON.stringify(msg));
   }
 
   function send() {
@@ -218,16 +219,13 @@
 
     // this shows how to hid html elements.
     // like when the name is entered
-    //  it might be better to hide after the server has accepted it
+    // it might be better to hide after the server has accepted it
     // but this is just a demonstration
 
     var x = document.getElementById("nameInput");
-    if (x.style.display === "none") {
-      x.style.display = "block";
-    } else {
-      x.style.display = "none";
-    }
-
+    console.log("X: " + x);
+    console.log("X display: " + x.style.display);
+    if(x.style.display === "none"){ x.style.display = "block"; } 
+    else{ x.style.display = "none"; }
   }
-
 </script>
