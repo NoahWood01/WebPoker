@@ -81,7 +81,7 @@ public class Hand {
     }
 
     // adding idea here to sort and determine hand value - alyssa
-    private void calcHand() {
+    private String calcHand() {
         String handname = " ";
         // split into two arrays - suite arr and value arr
         Suite[] suitearr = new Suite[5];
@@ -113,8 +113,47 @@ public class Hand {
                 handname = "Flush";
             }
         }
-
         // done with suites, test values
+        // test 4 of a kind
+        boolean FourKind = false, ThreeKind = false, TwoPair = false, Pair = false, Straight = false, FullHouse = false,
+                HighCard = false;
+        if ((valuearr[0] == valuearr[3] || valuearr[1] == valuearr[4]) && !flush) // test four of a kind
+        {
+            handname = "Four of a Kind";
+            FourKind = true;
+        } else if ((valuearr[0] == valuearr[2] && (!FourKind)) || (valuearr[1] == valuearr[4] && (!FourKind))) // test
+                                                                                                               // three
+                                                                                                               // of a
+                                                                                                               // kind
+        {
+            handname = "Three of a Kind";
+            ThreeKind = true;
+        } else if (((valuearr[0] == valuearr[1]) && (valuearr[2] == valuearr[3]) && (!FourKind))
+                || (valuearr[1] == valuearr[2]) && (valuearr[3] == valuearr[4]) && (!FourKind)) {
+            handname = "Two Pair";
+            TwoPair = true;
+        } else if (!FourKind && !ThreeKind && !TwoPair) // test regular pair
+        {
+            if (valuearr[0] == valuearr[1] || valuearr[1] == valuearr[2] || valuearr[2] == valuearr[3]
+                    || valuearr[3] == valuearr[4]) {
+                handname = "Pair";
+                Pair = true;
+            } else if (valuearr[0].ordinal() == ((Card.getValue(valuearr[4]).ordinal()) - 4)) // testing straight with
+                                                                                              // ordinal values
+            {
+                handname = "Straight";
+                Straight = true;
+            } else {
+                handname = "High Card";
+                HighCard = true;
+            }
+        }
+        // test for full house
+        if (ThreeKind && Pair) {
+            handname = "Full House";
+            FullHouse = true;
+        }
+        return handname;
     }
 
     private String determineHand(EnumMap<Value, Integer> cardValueMap, HashMap<String, Integer> handValue) // only works
