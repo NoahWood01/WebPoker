@@ -146,6 +146,7 @@ public class Hand {
             } else {
                 handname = "High Card";
                 HighCard = true;
+                int HighCardValue = valuearr[4].ordinal(); // store high card
             }
         }
         // test for full house
