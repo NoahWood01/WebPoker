@@ -43,10 +43,11 @@
     <input type="button" name="sendBet"   value="Bet 05"  onclick="sendEvent(3)">
     <input type="button" name="sendBet"   value="Bet 10"  onclick="sendEvent(4)">
     <input type="button" name="sendBet"   value="Bet 20"  onclick="sendEvent(5)">
+    <input type="button" name="sendBet"   value="Sort"  onclick="sendEvent(6)">
     <p>
       Draw cards (gives the card numbers (ex: 1 2 3):
       <input id="send_index" type="text">
-      <input type="button" name="sendDraw" value="Draw" onclick="sendEvent(6)">
+      <input type="button" name="sendDraw" value="Draw" onclick="sendEvent(7)">
     </p>
   </div>
 
@@ -119,54 +120,32 @@
       for(var i = 0; i < 5; i++){
         // if cards are null str becomes empty so nothing is displayed
         var str = "";
-        if(player.Cards[i] == null)
-        {
-            str = "";
-        }
-        else
-        {
+        if(player.Cards[i] == null) str = "";
+        else{
             var card = player.Cards[i];
-            if(card.value == "ACE")
-                str += "A";
-            else if(card.value == "TWO")
-                str += "2";
-            else if(card.value == "THREE")
-                str += "3";
-            else if(card.value == "FOUR")
-                str += "4";
-            else if(card.value == "FIVE")
-                str += "5";
-            else if(card.value == "SIX")
-                str += "6";
-            else if(card.value == "SEVEN")
-                str += "7";
-            else if(card.value == "EIGHT")
-                str += "8";
-            else if(card.value == "NINE")
-                str += "9";
-            else if(card.value == "TEN")
-                str += "T";
-            else if(card.value == "JACK")
-                str += "J";
-            else if(card.value == "QUEEN")
-                str += "Q";
-            else if(card.value == "KING")
-                str += "K";
+            if(card.value == "ACE")             str += "A";
+            else if(card.value == "TWO")        str += "2";
+            else if(card.value == "THREE")      str += "3";
+            else if(card.value == "FOUR")       str += "4";
+            else if(card.value == "FIVE")       str += "5";
+            else if(card.value == "SIX")        str += "6";
+            else if(card.value == "SEVEN")      str += "7";
+            else if(card.value == "EIGHT")      str += "8";
+            else if(card.value == "NINE")       str += "9";
+            else if(card.value == "TEN")        str += "T";
+            else if(card.value == "JACK")       str += "J";
+            else if(card.value == "QUEEN")      str += "Q";
+            else if(card.value == "KING")       str += "K";
 
-            if( card.suite == "SPADES")
-                str += "S";
-            else if( card.suite == "HEARTS")
-                str += "H";
-            else if( card.suite == "CLUBS")
-                str += "C";
-            else if( card.suite == "DIAMONDS")
-                str += "D";
+            if(card.suite == "SPADES")         str += "S";
+            else if(card.suite == "HEARTS")    str += "H";
+            else if(card.suite == "CLUBS")     str += "C";
+            else if(card.suite == "DIAMONDS")  str += "D";
 
             str += ".svg";
         }
 
-        var number = i + 1;
-        var cardnumber = "card" + number;
+        var cardnumber = "card" + (i+1);
         document.getElementById(cardnumber).src = str;
       }
     }
@@ -214,7 +193,11 @@
       eventType = "BET";
       amount = 20;
     }
-    else if(option == 6){                           // event type is DRAW
+
+    else if(option == 6){
+      eventType = "SORT";
+    }
+    else if(option == 7){                           // event type is DRAW
       eventType = "DRAW";
 
       // get the indexes of the cards

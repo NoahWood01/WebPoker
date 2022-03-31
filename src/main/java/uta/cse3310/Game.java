@@ -63,31 +63,18 @@ public class Game {
     }
 
     public void player_stand(int id){}
-    public void player_fold(int id){
-        empty_hand(players.get(id));
-    }
-
+    public void player_fold(int id){ empty_hand(players.get(id)); }
 
     // determine tthe winner between two players
     // print to console the winner.
     // only checks between first two players
     // will need to expand for more players
-    public void determineWinner()
-    {
+    public void determineWinner(){
         Hand h0 = new Hand(players.get(0).Cards);
         Hand h1 = new Hand(players.get(1).Cards);
-        if(h0.is_equal(h1) == true)
-        {
-            System.out.println("TIE");
-        }
-        else if(h0.is_better_than(h1))
-        {
-            System.out.println("player 0 wins");
-        }
-        else
-        {
-            System.out.println("Player 1 wins");
-        }
+        if(h0.is_equal(h1) == true){ System.out.println("TIE"); }
+        else if(h0.is_better_than(h1)){ System.out.println("player 0 wins"); }
+        else{ System.out.println("Player 1 wins"); }
     }
 
     /**************************************
@@ -96,13 +83,12 @@ public class Game {
      *
      **************************************/
 
-    public String exportStateAsJSON() {
+    public String exportStateAsJSON(){
         Gson gson = new Gson();
         return gson.toJson(this);
     }
 
-    public void processMessage(int playerId, String msg) {
-
+    public void processMessage(int playerId, String msg){
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         // take the string we just received, and turn it into a user event
@@ -114,6 +100,7 @@ public class Game {
         if(event.event == UserEventType.STAND) player_stand(playerId);
         if(event.event == UserEventType.FOLD)  player_fold(playerId);
         if(event.event == UserEventType.BET)   place_bet(playerId, event);
+        if(event.event == UserEventType.SORT)  sort_cards(playerId, event);
         if(event.event == UserEventType.DRAW)  new_cards(playerId, event);
     }
 
@@ -125,9 +112,7 @@ public class Game {
      * expecting that returning a true will trigger a send of the game
      * state to everyone
      */
-    public boolean update() {
-        return false;
-    }
+    public boolean update() { return false; }
 
     /**************************************
      *
@@ -135,10 +120,16 @@ public class Game {
      *
      **************************************/
 
-    public void new_cards(int playerId, UserEvent event) {
+    public void sort_cards(int playerId, UserEvent event){ 
+        Hand.sortHand(players.get(playerId).Cards);     // This actually sorts the cards
+        // This sorts the ArrayList hand so if Draw is clicked the correct order is sent back to the client
+        for(int i = 0; i < 5; i++) players.get(playerId).hand.set(i, players.get(playerId).Cards[i]);
+    }
+    
+    public void new_cards(int playerId, UserEvent event){
         int indexes[] = event.give_card_indexes;
-        for (int i = 0; i < indexes.length; i++) {
-            if (indexes[i] > 0) { // 0 is default stating the card shouldnt change
+        for (int i = 0; i < indexes.length; i++){
+            if (indexes[i] > 0){ // 0 is default stating the card shouldnt change
                 players.get(playerId).hand.set(indexes[i] - 1, draw_card()); // Remove the card at the specified index
             }
         }
