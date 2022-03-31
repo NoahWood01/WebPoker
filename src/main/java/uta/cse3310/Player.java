@@ -24,6 +24,9 @@ public class Player {
     // This is redundant but I didnt feel like removing array list logic
     public void set_cards(){
         for(int i = 0; i < 5; i++) Cards[i] = hand.get(i);
+
+        //sort Cards
+        Hand.sortHand(Cards);
     }
 
     public void add_card(Card card){ this.hand.add(card); }

@@ -63,7 +63,32 @@ public class Game {
     }
 
     public void player_stand(int id){}
-    public void player_fold(int id){ empty_hand(players.get(id)); }
+    public void player_fold(int id){
+        empty_hand(players.get(id));
+    }
+
+
+    // determine tthe winner between two players
+    // print to console the winner.
+    // only checks between first two players
+    // will need to expand for more players
+    public void determineWinner()
+    {
+        Hand h0 = new Hand(players.get(0).Cards);
+        Hand h1 = new Hand(players.get(1).Cards);
+        if(h0.is_equal(h1) == true)
+        {
+            System.out.println("TIE");
+        }
+        else if(h0.is_better_than(h1))
+        {
+            System.out.println("player 0 wins");
+        }
+        else
+        {
+            System.out.println("Player 1 wins");
+        }
+    }
 
     /**************************************
      *
@@ -156,8 +181,8 @@ public class Game {
         for (Card.Suite suite : Card.Suite.values()) {
             for (Card.Value value : Card.Value.values()) {
                 Card card = new Card();
-                card.suite = suite.suite;
-                card.value = value.value;
+                card.suite = suite;
+                card.value = value;
                 deck.add(card);
                 // print all cards for error checking
                 // System.out.println(card.suite.toString() + " " + card.value.toString());
@@ -185,7 +210,7 @@ public class Game {
     /**********************************
 
                 Attributes
-     
+
     **********************************/
 
     private ArrayList<Player> players = new ArrayList<>(); // players of the game

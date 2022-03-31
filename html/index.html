@@ -109,18 +109,61 @@
       for(var i = 0; i < obj.players.length; i++){
         playerTotalBetString += "Player " + i + " (" + obj.players[i].name
                              + ") Current Bet: " + obj.players[i].currentBet
-                             
+
                              + "\n";
       }
       document.getElementById("playersTotalBets").innerHTML = playerTotalBetString;
 
       // display the player's cards
       var player = obj.players[playerID];
-
       for(var i = 0; i < 5; i++){
         // if cards are null str becomes empty so nothing is displayed
-        if(player.Cards[i] == null){ str = ""; }              
-        else{ var str = player.Cards[i].value + player.Cards[i].suite + ".svg"; }
+        var str = "";
+        if(player.Cards[i] == null)
+        {
+            str = "";
+        }
+        else
+        {
+            var card = player.Cards[i];
+            if(card.value == "ACE")
+                str += "A";
+            else if(card.value == "TWO")
+                str += "2";
+            else if(card.value == "THREE")
+                str += "3";
+            else if(card.value == "FOUR")
+                str += "4";
+            else if(card.value == "FIVE")
+                str += "5";
+            else if(card.value == "SIX")
+                str += "6";
+            else if(card.value == "SEVEN")
+                str += "7";
+            else if(card.value == "EIGHT")
+                str += "8";
+            else if(card.value == "NINE")
+                str += "9";
+            else if(card.value == "TEN")
+                str += "T";
+            else if(card.value == "JACK")
+                str += "J";
+            else if(card.value == "QUEEN")
+                str += "Q";
+            else if(card.value == "KING")
+                str += "K";
+
+            if( card.suite == "SPADES")
+                str += "S";
+            else if( card.suite == "HEARTS")
+                str += "H";
+            else if( card.suite == "CLUBS")
+                str += "C";
+            else if( card.suite == "DIAMONDS")
+                str += "D";
+
+            str += ".svg";
+        }
 
         var number = i + 1;
         var cardnumber = "card" + number;
@@ -142,23 +185,23 @@
     var amount = 0;
     var amountDraw = 0;
     var indexes = [0, 0, 0];
-    
-    if(option == 1){ 
-      eventType = "STAND"; 
+
+    if(option == 1){
+      eventType = "STAND";
 
       var x = document.getElementById("stand_fold_display");
-      
-      if(x.style.display === "none"){ x.style.display = "block"; } 
+
+      if(x.style.display === "none"){ x.style.display = "block"; }
       else{ x.style.display = "none"; }
     }         // event type is STAND
     else if(option == 2){                           // event type is  FOLD
-      eventType = "FOLD"; 
+      eventType = "FOLD";
 
       var x = document.getElementById("stand_fold_display");
-      
-      if(x.style.display === "none"){ x.style.display = "block"; } 
+
+      if(x.style.display === "none"){ x.style.display = "block"; }
       else{ x.style.display = "none"; }
-    }    
+    }
     else if(option == 3){                           // event type is BET
       eventType = "BET";
       amount = 5;
@@ -183,7 +226,7 @@
 
       for(var i = 0; i < iteration; i++) indexes[i] = parseInt(arr[i], 10);         // parse and store the indexes as ints
     }
-    
+
     // create the object to be sent to the game server
     const msg = {
         event: eventType,
@@ -225,7 +268,7 @@
     var x = document.getElementById("nameInput");
     console.log("X: " + x);
     console.log("X display: " + x.style.display);
-    if(x.style.display === "none"){ x.style.display = "block"; } 
+    if(x.style.display === "none"){ x.style.display = "block"; }
     else{ x.style.display = "none"; }
   }
 </script>
