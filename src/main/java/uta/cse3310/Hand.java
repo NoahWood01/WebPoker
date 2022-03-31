@@ -81,43 +81,35 @@ public class Hand {
     }
 
     // adding idea here to sort and determine hand value - alyssa
-    private void calcHand()
-    {
-        String handname = " "; 
-        //split into two arrays - suite arr and value arr
+    private void calcHand() {
+        String handname = " ";
+        // split into two arrays - suite arr and value arr
         Suite[] suitearr = new Suite[5];
-        for(int i = 0; i<5; i++)
-        {
+        for (int i = 0; i < 5; i++) {
             suitearr[i] = Card.getSuite(cards[i].suite);
         }
         Arrays.sort(suitearr);
 
         // sort value
         Value[] valuearr = new Value[5];
-        for (int i = 0; i<5; i++)
-        {
+        for (int i = 0; i < 5; i++) {
             valuearr[i] = Card.getValue(cards[i].value);
         }
         Arrays.sort(valuearr);
 
-        //testing for a flush
+        // testing for a flush
         boolean flush = false;
-        if(suitearr[0] == suitearr[4])
-        {
+        if (suitearr[0] == suitearr[4]) {
             flush = true;
         }
-        if(flush) // what kind of flush?
+        if (flush) // what kind of flush?
         {
-            if(valuearr[0] == Card.Value.ACE && valuearr[4] == Card.Value.KING) // ascending order
+            if (valuearr[0] == Card.Value.ACE && valuearr[4] == Card.Value.KING) // ascending order
             {
                 handname = "Royal Flush";
-            }
-            else if(valuearr[0].ordinal() == ((Card.getValue(valuearr[4]).ordinal()) - 4)
-            {
+            } else if (valuearr[0].ordinal() == ((Card.getValue(valuearr[4]).ordinal()) - 4)) {
                 handname = "Straight Flush";
-            }
-            else
-            {
+            } else {
                 handname = "Flush";
             }
         }
