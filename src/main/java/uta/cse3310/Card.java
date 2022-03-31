@@ -10,6 +10,14 @@ public class Card {
         TEN, JACK, QUEEN, KING
     }
 
+    public static Suite getSuite(Suite suite) {
+        return suite;
+    }
+
+    public static Value getValue(Value value) {
+        return value;
+    }
+
     public Suite suite;
     public Value value;
 
