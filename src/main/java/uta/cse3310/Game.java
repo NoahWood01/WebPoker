@@ -15,6 +15,7 @@ public class Game {
         create_deck();
         shuffle_deck();
         pot = new Pot();
+        playerStandFold = 0;
     }
 
     /**************************************
@@ -60,21 +61,37 @@ public class Game {
         {
             currentplayer = startingplayer;
         }
-    }
+    } 
 
-    public void player_stand(int id){}
-    public void player_fold(int id){ empty_hand(players.get(id)); }
+    public void player_stand(Player p){ p.set_stand(); }
+    public void player_fold(Player p){ empty_hand(p); }
 
     // determine tthe winner between two players
     // print to console the winner.
     // only checks between first two players
     // will need to expand for more players
-    public void determineWinner(){
-        Hand h0 = new Hand(players.get(0).Cards);
-        Hand h1 = new Hand(players.get(1).Cards);
-        if(h0.is_equal(h1) == true){ System.out.println("TIE"); }
-        else if(h0.is_better_than(h1)){ System.out.println("player 0 wins"); }
-        else{ System.out.println("Player 1 wins"); }
+    public void determine_winner(){
+        String winner = "";
+        for(int i = 0; i < players.size(); i++){
+            Hand h = new Hand(players.get(i).Cards);
+            hands.add(h);
+        }
+
+        for(int i = 0; i < hands.size(); i++){
+            if(hands.get(i).is_equal(hands.get(i+1)) == true){ System.out.println("TIE"); }
+            else if(hands.get(i).is_better_than(hands.get(i+1))){ System.out.println("player " + i + " wins"); }
+            else{ System.out.println("Player " + (i+1) + " wins"); }
+        } 
+
+        // After we determine the winner we need to 
+        // Save the winner
+        // Save the hand
+        // Clear hands
+        // Broadcast Winner and the winning hand
+        // Update winner wallet
+        // add cards back to deck (call create_deck())
+        // shuffle (call shuffle_deck())
+        // give players new cards starting essentially a new game
     }
 
     /**************************************
@@ -97,11 +114,20 @@ public class Game {
         System.out.println("\n\n" + msg + "\n\n");
 
         if(event.event == UserEventType.NAME)  create_player(playerId, event);
-        if(event.event == UserEventType.STAND) player_stand(playerId);
-        if(event.event == UserEventType.FOLD)  player_fold(playerId);
         if(event.event == UserEventType.BET)   place_bet(playerId, event);
         if(event.event == UserEventType.SORT)  sort_cards(playerId, event);
         if(event.event == UserEventType.DRAW)  new_cards(playerId, event);
+
+        if(event.event == UserEventType.STAND) {
+            player_stand(players.get(playerId));
+            if(stand_fold_check()) determine_winner();
+        }
+            
+        if(event.event == UserEventType.FOLD){
+            player_fold(players.get(playerId));
+            if(stand_fold_check()) determine_winner();
+        }  
+            
     }
 
     /*
@@ -113,6 +139,17 @@ public class Game {
      * state to everyone
      */
     public boolean update() { return false; }
+
+    public boolean stand_fold_check(){
+        int count = 0;
+
+        for(int i = 0; i < players.size(); i++) 
+            if(players.get(i).get_stand()) count++;           // if stand is true increment count
+        
+        if(count == players.size()) return true;
+
+        return false;
+    }
 
     /**************************************
      *
@@ -206,11 +243,14 @@ public class Game {
 
     private ArrayList<Player> players = new ArrayList<>(); // players of the game
     private ArrayList<Card> deck = new ArrayList<>(); // stored cards not in players hands
+    private ArrayList<Hand> hands = new ArrayList<>();
 
     // turns
     Player startingplayer;
     Player currentplayer;
 
-    private int turn; // player ID that has the current turn
+    // Count for number of players who have stand/fold
+    // This is necessary to determine when showdown begins
+    private int playerStandFold; 
     private Pot pot; // total of chips being bet
 }

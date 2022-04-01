@@ -25,6 +25,7 @@ public class Player {
     public void set_cards(){
         for(int i = 0; i < 5; i++) Cards[i] = hand.get(i);
     }
+    public void set_stand(){ this.stand = true; }
 
     public void add_card(Card card){ this.hand.add(card); }
     public void add_wallet(int bet){ this.wallet += bet; }
@@ -40,6 +41,7 @@ public class Player {
     public int get_id(){ return this.id; }
     public String get_name(){ return this.name; }
     public Card get_card(int i){ return this.hand.get(i); }
+    public boolean get_stand(){ return this.stand; }
 
     /*************************************
 
@@ -69,4 +71,5 @@ public class Player {
     uta.cse3310.Card Cards[] = new uta.cse3310.Card[5];
 
     private boolean folded = false;                         // boolean to check if the player has folded in the round
+    private boolean stand = false;
 }
