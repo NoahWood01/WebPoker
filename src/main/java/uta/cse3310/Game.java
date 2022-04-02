@@ -73,7 +73,7 @@ public class Game {
     public void determine_winner(){
         String winner = "";
         for(int i = 0; i < players.size(); i++){
-            Hand h = new Hand(players.get(i).Cards);
+            if(!players.get(i).get_fold()) Hand h = new Hand(players.get(i).Cards);
             hands.add(h);
         }
 
