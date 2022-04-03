@@ -37,14 +37,9 @@ public class Game {
     // Technically the player will have alreay been created but this method simply
     // sets the player name
     // As well as gives the playe a hand of cards
-    public void create_player(int playerId, UserEvent event) {
+    public void create_player(int playerId, UserEvent event)
+    {
         players.get(playerId).setName(event.name);
-
-        for (int i = 0; i < 5; i++) players.get(playerId).add_card(draw_card());
-
-        place_ante(playerId);
-
-        players.get(playerId).set_cards();
     }
 
     public Player getStartingPlayer() {
@@ -104,24 +99,29 @@ public class Game {
         }
         */
 
-        if(hands.get(0).is_equal(hands.get(1)) == true)
+        // only compare when there is not 1 player
+        if(nonFoldedPlayers.size() > 1)
         {
-            System.out.println("TIE");
-            // will add tie logic shortly
-            winner = -1;
-        }
-        else if(hands.get(0).is_better_than(hands.get(1)))
-        {
-            System.out.println("player " + "0" + " wins");
-            winner = 0;
-        }
-        else
-        {
-            System.out.println("Player " + "1" + " wins");
-            winner = 1;
+            if(hands.get(0).is_equal(hands.get(1)) == true)
+            {
+                System.out.println("TIE");
+                // will add tie logic shortly
+                winner = -1;
+            }
+            else if(hands.get(0).is_better_than(hands.get(1)))
+            {
+                System.out.println("player " + "0" + " wins");
+                winner = 0;
+            }
+            else
+            {
+                System.out.println("Player " + "1" + " wins");
+                winner = 1;
+            }
         }
 
         // update winner wallet
+        winnings = pot.reward_pot();
         if(winner != -1)
         {
             players.get(winner).add_wallet(pot.reward_pot());
@@ -165,6 +165,25 @@ public class Game {
 
         System.out.println("\n\n" + msg + "\n\n");
 
+        // any player can sort at any time
+        if(event.event == UserEventType.SORT)  sort_cards(event.playerID, event);
+        if(event.event == UserEventType.READY)
+        {
+            players.get(event.playerID).set_ready();
+        }
+
+        if(nonFoldedPlayers.size() == 1 && phase != 0)
+        {
+            // if all other players fold
+            // last one standing wins
+            winner = nonFoldedPlayers.get(0).get_id();
+            determine_winner();
+            phase = 5;
+            nonFoldedPlayers.clear();
+            turn = -1;
+            set_players_notReady();
+        }
+
         if(phase == 0)
         {
             // Pre Game Phase
@@ -172,10 +191,19 @@ public class Game {
             if(event.event == UserEventType.NAME)
             {
                 create_player(event.playerID, event);
-                nonFoldedPlayers.add(players.get(event.playerID));
             }
-            if(players.size() >= 2 && nonFoldedPlayers.size() >= 2)
+            if(players.size() >= 2  && all_players_ready())
             {
+                for(int i = 0; i < players.size(); i++)
+                {
+                    for(int j = 0; j < 5; j++)
+                    {
+                        players.get(i).add_card(draw_card());
+                    }
+                    place_ante(i);
+                    players.get(i).set_cards();
+                    nonFoldedPlayers.add(players.get(i));
+                }
                 getStartingPlayer();
                 phase = 1;
                 turn = 0;
@@ -202,10 +230,11 @@ public class Game {
                 else if(event.event == UserEventType.FOLD)
                 {
                     player_fold(players.get(event.playerID));
+                    nonFoldedPlayers.remove(event.playerID);
                     moveOn = true;
                 }
 
-                if(moveOn == true)
+                if(moveOn == true && all_bets_equal() && nonFoldedPlayers.size() >= 1)
                 {
                     //nextPlayer();
                     turn++;
@@ -215,6 +244,10 @@ public class Game {
                         turn = 0;
                         phase++;
                     }
+                }
+                else if(moveOn == true)
+                {
+                    turn = next_player_bet();
                 }
             }
         }
@@ -233,6 +266,12 @@ public class Game {
                 else if(event.event == UserEventType.STAND)
                 {
                     player_stand(players.get(event.playerID));
+                    moveOn = true;
+                }
+                else if(event.event == UserEventType.FOLD)
+                {
+                    player_fold(players.get(event.playerID));
+                    nonFoldedPlayers.remove(event.playerID);
                     moveOn = true;
                 }
 
@@ -271,10 +310,11 @@ public class Game {
                 else if(event.event == UserEventType.FOLD)
                 {
                     player_fold(players.get(event.playerID));
+                    nonFoldedPlayers.remove(event.playerID);
                     moveOn = true;
                 }
 
-                if(moveOn == true)
+                if(moveOn == true && all_bets_equal() && nonFoldedPlayers.size() >= 1)
                 {
                     //nextPlayer();
                     turn++;
@@ -283,53 +323,48 @@ public class Game {
                     {
                         turn = 0;
                         phase = 5;
+                        determine_winner();
+                        turn = -1;
+                        set_players_notReady();
                     }
+                }
+                else if(moveOn == true)
+                {
+                    turn = next_player_bet();
                 }
             }
         }
         else if(phase == 4)
         {
             // Showdown Phase
-
-
             phase++;
         }
 
         else if(phase == 5)
         {
+            // reset phase
+            nonFoldedPlayers.clear();
+            for(int i = 0; i < players.size(); i++)
+            {
+                players.get(i).folded = false;
+                empty_hand(players.get(i));
+            }
+            shuffle_deck();
+            winnings = 0;
+            phase = 0;
+        }
+
+        if(nonFoldedPlayers.size() == 1 && phase != 0)
+        {
+            // if all other players fold
+            // last one standing wins
+            winner = nonFoldedPlayers.get(0).get_id();
             determine_winner();
+            phase = 5;
+            nonFoldedPlayers.clear();
             turn = -1;
+            set_players_notReady();
         }
-
-        // any player can sort at any time
-        if(event.event == UserEventType.SORT)  sort_cards(event.playerID, event);
-
-        //if(event.event == UserEventType.NAME)  create_player(playerId, event);
-        //if(event.event == UserEventType.BET)   place_bet(playerId, event);
-
-        //if(event.event == UserEventType.DRAW)  new_cards(playerId, event);
-        /*
-        if(event.event == UserEventType.STAND) {
-            player_stand(players.get(playerId));
-
-            if(stand_fold_check())
-            {
-                determine_winner();
-            }
-
-        }
-        */
-        /*
-        if(event.event == UserEventType.FOLD){
-            player_fold(players.get(playerId));
-
-            if(stand_fold_check())
-            {
-                determine_winner();
-            }
-
-        }
-        */
 
     }
 
@@ -342,7 +377,11 @@ public class Game {
      * expecting that returning a true will trigger a send of the game
      * state to everyone
      */
-    public boolean update() { return false; }
+    public boolean update()
+    {
+
+        return false;
+    }
 
     public boolean stand_fold_check(){
         int count = 0;
@@ -353,6 +392,59 @@ public class Game {
         if(count == players.size()) return true;
 
         return false;
+    }
+
+    public boolean all_bets_equal()
+    {
+        int tempBet = nonFoldedPlayers.get(0).get_bet();
+        for(int i = 1; i < nonFoldedPlayers.size(); i++)
+        {
+            if(tempBet != nonFoldedPlayers.get(i).get_bet())
+            {
+                return false;
+            }
+            tempBet = nonFoldedPlayers.get(i).get_bet();
+        }
+        return true;
+    }
+    public int next_player_bet()
+    {
+        Player temp = nonFoldedPlayers.get(0);
+        for(int i = 1; i < nonFoldedPlayers.size(); i++)
+        {
+            if(temp.get_bet() < nonFoldedPlayers.get(i).get_bet())
+            {
+                return temp.get_id();
+            }
+            else if(temp.get_bet() > nonFoldedPlayers.get(i).get_bet())
+            {
+                return nonFoldedPlayers.get(i).get_id();
+            }
+            temp = nonFoldedPlayers.get(i);
+        }
+        return 0;
+    }
+
+    public boolean all_players_ready()
+    {
+        for(int i = 0; i < players.size(); i++)
+        {
+            if(players.get(i).get_ready() == false)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void set_players_notReady()
+    {
+        for(int i = 0; i < players.size(); i++)
+        {
+            players.get(i).ready = false;
+            players.get(i).currentBet = 0;
+        }
+        return;
     }
 
     /**************************************
@@ -389,7 +481,12 @@ public class Game {
     // and randomize the order in the shuffle_deck
     // will be 52 cards in size
 
-    public void empty_hand(Player p){
+    public void empty_hand(Player p)
+    {
+        for(int i = 0; i < p.hand.size(); i++)
+        {
+            deck.add(p.hand.get(i));
+        }
         p.hand.clear();
         p.Cards = new uta.cse3310.Card[5];
     }
@@ -462,6 +559,7 @@ public class Game {
     int turn = -1;
     // do not change these or display will break
     int winner = -1;
+    int winnings;
     // 0 will be pregame
     // 1 will be first bet phase
     // 2 wil be draw phase

@@ -26,6 +26,7 @@ public class Player {
         for(int i = 0; i < 5; i++) Cards[i] = hand.get(i);
     }
     public void set_stand(){ this.stand = true; }
+    public void set_ready(){ this.ready = true; }
 
     public void add_card(Card card){ this.hand.add(card); }
     public void add_wallet(int bet){ this.wallet += bet; }
@@ -43,6 +44,8 @@ public class Player {
     public Card get_card(int i){ return this.hand.get(i); }
     public boolean get_stand(){ return this.stand; }
     public boolean get_fold(){ return this.folded; }
+    public int get_bet(){ return this.currentBet; }
+    public boolean get_ready(){ return this.ready; }
 
     /*************************************
 
@@ -63,7 +66,7 @@ public class Player {
 
     private int id;                                         // Identifiication so the game knows who the player is
     private int wallet;                                     // Players starting dollar amount
-    private int currentBet;                                 // amount player has bet this round
+    public int currentBet;                                 // amount player has bet this round
     private int totalBet;                                   // amount player has bet in the game
 
     private String name;                                    // Player name
@@ -71,6 +74,7 @@ public class Player {
     ArrayList<Card> hand = new ArrayList<>();               // Array list for players hand to be passed to cards
     uta.cse3310.Card Cards[] = new uta.cse3310.Card[5];
 
-    private boolean folded = false;                         // boolean to check if the player has folded in the round
+    public boolean folded = false;                         // boolean to check if the player has folded in the round
     private boolean stand = false;
+    public boolean ready = false;
 }

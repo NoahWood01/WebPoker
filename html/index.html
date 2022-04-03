@@ -12,9 +12,9 @@
     Welcome to WebPoker with Group 5 of CSE3310.
   </p>
   <p>
-    message:
-    <input id="send_text" type="text">
-    <input type="button" name="send_button" value="send" onclick="send()">
+
+    <!input id="send_text" type="text">
+    <!input type="button" name="send_button" value="send" onclick="send()">
   </p>
   <div id="nameInput">
     <p>
@@ -25,6 +25,7 @@
   </div>
   <div id="info_display" style="width: auto;">
       <p id="phaseNumber"       style="width: auto;"></p>
+      <p id="readyDisplay"      style="width: auto;"></p>
       <p id="turnNumber"        style="width: auto;"></p>
       <p id="info"              style="width: auto; white-space: pre-line;"></p>
       <p id="playersTotalBets"  style="width: auto; white-space: pre-line;"></p>
@@ -39,6 +40,7 @@
   <img id="card4" src="" style="width: auto;">
   <img id="card5" src="" style="width: auto;">
   <div id="stand_fold_display">
+    <input type="button" name="sendReady" value="Ready"   onclick="sendEvent(0)">
     <input type="button" name="sendStand" value="Stand"   onclick="sendEvent(1)">
     <input type="button" name="sendFold"  value="Fold"    onclick="sendEvent(2)">
     <input type="button" name="sendBet"   value="Bet 05"  onclick="sendEvent(3)">
@@ -46,7 +48,7 @@
     <input type="button" name="sendBet"   value="Bet 20"  onclick="sendEvent(5)">
     <input type="button" name="sendBet"   value="Sort"  onclick="sendEvent(6)">
     <p>
-      Draw cards (gives the card numbers (ex: 1 2 3):
+      Draw cards (give the card index no spaces) (ex: 123):
       <input id="send_index" type="text">
       <input type="button" name="sendDraw" value="Draw" onclick="sendEvent(7)">
     </p>
@@ -97,9 +99,11 @@
       if(obj.phase == 0)
       {
           document.getElementById("phaseNumber").innerHTML = "Phase: PreGame";
+          document.getElementById("readyDisplay").innerHTML = "Waiting for both players to ready up...";
       }
       else if(obj.phase == 1)
       {
+          document.getElementById("readyDisplay").innerHTML = "";
           document.getElementById("phaseNumber").innerHTML = "Phase: First Bet Phase";
       }
       else if(obj.phase == 2)
@@ -119,7 +123,8 @@
           if(obj.winner != -1)
           {
               document.getElementById("phaseNumber").innerHTML = "Winner: Player "
-              + obj.winner + " won " + obj.pot.pot + " chips";
+              + obj.winner + "(" + obj.players[obj.winner].name + ")"
+              + " won " + obj.winnings + " chips";
           }
           else
           {
@@ -127,10 +132,11 @@
               document.getElementById("phaseNumber").innerHTML = "Tie! Both Players"
               + " won " + obj.pot.pot/2 + " chips";
           }
-
+          document.getElementById("readyDisplay").innerHTML = "Ready Up to play again!";
 
           document.getElementById("turnNumber").style.display = "none";
 
+          /*
           var x = document.getElementById("stand_fold_display");
 
           if(x.style.display === "none")
@@ -141,6 +147,7 @@
           {
               x.style.display = "none";
           }
+          */
 
           document.getElementById("info").innerHTML
             = "Player Wallet: " + obj.players[playerID].wallet
@@ -153,7 +160,10 @@
           document.getElementById("pot").innerHTML = "Total Pot: " + obj.pot.pot;
       }
 
-      document.getElementById("turnNumber").innerHTML = "Turn: Player " + obj.turn;
+      if(obj.turn != -1)
+      {
+          document.getElementById("turnNumber").innerHTML = "Turn: Player " + obj.turn;
+      }
 
       document.getElementById("info").innerHTML
         = "Player Wallet: " + obj.players[playerID].wallet
@@ -167,10 +177,11 @@
 
       // display the total bets of all players
       var playerTotalBetString = "";
-      for(var i = 0; i < obj.players.length; i++){
+      for(var i = 0; i < obj.players.length; i++)
+      {
         playerTotalBetString += "Player " + i + " (" + obj.players[i].name
                              + ") Current Bet: " + obj.players[i].currentBet
-
+                             + " ready: " + obj.players[i].ready
                              + "\n";
       }
       document.getElementById("playersTotalBets").innerHTML = playerTotalBetString;
@@ -224,8 +235,11 @@
     var amount = 0;
     var amountDraw = 0;
     var indexes = [0, 0, 0];
-
-    if(option == 1){
+    if(option == 0)
+    {
+        eventType = "READY";
+    }
+    else if(option == 1){
       eventType = "STAND";
 
       var x = document.getElementById("stand_fold_display");
@@ -236,10 +250,12 @@
     else if(option == 2){                           // event type is  FOLD
       eventType = "FOLD";
 
+      /*
       var x = document.getElementById("stand_fold_display");
 
       if(x.style.display === "none"){ x.style.display = "block"; }
       else{ x.style.display = "none"; }
+      */
     }
     else if(option == 3){                           // event type is BET
       eventType = "BET";
