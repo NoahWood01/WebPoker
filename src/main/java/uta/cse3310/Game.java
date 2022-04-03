@@ -61,7 +61,7 @@ public class Game {
         {
             currentplayer = startingplayer;
         }
-    } 
+    }
 
     public void player_stand(Player p){ p.set_stand(); }
     public void player_fold(Player p){ empty_hand(p); }
@@ -73,17 +73,21 @@ public class Game {
     public void determine_winner(){
         String winner = "";
         for(int i = 0; i < players.size(); i++){
-            if(!players.get(i).get_fold()) Hand h = new Hand(players.get(i).Cards);
-            hands.add(h);
+            if(!players.get(i).get_fold())
+            {
+                Hand h = new Hand(players.get(i).Cards);
+                hands.add(h);
+            }
+
         }
 
         for(int i = 0; i < hands.size(); i++){
             if(hands.get(i).is_equal(hands.get(i+1)) == true){ System.out.println("TIE"); }
             else if(hands.get(i).is_better_than(hands.get(i+1))){ System.out.println("player " + i + " wins"); }
             else{ System.out.println("Player " + (i+1) + " wins"); }
-        } 
+        }
 
-        // After we determine the winner we need to 
+        // After we determine the winner we need to
         // Save the winner
         // Save the hand
         // Clear hands
@@ -122,12 +126,12 @@ public class Game {
             player_stand(players.get(playerId));
             if(stand_fold_check()) determine_winner();
         }
-            
+
         if(event.event == UserEventType.FOLD){
             player_fold(players.get(playerId));
             if(stand_fold_check()) determine_winner();
-        }  
-            
+        }
+
     }
 
     /*
@@ -143,9 +147,9 @@ public class Game {
     public boolean stand_fold_check(){
         int count = 0;
 
-        for(int i = 0; i < players.size(); i++) 
+        for(int i = 0; i < players.size(); i++)
             if(players.get(i).get_stand()) count++;           // if stand is true increment count
-        
+
         if(count == players.size()) return true;
 
         return false;
@@ -157,12 +161,12 @@ public class Game {
      *
      **************************************/
 
-    public void sort_cards(int playerId, UserEvent event){ 
+    public void sort_cards(int playerId, UserEvent event){
         Hand.sortHand(players.get(playerId).Cards);     // This actually sorts the cards
         // This sorts the ArrayList hand so if Draw is clicked the correct order is sent back to the client
         for(int i = 0; i < 5; i++) players.get(playerId).hand.set(i, players.get(playerId).Cards[i]);
     }
-    
+
     public void new_cards(int playerId, UserEvent event){
         int indexes[] = event.give_card_indexes;
         for (int i = 0; i < indexes.length; i++){
@@ -249,8 +253,21 @@ public class Game {
     Player startingplayer;
     Player currentplayer;
 
+
+    // round - these are used with javascript to determine certain displays
+    public int phase = 0;
+    int turn = -1;
+    // do not change these or display will break
+    int winner = -1;
+    // 0 will be pregame
+    // 1 will be first bet phase
+    // 2 wil be draw phase
+    // 3 will be second bet phase
+    // 4 will be showdown
+    // 5 is winner screen
+
     // Count for number of players who have stand/fold
     // This is necessary to determine when showdown begins
-    private int playerStandFold; 
+    private int playerStandFold;
     private Pot pot; // total of chips being bet
 }

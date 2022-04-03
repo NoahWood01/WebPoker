@@ -23,7 +23,8 @@
       <input type="button" name="sendName" value="Name" onclick="sendName()">
     </p>
   </div>
-  <div>
+  <div id="info_display" style="width: auto;">
+      <p id="phaseNumber"       style="width: auto;"></p>
       <p id="turnNumber"        style="width: auto;"></p>
       <p id="info"              style="width: auto; white-space: pre-line;"></p>
       <p id="playersTotalBets"  style="width: auto; white-space: pre-line;"></p>
@@ -93,6 +94,32 @@
       // century.
 
       // display whose turn it is
+      if(obj.phase == 0)
+      {
+          document.getElementById("phaseNumber").innerHTML = "Phase: PreGame";
+      }
+      else if(obj.phase == 1)
+      {
+          document.getElementById("phaseNumber").innerHTML = "Phase: First Bet Phase";
+      }
+      else if(obj.phase == 2)
+      {
+          document.getElementById("phaseNumber").innerHTML = "Phase: Draw Phase";
+      }
+      else if(obj.phase == 3)
+      {
+          document.getElementById("phaseNumber").innerHTML = "Phase: Second Bet Phase";
+      }
+      else if(obj.phase == 4)
+      {
+          document.getElementById("phaseNumber").innerHTML = "Phase: Showdown";
+      }
+      else if(obj.phase == 5)
+      {
+          document.getElementById("stand_fold_display").innerHTML = "Winner: Player " 
+          + obj.winner + " won " + obj.pot + " chips";
+      }
+
       document.getElementById("turnNumber").innerHTML = "Turn: Player " + obj.turn;
 
       document.getElementById("info").innerHTML

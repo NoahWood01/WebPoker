@@ -42,6 +42,7 @@ public class Player {
     public String get_name(){ return this.name; }
     public Card get_card(int i){ return this.hand.get(i); }
     public boolean get_stand(){ return this.stand; }
+    public boolean get_fold(){ return this.folded; }
 
     /*************************************
 
