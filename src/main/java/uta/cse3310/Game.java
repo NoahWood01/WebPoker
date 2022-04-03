@@ -55,9 +55,11 @@ public class Game {
 
     public void nextPlayer() // swap players
     {
-        if (currentplayer == startingplayer || players.indexOf(currentplayer) < players.size()) {
+        if (currentplayer == startingplayer || players.indexOf(currentplayer) < players.size())
+        {
             currentplayer = players.get(players.indexOf(currentplayer) + 1); // next player
-        } else // go back to starting player / next round
+        }
+        else // go back to starting player / next round
         {
             currentplayer = startingplayer;
         }
@@ -71,7 +73,7 @@ public class Game {
     // only checks between first two players
     // will need to expand for more players
     public void determine_winner(){
-        String winner = "";
+        //String winner = "";
         for(int i = 0; i < players.size(); i++){
             if(!players.get(i).get_fold())
             {
@@ -81,11 +83,57 @@ public class Game {
 
         }
 
+        /*
         for(int i = 0; i < hands.size(); i++){
-            if(hands.get(i).is_equal(hands.get(i+1)) == true){ System.out.println("TIE"); }
-            else if(hands.get(i).is_better_than(hands.get(i+1))){ System.out.println("player " + i + " wins"); }
-            else{ System.out.println("Player " + (i+1) + " wins"); }
+            if(hands.get(i).is_equal(hands.get(i+1)) == true)
+            {
+                System.out.println("TIE");
+                // will add tie logic shortly
+                winner = -1;
+            }
+            else if(hands.get(i).is_better_than(hands.get(i+1)))
+            {
+                System.out.println("player " + i + " wins");
+                winner = i;
+            }
+            else
+            {
+                System.out.println("Player " + (i+1) + " wins");
+                winner = i + 1;
+            }
         }
+        */
+
+        if(hands.get(0).is_equal(hands.get(1)) == true)
+        {
+            System.out.println("TIE");
+            // will add tie logic shortly
+            winner = -1;
+        }
+        else if(hands.get(0).is_better_than(hands.get(1)))
+        {
+            System.out.println("player " + "0" + " wins");
+            winner = 0;
+        }
+        else
+        {
+            System.out.println("Player " + "1" + " wins");
+            winner = 1;
+        }
+
+        // update winner wallet
+        if(winner != -1)
+        {
+            players.get(winner).add_wallet(pot.reward_pot());
+            pot.empty_pot();
+        }
+        else
+        {
+            players.get(0).add_wallet(pot.reward_pot()/2);
+            players.get(1).add_wallet(pot.reward_pot()/2);
+            pot.empty_pot();
+        }
+
 
         // After we determine the winner we need to
         // Save the winner
@@ -117,22 +165,174 @@ public class Game {
 
         System.out.println("\n\n" + msg + "\n\n");
 
-        if(event.event == UserEventType.NAME)  create_player(playerId, event);
-        if(event.event == UserEventType.BET)   place_bet(playerId, event);
-        if(event.event == UserEventType.SORT)  sort_cards(playerId, event);
-        if(event.event == UserEventType.DRAW)  new_cards(playerId, event);
+        if(phase == 0)
+        {
+            // Pre Game Phase
 
+            if(event.event == UserEventType.NAME)
+            {
+                create_player(event.playerID, event);
+                nonFoldedPlayers.add(players.get(event.playerID));
+            }
+            if(players.size() >= 2 && nonFoldedPlayers.size() >= 2)
+            {
+                getStartingPlayer();
+                phase = 1;
+                turn = 0;
+            }
+        }
+        else if(phase == 1)
+        {
+            // First Bet Phase
+
+            // only do something if its the correct players turn
+            if(event.playerID == turn)
+            {
+                boolean moveOn = false;
+                if(event.event == UserEventType.BET)
+                {
+                    place_bet(event.playerID, event);
+                    moveOn = true;
+                }
+                else if(event.event == UserEventType.STAND)
+                {
+                    player_stand(players.get(event.playerID));
+                    moveOn = true;
+                }
+                else if(event.event == UserEventType.FOLD)
+                {
+                    player_fold(players.get(event.playerID));
+                    moveOn = true;
+                }
+
+                if(moveOn == true)
+                {
+                    //nextPlayer();
+                    turn++;
+                    // every player made a single turn
+                    if(turn >= players.size())
+                    {
+                        turn = 0;
+                        phase++;
+                    }
+                }
+            }
+        }
+        else if(phase == 2)
+        {
+            // Draw Phase
+
+            if(event.playerID == turn)
+            {
+                boolean moveOn = false;
+                if(event.event == UserEventType.DRAW)
+                {
+                    new_cards(event.playerID, event);
+                    moveOn = true;
+                }
+                else if(event.event == UserEventType.STAND)
+                {
+                    player_stand(players.get(event.playerID));
+                    moveOn = true;
+                }
+
+                if(moveOn == true)
+                {
+                    //nextPlayer();
+                    turn++;
+                    // every player made a single turn
+                    if(turn >= players.size())
+                    {
+                        turn = 0;
+                        phase++;
+                    }
+                }
+            }
+
+        }
+        else if(phase == 3)
+        {
+            // Second Bet Phase
+
+            // only do something if its the correct players turn
+            if(event.playerID == turn)
+            {
+                boolean moveOn = false;
+                if(event.event == UserEventType.BET)
+                {
+                    place_bet(event.playerID, event);
+                    moveOn = true;
+                }
+                else if(event.event == UserEventType.STAND)
+                {
+                    player_stand(players.get(event.playerID));
+                    moveOn = true;
+                }
+                else if(event.event == UserEventType.FOLD)
+                {
+                    player_fold(players.get(event.playerID));
+                    moveOn = true;
+                }
+
+                if(moveOn == true)
+                {
+                    //nextPlayer();
+                    turn++;
+                    // every player made a single turn
+                    if(turn >= players.size())
+                    {
+                        turn = 0;
+                        phase = 5;
+                    }
+                }
+            }
+        }
+        else if(phase == 4)
+        {
+            // Showdown Phase
+
+
+            phase++;
+        }
+
+        else if(phase == 5)
+        {
+            determine_winner();
+            turn = -1;
+        }
+
+        // any player can sort at any time
+        if(event.event == UserEventType.SORT)  sort_cards(event.playerID, event);
+
+        //if(event.event == UserEventType.NAME)  create_player(playerId, event);
+        //if(event.event == UserEventType.BET)   place_bet(playerId, event);
+
+        //if(event.event == UserEventType.DRAW)  new_cards(playerId, event);
+        /*
         if(event.event == UserEventType.STAND) {
             player_stand(players.get(playerId));
-            if(stand_fold_check()) determine_winner();
-        }
 
+            if(stand_fold_check())
+            {
+                determine_winner();
+            }
+
+        }
+        */
+        /*
         if(event.event == UserEventType.FOLD){
             player_fold(players.get(playerId));
-            if(stand_fold_check()) determine_winner();
+
+            if(stand_fold_check())
+            {
+                determine_winner();
+            }
+
         }
+        */
 
     }
+
 
     /*
      * this method is called on a periodic basis (once a second) by a timer
@@ -248,6 +448,9 @@ public class Game {
     private ArrayList<Player> players = new ArrayList<>(); // players of the game
     private ArrayList<Card> deck = new ArrayList<>(); // stored cards not in players hands
     private ArrayList<Hand> hands = new ArrayList<>();
+
+    // store non folded players seperately
+    private ArrayList<Player> nonFoldedPlayers = new ArrayList<>();
 
     // turns
     Player startingplayer;

@@ -116,8 +116,41 @@
       }
       else if(obj.phase == 5)
       {
-          document.getElementById("stand_fold_display").innerHTML = "Winner: Player " 
-          + obj.winner + " won " + obj.pot + " chips";
+          if(obj.winner != -1)
+          {
+              document.getElementById("phaseNumber").innerHTML = "Winner: Player "
+              + obj.winner + " won " + obj.pot.pot + " chips";
+          }
+          else
+          {
+              // tie situation
+              document.getElementById("phaseNumber").innerHTML = "Tie! Both Players"
+              + " won " + obj.pot.pot/2 + " chips";
+          }
+
+
+          document.getElementById("turnNumber").style.display = "none";
+
+          var x = document.getElementById("stand_fold_display");
+
+          if(x.style.display === "none")
+          {
+              x.style.display = "block";
+          }
+          else
+          {
+              x.style.display = "none";
+          }
+
+          document.getElementById("info").innerHTML
+            = "Player Wallet: " + obj.players[playerID].wallet
+            + "\n"
+            + "Player Name: "   + obj.players[playerID].name
+            + "\n"
+            + "Player Id: "     + obj.players[playerID].id;
+
+          // display the amount in the pot
+          document.getElementById("pot").innerHTML = "Total Pot: " + obj.pot.pot;
       }
 
       document.getElementById("turnNumber").innerHTML = "Turn: Player " + obj.turn;
@@ -197,8 +230,8 @@
 
       var x = document.getElementById("stand_fold_display");
 
-      if(x.style.display === "none"){ x.style.display = "block"; }
-      else{ x.style.display = "none"; }
+      //if(x.style.display === "none"){ x.style.display = "block"; }
+      //else{ x.style.display = "none"; }
     }         // event type is STAND
     else if(option == 2){                           // event type is  FOLD
       eventType = "FOLD";
