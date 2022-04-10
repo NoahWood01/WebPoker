@@ -182,6 +182,7 @@ public class Game {
             nonFoldedPlayers.clear();
             turn = -1;
             set_players_notReady();
+            timeRemaining = -1;
         }
 
         if(phase == 0)
@@ -207,6 +208,11 @@ public class Game {
                 getStartingPlayer();
                 phase = 1;
                 turn = 0;
+                timeRemaining = 30;
+            }
+            else if(players.size() >= 2 && num_players_ready() >= 2)
+            {
+                timeRemaining = 10;
             }
         }
         else if(phase == 1)
@@ -230,7 +236,7 @@ public class Game {
                 else if(event.event == UserEventType.FOLD)
                 {
                     player_fold(players.get(event.playerID));
-                    nonFoldedPlayers.remove(event.playerID);
+                    nonFoldedPlayers.remove(players.get(event.playerID));
                     moveOn = true;
                 }
 
@@ -243,11 +249,13 @@ public class Game {
                     {
                         turn = 0;
                         phase++;
+                        timeRemaining = 30;
                     }
                 }
                 else if(moveOn == true)
                 {
                     turn = next_player_bet();
+                    timeRemaining = 30;
                 }
             }
         }
@@ -271,7 +279,7 @@ public class Game {
                 else if(event.event == UserEventType.FOLD)
                 {
                     player_fold(players.get(event.playerID));
-                    nonFoldedPlayers.remove(event.playerID);
+                    nonFoldedPlayers.remove(players.get(event.playerID));
                     moveOn = true;
                 }
 
@@ -285,6 +293,7 @@ public class Game {
                         turn = 0;
                         phase++;
                     }
+                    timeRemaining = 30;
                 }
             }
 
@@ -310,7 +319,7 @@ public class Game {
                 else if(event.event == UserEventType.FOLD)
                 {
                     player_fold(players.get(event.playerID));
-                    nonFoldedPlayers.remove(event.playerID);
+                    nonFoldedPlayers.remove(players.get(event.playerID));
                     moveOn = true;
                 }
 
@@ -326,11 +335,14 @@ public class Game {
                         determine_winner();
                         turn = -1;
                         set_players_notReady();
+                        timeRemaining = -1;
+
                     }
                 }
                 else if(moveOn == true)
                 {
                     turn = next_player_bet();
+                    timeRemaining = 30;
                 }
             }
         }
@@ -353,19 +365,6 @@ public class Game {
             winnings = 0;
             phase = 0;
         }
-
-        if(nonFoldedPlayers.size() == 1 && phase != 0)
-        {
-            // if all other players fold
-            // last one standing wins
-            winner = nonFoldedPlayers.get(0).get_id();
-            determine_winner();
-            phase = 5;
-            nonFoldedPlayers.clear();
-            turn = -1;
-            set_players_notReady();
-        }
-
     }
 
 
@@ -379,8 +378,53 @@ public class Game {
      */
     public boolean update()
     {
+        if(players.size() >= 2 && timeRemaining > 0)
+        {
+            timeRemaining--;
+        }
+        if(timeRemaining == 0 && phase != 0)
+        {
+            fold_current_player();
+        }
+        else if(timeRemaining == 0 && num_players_ready() >= 2 && phase == 0)
+        {
+            System.out.println("POOP");
+            kick_not_ready();
+            System.out.println("POOP");
+            phase = 0;
+            timeRemaining = -1;
+            if(players.size() >= 2  && all_players_ready())
+            {
+                for(int i = 0; i < players.size(); i++)
+                {
+                    for(int j = 0; j < 5; j++)
+                    {
+                        players.get(i).add_card(draw_card());
+                    }
+                    place_ante(i);
+                    players.get(i).set_cards();
+                    nonFoldedPlayers.add(players.get(i));
+                }
+                getStartingPlayer();
+                phase = 1;
+                turn = 0;
+                timeRemaining = 30;
+            }
+        }
 
-        return false;
+        if(nonFoldedPlayers.size() == 1 && phase != 0)
+        {
+            // if all other players fold
+            // last one standing wins
+            winner = nonFoldedPlayers.get(0).get_id();
+            determine_winner();
+            phase = 5;
+            nonFoldedPlayers.clear();
+            turn = -1;
+            set_players_notReady();
+            timeRemaining = -1;
+        }
+        return true;
     }
 
     public boolean stand_fold_check(){
@@ -429,12 +473,25 @@ public class Game {
     {
         for(int i = 0; i < players.size(); i++)
         {
-            if(players.get(i).get_ready() == false)
+            if(players.get(i).get_ready() != true)
             {
                 return false;
             }
         }
         return true;
+    }
+
+    public int num_players_ready()
+    {
+        int count = 0;
+        for(int i = 0; i < players.size(); i++)
+        {
+            if(players.get(i).get_ready() == true)
+            {
+                count++;
+            }
+        }
+        return count;
     }
 
     public void set_players_notReady()
@@ -445,6 +502,33 @@ public class Game {
             players.get(i).currentBet = 0;
         }
         return;
+    }
+
+    public void fold_current_player()
+    {
+        players.get(turn).folded = true;
+        nonFoldedPlayers.remove(players.get(turn));
+        turn = next_player_bet();
+        timeRemaining = 30;
+    }
+
+    public void kick_not_ready()
+    {
+        ArrayList<Player> removeList = new ArrayList<>();
+        synchronized(WebPoker.mutex)
+        {
+            for(int i = 0; i < players.size(); i++)
+            {
+                if(players.get(i).ready == false)
+                {
+                    removeList.add(players.get(i));
+                }
+            }
+            for(int i = 0; i < removeList.size(); i++)
+            {
+                players.remove(removeList.get(i));
+            }
+        }
     }
 
     /**************************************
@@ -566,6 +650,8 @@ public class Game {
     // 3 will be second bet phase
     // 4 will be showdown
     // 5 is winner screen
+
+    public int timeRemaining = -1;
 
     // Count for number of players who have stand/fold
     // This is necessary to determine when showdown begins

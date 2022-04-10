@@ -27,6 +27,8 @@
       <p id="phaseNumber"       style="width: auto;"></p>
       <p id="readyDisplay"      style="width: auto;"></p>
       <p id="turnNumber"        style="width: auto;"></p>
+      <p id="timeRemaining"     style="width: auto;"></p>
+      <p id ="timeWarning"      style="width: auto;"></p>
       <p id="info"              style="width: auto; white-space: pre-line;"></p>
       <p id="playersTotalBets"  style="width: auto; white-space: pre-line;"></p>
       <p id="pot"               style="width: auto;"></p>
@@ -34,7 +36,7 @@
   <p>
     Your Cards:
   </p>
-  <img id="card1" src="" style="width: auto;">
+  <img id="card1" src="" style="width: auto;" width="100px">
   <img id="card2" src="" style="width: auto;">
   <img id="card3" src="" style="width: auto;">
   <img id="card4" src="" style="width: auto;">
@@ -99,7 +101,7 @@
       if(obj.phase == 0)
       {
           document.getElementById("phaseNumber").innerHTML = "Phase: PreGame";
-          document.getElementById("readyDisplay").innerHTML = "Waiting for both players to ready up...";
+          document.getElementById("readyDisplay").innerHTML = "Waiting for players to ready up...";
       }
       else if(obj.phase == 1)
       {
@@ -158,6 +160,25 @@
 
           // display the amount in the pot
           document.getElementById("pot").innerHTML = "Total Pot: " + obj.pot.pot;
+      }
+
+      if(obj.timeRemaining > -1)
+      {
+          document.getElementById("timeRemaining").innerHTML = " Time Left: " + obj.timeRemaining;
+      }
+      else
+      {
+          document.getElementById("timeRemaining").innerHTML = "";
+      }
+
+
+      if(obj.timeRemaining <= 10 && obj.timeRemaining > -1)
+      {
+          document.getElementById("timeWarning").innerHTML = "Please make a choice or you will be folded!";
+      }
+      else
+      {
+          document.getElementById("timeWarning").innerHTML = "";
       }
 
       if(obj.turn != -1)

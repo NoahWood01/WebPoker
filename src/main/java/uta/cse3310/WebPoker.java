@@ -74,7 +74,11 @@ private void setNumPlayers(int N) {
     numPlayers++;
 
     Player player = new Player(numPlayers);         // New player is created and given their unique Id
-    game.addPlayer(player);                         // Player is added to the game
+
+    synchronized(mutex)
+    {
+        game.addPlayer(player);                         // Player is added to the game
+    }
 
     conn.setAttachment(numPlayers);
     conn.send(player.asJSONString());               // We send the player to the client so the client knows who it is viewing
@@ -87,39 +91,56 @@ private void setNumPlayers(int N) {
 
     System.out.println(conn + " has closed");
 
-    int idx = conn.getAttachment();
-    game.removePlayer(idx);
-    System.out.println("removed player index " + idx);
-
     // The state is now changed, so every client needs to be informed
-    broadcast(game.exportStateAsJSON());
-    System.out.println("the game state" + game.exportStateAsJSON());
+    synchronized(mutex)
+    {
+        int idx = conn.getAttachment();
+        game.removePlayer(idx);
+        numPlayers--;
+        System.out.println("removed player index " + idx);
+        broadcast(game.exportStateAsJSON());
+        System.out.println("the game state" + game.exportStateAsJSON());
+    }
   }
 
   @Override
   public void onMessage(WebSocket conn, String message) {
     // all incoming messages are processed by the game
-    game.processMessage(numPlayers, message);
-    // and the results of that message are sent to everyone
-    // as the "state of the game"
+    synchronized(mutex)
+    {
+        game.processMessage(numPlayers, message);
+        // and the results of that message are sent to everyone
+        // as the "state of the game"
 
-    broadcast(game.exportStateAsJSON());
+        broadcast(game.exportStateAsJSON());
+    }
     System.out.println(conn + ": " + message);
   }
 
   @Override
-  public void onMessage(WebSocket conn, ByteBuffer message) {
-    broadcast(message.array());
+  public void onMessage(WebSocket conn, ByteBuffer message)
+  {
+      synchronized(mutex)
+      {
+          broadcast(message.array());
+      }
     System.out.println(conn + ": " + message);
   }
 
   public class upDate extends TimerTask {
     @Override
-    public void run() {
-      if (game != null) {
-        if (game.update()) {
-          broadcast(game.exportStateAsJSON());
-        }
+    public void run()
+    {
+      if (game != null)
+      {
+          synchronized(mutex)
+          {
+              if (game.update())
+              {
+                broadcast(game.exportStateAsJSON());
+              }
+          }
+
       }
     }
   }
@@ -181,4 +202,5 @@ private void setNumPlayers(int N) {
 
   private int numPlayers;
   private Game game;
+  public static Object mutex = new Object();
 }
