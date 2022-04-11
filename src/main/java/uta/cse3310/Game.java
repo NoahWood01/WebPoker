@@ -249,8 +249,9 @@ public class Game {
                     {
                         turn = 0;
                         phase++;
-                        timeRemaining = 30;
+
                     }
+                    timeRemaining = 30;
                 }
                 else if(moveOn == true)
                 {
@@ -388,9 +389,7 @@ public class Game {
         }
         else if(timeRemaining == 0 && num_players_ready() >= 2 && phase == 0)
         {
-            System.out.println("POOP");
             kick_not_ready();
-            System.out.println("POOP");
             phase = 0;
             timeRemaining = -1;
             if(players.size() >= 2  && all_players_ready())
@@ -515,10 +514,12 @@ public class Game {
     public void kick_not_ready()
     {
         ArrayList<Player> removeList = new ArrayList<>();
+        int count = 0;
         synchronized(WebPoker.mutex)
         {
             for(int i = 0; i < players.size(); i++)
             {
+                count++;
                 if(players.get(i).ready == false)
                 {
                     removeList.add(players.get(i));
@@ -529,6 +530,42 @@ public class Game {
                 players.remove(removeList.get(i));
             }
         }
+        //WebPoker.numPlayers = count;
+        //rearrange_ids();
+    }
+
+    public void rearrange_ids()
+    {
+        for(int i = 0; i < players.size(); i++)
+        {
+            players.get(i).setId(i);
+        }
+    }
+
+    public int get_next_id()
+    {
+        boolean flag = false;
+        int i;
+        for(i = 0; i < players.size(); i++)
+        {
+            for(int j = 0; j < players.size(); i++)
+            {
+                if(players.get(j).get_id() != i)
+                {
+                    flag = false;
+                }
+                else
+                {
+                    flag = true;
+                    break;
+                }
+            }
+            if(flag == false)
+            {
+                return i;
+            }
+        }
+        return (i+1);
     }
 
     /**************************************
@@ -626,12 +663,12 @@ public class Game {
 
     **********************************/
 
-    private ArrayList<Player> players = new ArrayList<>(); // players of the game
+    public ArrayList<Player> players = new ArrayList<>(); // players of the game
     private ArrayList<Card> deck = new ArrayList<>(); // stored cards not in players hands
     private ArrayList<Hand> hands = new ArrayList<>();
 
     // store non folded players seperately
-    private ArrayList<Player> nonFoldedPlayers = new ArrayList<>();
+    public ArrayList<Player> nonFoldedPlayers = new ArrayList<>();
 
     // turns
     Player startingplayer;

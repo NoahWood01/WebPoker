@@ -73,7 +73,7 @@ private void setNumPlayers(int N) {
 
     numPlayers++;
 
-    Player player = new Player(numPlayers);         // New player is created and given their unique Id
+    Player player = new Player(game.players.size());         // New player is created and given their unique Id
 
     synchronized(mutex)
     {
@@ -95,7 +95,9 @@ private void setNumPlayers(int N) {
     synchronized(mutex)
     {
         int idx = conn.getAttachment();
+        game.nonFoldedPlayers.remove(game.players.get(idx));
         game.removePlayer(idx);
+        //game.rearrange_ids();
         numPlayers--;
         System.out.println("removed player index " + idx);
         broadcast(game.exportStateAsJSON());
@@ -200,7 +202,7 @@ private void setNumPlayers(int N) {
 
   **********************************************/
 
-  private int numPlayers;
+  public static int numPlayers;
   private Game game;
   public static Object mutex = new Object();
 }
