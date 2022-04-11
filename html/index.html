@@ -196,34 +196,38 @@
 
       if(obj.turn != -1)
       {
+          /*
           document.getElementById("turnNumber").innerHTML = "Turn: Player " + obj.turn
             + "\n | " + "Turn player based: Player " + obj.currentplayer.id + "("+
             obj.currentplayer.name + ")";
+            */
+            document.getElementById("turnNumber").innerHTML = "Turn: Player " + obj.currentplayer.id + "("+
+              obj.currentplayer.name + ")";
       }
 
       document.getElementById("info").innerHTML
-        = "Player Wallet: " + obj.players[playerID].wallet
+        = "Player Wallet: " + playerObj.wallet
         + "\n"
-        + "Player Name: "   + obj.players[playerID].name
+        + "Player Name: "   + playerObj.name
         + "\n"
-        + "Player Id: "     + obj.players[playerID].id;
+        + "Player Id: "     + playerObj.id;
 
       // display the amount in the pot
       document.getElementById("pot").innerHTML = "Total Pot: " + obj.pot.pot;
 
       // display the total bets of all players
       var playerTotalBetString = "";
-      for(var i = 0; i < obj.players.length; i++)
+      obj.players.forEach(player =>
       {
-        playerTotalBetString += "Player " + i + " (" + obj.players[i].name
-                             + ") Current Bet: " + obj.players[i].currentBet
-                             + " ready: " + obj.players[i].ready
+        playerTotalBetString += "Player " + player.id + " (" + player.name
+                             + ") Current Bet: " + player.currentBet
+                             + " ready: " + player.ready
                              + "\n";
-      }
+      });
       document.getElementById("playersTotalBets").innerHTML = playerTotalBetString;
 
       // display the player's cards
-      var player = obj.players[playerID];
+      var player = playerObj;
       for(var i = 0; i < 5; i++){
         // if cards are null str becomes empty so nothing is displayed
         var str = "";

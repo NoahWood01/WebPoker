@@ -64,7 +64,7 @@ public class Player {
 
     *************************************/
 
-    private int id;                                         // Identifiication so the game knows who the player is
+    public int id;                                         // Identifiication so the game knows who the player is
     private int wallet;                                     // Players starting dollar amount
     public int currentBet;                                 // amount player has bet this round
     private int totalBet;                                   // amount player has bet in the game

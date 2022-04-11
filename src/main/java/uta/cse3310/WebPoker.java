@@ -95,7 +95,7 @@ private void setNumPlayers(int N) {
     synchronized(mutex)
     {
         int idx = conn.getAttachment();
-        game.nonFoldedPlayers.remove(game.players.get(idx));
+        game.nonFoldedPlayers.remove(game.get_player(idx));
         game.removePlayer(idx);
         //game.rearrange_ids();
         numPlayers--;
