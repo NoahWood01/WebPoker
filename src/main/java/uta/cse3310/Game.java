@@ -43,14 +43,14 @@ public class Game {
     }
 
     public Player getStartingPlayer() {
-        startingplayer = players.get(0);
+        startingplayer = nonFoldedPlayers.get(0);
         currentplayer = startingplayer;
         return startingplayer;
     }
 
     public void nextPlayer() // swap players
     {
-        if (currentplayer == startingplayer || players.indexOf(currentplayer) < players.size())
+        if (currentplayer == startingplayer || players.indexOf(currentplayer) < players.size()-1)
         {
             currentplayer = players.get(players.indexOf(currentplayer) + 1); // next player
         }
@@ -205,7 +205,7 @@ public class Game {
                     players.get(i).set_cards();
                     nonFoldedPlayers.add(players.get(i));
                 }
-                getStartingPlayer();
+                currentplayer = getStartingPlayer();
                 phase = 1;
                 turn = 0;
                 timeRemaining = 30;
@@ -242,12 +242,13 @@ public class Game {
 
                 if(moveOn == true && all_bets_equal() && nonFoldedPlayers.size() >= 1)
                 {
-                    //nextPlayer();
+                    nextPlayer();
                     turn++;
                     // every player made a single turn
                     if(turn >= players.size())
                     {
                         turn = 0;
+                        currentplayer = getStartingPlayer();
                         phase++;
 
                     }
@@ -255,6 +256,7 @@ public class Game {
                 }
                 else if(moveOn == true)
                 {
+                    currentplayer = next_player_bet_player();
                     turn = next_player_bet();
                     timeRemaining = 30;
                 }
@@ -286,12 +288,13 @@ public class Game {
 
                 if(moveOn == true)
                 {
-                    //nextPlayer();
+                    nextPlayer();
                     turn++;
                     // every player made a single turn
                     if(turn >= players.size())
                     {
                         turn = 0;
+                        currentplayer = getStartingPlayer();
                         phase++;
                     }
                     timeRemaining = 30;
@@ -326,11 +329,12 @@ public class Game {
 
                 if(moveOn == true && all_bets_equal() && nonFoldedPlayers.size() >= 1)
                 {
-                    //nextPlayer();
+                    nextPlayer();
                     turn++;
                     // every player made a single turn
                     if(turn >= players.size())
                     {
+                        currentplayer = getStartingPlayer();
                         turn = 0;
                         phase = 5;
                         determine_winner();
@@ -342,6 +346,7 @@ public class Game {
                 }
                 else if(moveOn == true)
                 {
+                    currentplayer = next_player_bet_player();
                     turn = next_player_bet();
                     timeRemaining = 30;
                 }
@@ -379,6 +384,10 @@ public class Game {
      */
     public boolean update()
     {
+        if(players.size() == 0)
+        {
+            return false;
+        }
         if(players.size() >= 2 && timeRemaining > 0)
         {
             timeRemaining--;
@@ -404,7 +413,7 @@ public class Game {
                     players.get(i).set_cards();
                     nonFoldedPlayers.add(players.get(i));
                 }
-                getStartingPlayer();
+                currentplayer = getStartingPlayer();
                 phase = 1;
                 turn = 0;
                 timeRemaining = 30;
@@ -468,6 +477,24 @@ public class Game {
         return 0;
     }
 
+    public Player next_player_bet_player()
+    {
+        Player temp = nonFoldedPlayers.get(0);
+        for(int i = 1; i < nonFoldedPlayers.size(); i++)
+        {
+            if(temp.get_bet() < nonFoldedPlayers.get(i).get_bet())
+            {
+                return temp;
+            }
+            else if(temp.get_bet() > nonFoldedPlayers.get(i).get_bet())
+            {
+                return nonFoldedPlayers.get(i);
+            }
+            temp = nonFoldedPlayers.get(i);
+        }
+        return startingplayer;
+    }
+
     public boolean all_players_ready()
     {
         for(int i = 0; i < players.size(); i++)
@@ -506,8 +533,11 @@ public class Game {
     public void fold_current_player()
     {
         players.get(turn).folded = true;
+        currentplayer.folded = true;
+        nonFoldedPlayers.remove(players.get(turn));
         nonFoldedPlayers.remove(players.get(turn));
         turn = next_player_bet();
+        currentplayer = next_player_bet_player();
         timeRemaining = 30;
     }
 

@@ -62,6 +62,7 @@
 <script>
   var playerID;
   var name;
+  var playerObj;
   var cardIdx = 0;
 
   var serverUrl ="ws://" + window.location.hostname + ":8880";
@@ -97,15 +98,17 @@
       // this will just have one card change every time a new game state comes in.
       // the term LUT means "look up table".  you will see it sometimes in code written last
       // century.
-      /*
+
       for(var i = 0; i < obj.players.length; i++)
       {
           if(obj.players[i].name == document.getElementById("sendName").value)
           {
-              playerID = i;
+              playerObj = obj.players[i];
+              //console.log(playerObj);
           }
       }
-      */
+
+
 
       // display whose turn it is
       if(obj.phase == 0)
@@ -193,7 +196,9 @@
 
       if(obj.turn != -1)
       {
-          document.getElementById("turnNumber").innerHTML = "Turn: Player " + obj.turn;
+          document.getElementById("turnNumber").innerHTML = "Turn: Player " + obj.turn
+            + "\n | " + "Turn player based: Player " + obj.currentplayer.id + "("+
+            obj.currentplayer.name + ")";
       }
 
       document.getElementById("info").innerHTML
@@ -322,6 +327,7 @@
         event: eventType,
         name: document.getElementById("sendName").value,
         playerID: playerID,
+        player: playerObj,
         amount_to_bet: amount,
         amount_to_draw: amountDraw,
         give_card_indexes: indexes
@@ -343,6 +349,7 @@
       event: "NAME",
       name: document.getElementById("sendName").value,
       playerID: playerID,
+      player: null,
       amount_to_bet: 0,
       amount_to_draw: 0,
       give_card_indexes: [-1,-1,-1]

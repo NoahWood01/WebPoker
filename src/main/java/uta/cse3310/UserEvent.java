@@ -14,6 +14,7 @@ public class UserEvent {
     UserEventType event;
     // play_game assumes playerID will start at 0
     int playerID;
+    Player player;
     String name;
 
     int amount_to_bet;
