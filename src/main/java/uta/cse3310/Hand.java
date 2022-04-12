@@ -18,6 +18,7 @@ public class Hand {
     public Value third_compare = null;
     public Value fourth_compare = null;
     public Value fifth_compare = null;
+    private int HandRank = -1;
     // first variable for comparision if both hands are the same
     // represents tiebrackers
     // ex - both hands have a pair, the higher pair wins
@@ -81,7 +82,18 @@ public class Hand {
     }
 
     // adding idea here to sort and determine hand value - alyssa
-    private String calcHand() {
+    private int calcHand() {
+    /* 1 - royal flush
+    2 - straight flush
+    3 - four of a kind
+    4 - full house
+    5 - flush
+    6 - straight
+    7 - three of a kind
+    8 - two pair
+    9 - pair
+    10 - high card
+    */
         String handname = " ";
         // split into two arrays - suite arr and value arr
         Suite[] suitearr = new Suite[5];
@@ -107,10 +119,13 @@ public class Hand {
             if (valuearr[0] == Card.Value.ACE && valuearr[4] == Card.Value.KING) // ascending order
             {
                 handname = "Royal Flush";
+                HandRank = 1;
             } else if (valuearr[0].ordinal() == ((Card.getValue(valuearr[4]).ordinal()) - 4)) {
                 handname = "Straight Flush";
+                HandRank = 2;
             } else {
                 handname = "Flush";
+                HandRank = 5;
             }
         }
         // done with suites, test values
@@ -121,31 +136,37 @@ public class Hand {
         {
             handname = "Four of a Kind";
             FourKind = true;
+            HandRank = 3;
         } else if ((valuearr[0] == valuearr[2] && (!FourKind)) || (valuearr[1] == valuearr[4] && (!FourKind))) // test
                                                                                                                // three
                                                                                                                // of a
                                                                                                                // kind
         {
             handname = "Three of a Kind";
+            HandRank = 7;
             ThreeKind = true;
         } else if (((valuearr[0] == valuearr[1]) && (valuearr[2] == valuearr[3]) && (!FourKind))
                 || (valuearr[1] == valuearr[2]) && (valuearr[3] == valuearr[4]) && (!FourKind)) {
             handname = "Two Pair";
+            HandRank = 8;
             TwoPair = true;
         } else if (!FourKind && !ThreeKind && !TwoPair) // test regular pair
         {
             if (valuearr[0] == valuearr[1] || valuearr[1] == valuearr[2] || valuearr[2] == valuearr[3]
                     || valuearr[3] == valuearr[4]) {
                 handname = "Pair";
+                HandRank = 9;
                 Pair = true;
             } else if (valuearr[0].ordinal() == ((Card.getValue(valuearr[4]).ordinal()) - 4)) // testing straight with
                                                                                               // ordinal values
             {
                 handname = "Straight";
+                HandRank = 6;
                 Straight = true;
             } else {
                 handname = "High Card";
                 HighCard = true;
+                HandRank = 10;
                 int HighCardValue = valuearr[4].ordinal(); // store high card
             }
         }
@@ -153,8 +174,9 @@ public class Hand {
         if (ThreeKind && Pair) {
             handname = "Full House";
             FullHouse = true;
+            HandRank = 4;
         }
-        return handname;
+        return HandRank;
     }
 
     private String determineHand(EnumMap<Value, Integer> cardValueMap, HashMap<String, Integer> handValue) // only works

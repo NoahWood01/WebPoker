@@ -1,0 +1,6 @@
+{
+    "C_Cpp.autocompleteAddParentheses": true,
+    "java.format.comments.enabled": false,
+    "java.format.enabled": false,
+    "javascript.format.enable": false
+}
