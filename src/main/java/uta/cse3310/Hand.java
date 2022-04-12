@@ -192,8 +192,8 @@ public class Hand {
 
     public Player whoWins(ArrayList<Player> players)
     {
-        int playerhandrank[];
-        int playerhighcard[];
+        int playerhandrank[] = new int[players.size()];
+        int playerhighcard[] = new int[players.size()];
         for(int i = 0; i < players.size(); i++)
         {
             playerhandrank[i] = calcHand(players.get(i)); // calculate each hand of each player
@@ -213,7 +213,7 @@ public class Hand {
         {
             for (int i = 0; i < players.size(); i++)
             {
-                playerhighcard[i] = getHighCard(players.get(i);
+                playerhighcard[i] = getHighCard(players.get(i));
             }
             int besthighcard = playerhighcard[0];
             for (int i = 0; i < playerhighcard.length; i++)
