@@ -80,19 +80,21 @@ public class WebPoker extends WebSocketServer {
     System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
 
     numPlayers++;
-
-    synchronized(mutex){
+    int newID = 0;
+    synchronized(mutex)
+    {
+        newID = game.get_next_id();
       if(numPlayers >= 5){
-        player = new Player(numPlayers);          // New player is created and given no id
+        player = new Player(newID);          // New player is created and given no id
         game.add_player_queue(player);            // Player is added to a queue waiting to enter a game
       }
       else{
-        player = new Player(numPlayers);          // New player is created and given their unique Id
+        player = new Player(newID);          // New player is created and given their unique Id
         game.addPlayer(player);                   // Player is added to the game
-      }                                           
+      }
     }
 
-    conn.setAttachment(numPlayers);
+    conn.setAttachment(newID);
     conn.send(player.asJSONString());               // We send the player to the client so the client knows who it is viewing
 
     System.out.println("\n\n" + player.asJSONString() + "\n\n");
@@ -107,7 +109,7 @@ public class WebPoker extends WebSocketServer {
     synchronized(mutex)
     {
         int idx = conn.getAttachment();
-        
+
 
         //game.rearrange_ids();
         System.out.println("removed player index " + idx);
@@ -122,7 +124,7 @@ public class WebPoker extends WebSocketServer {
           game.removePlayer(idx);
           numPlayers--;
         }
-        
+
         broadcast(game.exportStateAsJSON());
         System.out.println("the game state" + game.exportStateAsJSON());
     }
@@ -231,5 +233,5 @@ public class WebPoker extends WebSocketServer {
 
   private Player player;
 
-  
+
 }

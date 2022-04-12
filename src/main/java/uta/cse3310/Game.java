@@ -52,9 +52,9 @@ public class Game {
 
     public void nextPlayer() // swap players
     {
-        if (currentplayer == startingplayer || players.indexOf(currentplayer) < players.size()-1)
+        if (currentplayer == startingplayer || nonFoldedPlayers.indexOf(currentplayer) < nonFoldedPlayers.size()-1)
         {
-            currentplayer = players.get(players.indexOf(currentplayer) + 1); // next player
+            currentplayer = nonFoldedPlayers.get(nonFoldedPlayers.indexOf(currentplayer) + 1); // next player
         }
         else // go back to starting player / next round
         {
@@ -126,14 +126,14 @@ public class Game {
         winnings = pot.reward_pot();
         if(winner != -1)
         {
-            //Player workingPlayer = get_player(playerId);
-            players.get(winner).add_wallet(pot.reward_pot());
+            Player workingPlayer = get_player(winner);
+            workingPlayer.add_wallet(pot.reward_pot());
             pot.empty_pot();
         }
         else
         {
-            players.get(0).add_wallet(pot.reward_pot()/2);
-            players.get(1).add_wallet(pot.reward_pot()/2);
+            nonFoldedPlayers.get(0).add_wallet(pot.reward_pot()/2);
+            nonFoldedPlayers.get(1).add_wallet(pot.reward_pot()/2);
             pot.empty_pot();
         }
 
@@ -183,7 +183,7 @@ public class Game {
             for(int i = 0; i < player_queue.size(); i++){
                 if(player_queue.get(i).get_id() == event.playerID) player_queue.get(i).set_name(event.name);
             }
-        } 
+        }
         else if(event.event == UserEventType.NAME)
         {
             create_player(event.playerID, event);
@@ -330,7 +330,10 @@ public class Game {
                     set_players_notReady();
                     timeRemaining = -1;
                 }
-                timeRemaining = 30;
+                if(phase != 5)
+                {
+                    timeRemaining = 30;
+                }
             }
             else if(moveOn == true)
             {
@@ -597,13 +600,19 @@ public class Game {
 
     public int get_next_id()
     {
+        // flag to signal id is currently used
         boolean flag = false;
-        int i;
-        for(i = 0; i < players.size(); i++)
+        int id = 0;
+        if(players.size() == 0)
         {
-            for(int j = 0; j < players.size(); i++)
+            return 0;
+        }
+        for(int i = 0; i < players.size(); i++)
+        {
+            for(Player p : players)
             {
-                if(players.get(j).get_id() != i)
+                // id is found in players/cant use so move on
+                if(p.get_id() != i)
                 {
                     flag = false;
                 }
@@ -617,8 +626,14 @@ public class Game {
             {
                 return i;
             }
+            if(i == players.size())
+            {
+                return i;
+            }
+            id = i;
         }
-        return (i+1);
+        // if all used add one to biggests id number
+        return (id+1);
     }
 
     public Player get_player(int id)
@@ -745,7 +760,7 @@ public class Game {
     private ArrayList<Hand> hands = new ArrayList<>();
 
     // store non folded players seperately
-    
+
 
     // turns
     Player startingplayer;
