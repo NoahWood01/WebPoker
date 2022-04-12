@@ -35,15 +35,20 @@ package uta.cse3310;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+
 import java.nio.ByteBuffer;
 import java.util.Collections;
+
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -51,20 +56,23 @@ import java.util.TimerTask;
  * A simple WebSocketServer implementation. Keeps track of a "chatroom".
  */
 public class WebPoker extends WebSocketServer {
-private void setNumPlayers(int N) {
+  private void setNumPlayers(int N) {
     numPlayers = N;
   }
 
   public WebPoker(int port) throws UnknownHostException {
     super(new InetSocketAddress(port));
+    numPlayers = 0;
   }
 
   public WebPoker(InetSocketAddress address) {
     super(address);
+    numPlayers = 0;
   }
 
   public WebPoker(int port, Draft_6455 draft) {
     super(new InetSocketAddress(port), Collections.<Draft>singletonList(draft));
+    numPlayers = 0;
   }
 
   @Override
@@ -73,11 +81,15 @@ private void setNumPlayers(int N) {
 
     numPlayers++;
 
-    Player player = new Player(game.players.size());         // New player is created and given their unique Id
-
-    synchronized(mutex)
-    {
-        game.addPlayer(player);                         // Player is added to the game
+    synchronized(mutex){
+      if(numPlayers >= 5){
+        player = new Player(numPlayers);          // New player is created and given no id
+        game.add_player_queue(player);            // Player is added to a queue waiting to enter a game
+      }
+      else{
+        player = new Player(numPlayers);          // New player is created and given their unique Id
+        game.addPlayer(player);                   // Player is added to the game
+      }                                           
     }
 
     conn.setAttachment(numPlayers);
@@ -95,11 +107,22 @@ private void setNumPlayers(int N) {
     synchronized(mutex)
     {
         int idx = conn.getAttachment();
-        game.nonFoldedPlayers.remove(game.get_player(idx));
-        game.removePlayer(idx);
+        
+
         //game.rearrange_ids();
-        numPlayers--;
         System.out.println("removed player index " + idx);
+
+        if(game.get_player_queue_size() > 0){
+          game.players.set(idx, game.get_player_queue());         // Set the player wiating in the queue into the removed players position
+          game.players.get(idx).setId(idx);                       // Set the id for the new player
+          game.remove_player_queue(0);                            // Remove the player from the queue
+        }
+        else{
+          game.nonFoldedPlayers.remove(game.get_player(idx));
+          game.removePlayer(idx);
+          numPlayers--;
+        }
+        
         broadcast(game.exportStateAsJSON());
         System.out.println("the game state" + game.exportStateAsJSON());
     }
@@ -205,4 +228,8 @@ private void setNumPlayers(int N) {
   public static int numPlayers;
   private Game game;
   public static Object mutex = new Object();
+
+  private Player player;
+
+  
 }

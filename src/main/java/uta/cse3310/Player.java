@@ -12,6 +12,11 @@ public class Player {
         this.wallet = 100;
     }
 
+    public Player(){
+        this.name = "not set";
+        this.wallet = 100;
+    }
+
     /*************************************
 
                     Setters
@@ -20,7 +25,7 @@ public class Player {
 
     public void setId(int id){ this.id = id; }
     public void set_current_bet(int bet){ this.currentBet += bet; }
-    public void setName(String name){ this.name = name; }
+    public void set_name(String name){ this.name = name; }
     // This is redundant but I didnt feel like removing array list logic
     public void set_cards(){
         for(int i = 0; i < 5; i++) Cards[i] = hand.get(i);
