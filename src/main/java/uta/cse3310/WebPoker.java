@@ -116,7 +116,6 @@ public class WebPoker extends WebSocketServer {
 
         if(game.get_player_queue_size() > 0){
           game.players.set(idx, game.get_player_queue());         // Set the player wiating in the queue into the removed players position
-          game.players.get(idx).setId(idx);                       // Set the id for the new player
           game.remove_player_queue(0);                            // Remove the player from the queue
         }
         else{
