@@ -55,7 +55,7 @@ public class Hand {
             }
         }
     }
-    /*
+    
     public void mapping(EnumMap<Value, Integer> cardValueMap, HashMap<String, Integer> handValue) // hashmaps to hold
                                                                                                   // enum "value" for
                                                                                                   // comparisons
@@ -87,7 +87,7 @@ public class Hand {
         handValue.put("Straight Flush", 9);
         handValue.put("Royal Flush", 10);
     }
-    */
+    
     
     // adding idea here to sort and determine hand value - alyssa
     private int calcHand(Player p) {
@@ -232,7 +232,7 @@ public class Hand {
         }
    
     }
-/*
+
     private String determineHand(EnumMap<Value, Integer> cardValueMap, HashMap<String, Integer> handValue) // only works
                                                                                                            // with
                                                                                                            // sorted
@@ -466,5 +466,5 @@ public class Hand {
             }
         }
     }
-*/
+
 }
