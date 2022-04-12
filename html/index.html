@@ -24,14 +24,14 @@
     </p>
   </div>
   <div id="info_display" style="width: auto;">
-      <p id="phaseNumber"       style="width: auto;"></p>
-      <p id="readyDisplay"      style="width: auto;"></p>
-      <p id="turnNumber"        style="width: auto;"></p>
-      <p id="timeRemaining"     style="width: auto;"></p>
-      <p id ="timeWarning"      style="width: auto;"></p>
+      <p id="phaseNumber"       style="width: auto; white-space: pre-line;"></p>
+      <p id="readyDisplay"      style="width: auto; white-space: pre-line;"></p>
+      <p id="turnNumber"        style="width: auto; white-space: pre-line;"></p>
+      <p id="timeRemaining"     style="width: auto; white-space: pre-line;"></p>
+      <p id ="timeWarning"      style="width: auto; white-space: pre-line;"></p>
       <p id="info"              style="width: auto; white-space: pre-line;"></p>
       <p id="playersTotalBets"  style="width: auto; white-space: pre-line;"></p>
-      <p id="pot"               style="width: auto;"></p>
+      <p id="pot"               style="width: auto; white-space: pre-line;"></p>
   </div>
   <p>
     Your Cards:
@@ -109,70 +109,28 @@
       }
 
       // display whose turn it is
-      if(obj.phase == 0)
+      document.getElementById("phaseNumber").innerHTML = obj.playerMessage;
+      
+      /*
+      var x = document.getElementById("stand_fold_display");
+      if(x.style.display === "none")
       {
-          document.getElementById("phaseNumber").innerHTML = "Phase: PreGame";
-          document.getElementById("readyDisplay").innerHTML = "Waiting for players to ready up...";
+          x.style.display = "block";
       }
-      else if(obj.phase == 1)
+      else
       {
-          document.getElementById("readyDisplay").innerHTML = "";
-          document.getElementById("phaseNumber").innerHTML = "Phase: First Bet Phase";
+          x.style.display = "none";
       }
-      else if(obj.phase == 2)
-      {
-          document.getElementById("phaseNumber").innerHTML = "Phase: Draw Phase";
-      }
-      else if(obj.phase == 3)
-      {
-          document.getElementById("phaseNumber").innerHTML = "Phase: Second Bet Phase";
-      }
-      else if(obj.phase == 4)
-      {
-          document.getElementById("phaseNumber").innerHTML = "Phase: Showdown";
-      }
-      else if(obj.phase == 5)
-      {
-          if(obj.winner != -1)
-          {
-              document.getElementById("phaseNumber").innerHTML = "Winner: Player "
-              + obj.winner + "(" + obj.players[obj.winner].name + ")"
-              + " won " + obj.winnings + " chips";
-          }
-          else
-          {
-              // tie situation
-              document.getElementById("phaseNumber").innerHTML = "Tie! Both Players"
-              + " won " + obj.pot.pot/2 + " chips";
-          }
-          document.getElementById("readyDisplay").innerHTML = "Ready Up to play again!";
-
-          document.getElementById("turnNumber").innerHTML = "";
-
-          /*
-          var x = document.getElementById("stand_fold_display");
-
-          if(x.style.display === "none")
-          {
-              x.style.display = "block";
-          }
-          else
-          {
-              x.style.display = "none";
-          }
-          */
-
-          document.getElementById("info").innerHTML
-            = "Player Wallet: " + obj.players[playerID].wallet
-            + "\n"
-            + "Player Name: "   + obj.players[playerID].name
-            + "\n"
-            + "Player Id: "     + obj.players[playerID].id;
-
-          // display the amount in the pot
-          document.getElementById("pot").innerHTML = "Total Pot: " + obj.pot.pot;
-      }
-
+      */
+      document.getElementById("info").innerHTML
+        = "Player Wallet: " + obj.players[playerID].wallet
+        + "\n"
+        + "Player Name: "   + obj.players[playerID].name
+        + "\n"
+        + "Player Id: "     + obj.players[playerID].id;
+      // display the amount in the pot
+      document.getElementById("pot").innerHTML = "Total Pot: " + obj.pot.pot;
+      
       if(obj.timeRemaining > -1)
       {
           document.getElementById("timeRemaining").innerHTML = " Time Left: " + obj.timeRemaining;

@@ -6,17 +6,23 @@ public class Pot{
 
     public Pot(){}
 
-    public void add_to_pot(int amount){
-        pot += amount;
-    }
+    /***********************************
+                    Getters
+    ***********************************/
 
-    public void empty_pot(){
-        pot = 0;
-    }
+    public int get_pot(){ return this.pot; }
 
-    public int reward_pot(){
-        return pot;
-    }
+    /***********************************
+                    Setters
+    ***********************************/
+
+    public void add_to_pot(int amount)  { pot += amount; }
+    public void empty_pot()             { pot = 0; }
+    public int reward_pot()             { return pot; }
+
+    /***********************************
+                    Attributes
+    ***********************************/
 
     private int pot;
 }

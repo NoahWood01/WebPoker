@@ -16,6 +16,7 @@ public class Game {
         shuffle_deck();
         pot = new Pot();
         playerStandFold = 0;
+        phase = 0;
     }
 
     /**************************************
@@ -80,7 +81,7 @@ public class Game {
 
         }
 
-        /*
+/*
         for(int i = 0; i < hands.size(); i++){
             if(hands.get(i).is_equal(hands.get(i+1)) == true)
             {
@@ -99,7 +100,7 @@ public class Game {
                 winner = i + 1;
             }
         }
-        */
+*/
 
         // only compare when there is not 1 player
         if(nonFoldedPlayers.size() > 1)
@@ -153,16 +154,10 @@ public class Game {
                 player_queue
     ***************************************/
 
-    public void add_player_queue(Player p){
-        player_queue.add(p);
-    }
-
-    public void remove_player_queue(int id){
-        player_queue.remove(id);
-    }
-
-    public Player get_player_queue(){ return player_queue.get(0); }
-    public int get_player_queue_size(){ return player_queue.size(); }
+    public void add_player_queue(Player p)  { player_queue.add(p); }
+    public void remove_player_queue(int id) { player_queue.remove(id); }
+    public Player get_player_queue()        { return player_queue.get(0); }
+    public int get_player_queue_size()      { return player_queue.size(); }
 
     /**************************************
      *
@@ -209,6 +204,8 @@ public class Game {
         {
             timeRemaining = 10;
         }
+
+        determine_player_message();
     }
 
     public void phase_01(UserEvent event){
@@ -254,6 +251,8 @@ public class Game {
                 timeRemaining = 30;
             }
         }
+
+        determine_player_message();
     }
     public void phase_02(UserEvent event){
         // Draw Phase
@@ -291,6 +290,8 @@ public class Game {
                 timeRemaining = 30;
             }
         }
+
+        determine_player_message();
     }
     public void phase_03(UserEvent event){
         // Second Bet Phase
@@ -342,6 +343,8 @@ public class Game {
                 timeRemaining = 30;
             }
         }
+
+        determine_player_message();
     }
     public void phase_04(UserEvent event){
         // Showdown Phase
@@ -359,6 +362,8 @@ public class Game {
         shuffle_deck();
         winnings = 0;
         phase = 0;
+
+        determine_player_message();
     }
 
     public void processMessage(int playerId, String msg){
@@ -398,6 +403,48 @@ public class Game {
         else if(phase == 5) phase_05(event);            // Phase 05 logic (idk)
     }
 
+    public void determine_player_message(){
+        if(phase == 0) {
+            playerMessage = "Phase: PreGame" 
+                          + "\n"
+                          + "Waiting for players to ready up...";
+        }
+        else if(phase == 1) playerMessage = "Phase: First Bet Phase";
+        else if(phase == 2) playerMessage = "Phase: Draw Phase";
+        else if(phase == 3) playerMessage = "Phase: Second Bet Phase";
+        else if(phase == 4) playerMessage = "Phase: Showdown";
+        else if(phase == 5){
+            if(winner != -1){
+              playerMessage = "Winner: Player "
+              + winner + "(" + players.get(winner).get_name() + ")"
+              + " won " + winnings + " chips";
+            }
+            else{
+              // tie situation
+              playerMessage = "Tie! Both Players"
+              + " won " + pot.get_pot()/2 + " chips";
+            }
+        }
+        /*
+            playerMessage = "Player Wallet: " + players[playerID].wallet
+                                              + "\n"
+                                              + "Player Name: " + players[playerID].name
+                                              + "\n"
+                                              + "Player Id: " + players[playerID].id
+                                              + "Total Pot: " + pot.pot;
+
+          var x = document.getElementById("stand_fold_display");
+
+          if(x.style.display === "none")
+          {
+              x.style.display = "block";
+          }
+          else
+          {
+              x.style.display = "none";
+          }
+*/
+    }
 
     /*
      * this method is called on a periodic basis (once a second) by a timer
@@ -767,9 +814,11 @@ public class Game {
     Player currentplayer;
     Player winningPlayer;
 
+    private String playerMessage;
+
 
     // round - these are used with javascript to determine certain displays
-    public int phase = 0;
+    public int phase;
     int turn = -1;
     // do not change these or display will break
     int winner = -1;
