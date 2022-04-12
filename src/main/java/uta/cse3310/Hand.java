@@ -42,7 +42,7 @@ public class Hand {
 
     }
 
-    /*
+    
     public static void sortHand(Card cards[]) {
         Card temp;
         for (int i = 0; i < cards.length; i++) {
@@ -55,7 +55,7 @@ public class Hand {
             }
         }
     }
-    
+    /*
     public void mapping(EnumMap<Value, Integer> cardValueMap, HashMap<String, Integer> handValue) // hashmaps to hold
                                                                                                   // enum "value" for
                                                                                                   // comparisons
