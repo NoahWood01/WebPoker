@@ -37,10 +37,10 @@
     Your Cards:
   </p>
   <img id="card1" src="" style="width: auto;" width="100px">
-  <img id="card2" src="" style="width: auto;">
-  <img id="card3" src="" style="width: auto;">
-  <img id="card4" src="" style="width: auto;">
-  <img id="card5" src="" style="width: auto;">
+  <img id="card2" src="" style="width: auto;" width="100px">
+  <img id="card3" src="" style="width: auto;" width="100px">
+  <img id="card4" src="" style="width: auto;" width="100px">
+  <img id="card5" src="" style="width: auto;" width="100px">
   <div id="stand_fold_display">
     <input type="button" name="sendReady" value="Ready"   onclick="sendEvent(0)">
     <input type="button" name="sendStand" value="Stand"   onclick="sendEvent(1)">
@@ -48,7 +48,7 @@
     <input type="button" name="sendBet"   value="Bet 05"  onclick="sendEvent(3)">
     <input type="button" name="sendBet"   value="Bet 10"  onclick="sendEvent(4)">
     <input type="button" name="sendBet"   value="Bet 20"  onclick="sendEvent(5)">
-    <input type="button" name="sendBet"   value="Sort"  onclick="sendEvent(6)">
+    <input type="button" name="sendBet"   value="Sort"    onclick="sendEvent(6)">
     <p>
       Draw cards (give the card index no spaces) (ex: 123):
       <input id="send_index" type="text">
@@ -148,17 +148,6 @@
       else
       {
           document.getElementById("timeWarning").innerHTML = "";
-      }
-
-      if(obj.turn != -1)
-      {
-          /*
-          document.getElementById("turnNumber").innerHTML = "Turn: Player " + obj.turn
-            + "\n | " + "Turn player based: Player " + obj.currentplayer.id + "("+
-            obj.currentplayer.name + ")";
-            */
-            document.getElementById("turnNumber").innerHTML = "Turn: Player " + obj.currentplayer.id + "("+
-              obj.currentplayer.name + ")";
       }
 
       document.getElementById("info").innerHTML

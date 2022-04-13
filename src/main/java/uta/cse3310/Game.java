@@ -210,7 +210,7 @@ public class Game {
 
     public void phase_01(UserEvent event){
         // First Bet Phase
-
+            System.out.println("\n\n" + "Entering Phase 01" + "\n\n");
         // only do something if its the correct players turn
         if(event.player.id == currentplayer.get_id())
         {
@@ -376,31 +376,32 @@ public class Game {
 
         // any player can sort at any time
         if(event.event == UserEventType.SORT)  sort_cards(event.playerID, event);
-        if(event.event == UserEventType.READY)
-        {
-            players.get(event.playerID).set_ready();
-        }
-
-        if(nonFoldedPlayers.size() == 1 && phase != 0)
-        {
-            // if all other players fold
-            // last one standing wins
-            winner = nonFoldedPlayers.get(0).get_id();
-            determine_winner();
-            phase = 5;
-            nonFoldedPlayers.clear();
-            turn = -1;
-            set_players_notReady();
-            timeRemaining = -1;
-        }
-
-
+        if(event.event == UserEventType.READY) players.get(event.playerID).set_ready();
+        
+        
         if(phase == 0) phase_00(event);                 // Phase 00 logic (Name)
         else if(phase == 1) phase_01(event);            // Phase 01 logic (Bet 01)
         else if(phase == 2) phase_02(event);            // Phase 02 logic (Draw)
         else if(phase == 3) phase_03(event);            // Phase 03 logic (Bet 02)
         else if(phase == 4) phase_04(event);            // Phase 04 logic (Showdown)
         else if(phase == 5) phase_05(event);            // Phase 05 logic (idk)
+
+        if(event.event == UserEventType.FOLD){  
+            if(nonFoldedPlayers.size() == 1 && phase != 0)
+            {
+                // if all other players fold
+                // last one standing wins
+                winner = nonFoldedPlayers.get(0).get_id();
+                determine_winner();
+                phase = 5;
+                nonFoldedPlayers.clear();
+                turn = -1;
+                set_players_notReady();
+                timeRemaining = -1;
+
+                determine_player_message();
+            }
+        }
     }
 
     public void determine_player_message(){
@@ -409,14 +410,34 @@ public class Game {
                           + "\n"
                           + "Waiting for players to ready up...";
         }
-        else if(phase == 1) playerMessage = "Phase: First Bet Phase";
-        else if(phase == 2) playerMessage = "Phase: Draw Phase";
-        else if(phase == 3) playerMessage = "Phase: Second Bet Phase";
-        else if(phase == 4) playerMessage = "Phase: Showdown";
+        else if(phase == 1){
+            playerMessage = "Phase: First Bet Phase"
+            + "\n" 
+            + "Turn: " + players.get(turn).get_name();
+        } 
+            
+        else if(phase == 2){
+            playerMessage = "Phase: Draw Phase"
+            + "\n" 
+            + "Turn: " + players.get(turn).get_name();
+        } 
+            
+        else if(phase == 3){
+            playerMessage = "Phase: Second Bet Phase"
+            + "\n" 
+            + "Turn: " + players.get(turn).get_name();
+        } 
+            
+        else if(phase == 4){
+            playerMessage = "Phase: Showdown"
+            + "\n" 
+            + "Turn: " + players.get(turn).get_name();
+        } 
+            
         else if(phase == 5){
             if(winner != -1){
               playerMessage = "Winner: Player "
-              + winner + "(" + players.get(winner).get_name() + ")"
+              + winner + " (" + players.get(winner).get_name() + ")"
               + " won " + winnings + " chips";
             }
             else{
