@@ -377,8 +377,8 @@ public class Game {
         // any player can sort at any time
         if(event.event == UserEventType.SORT)  sort_cards(event.playerID, event);
         if(event.event == UserEventType.READY) players.get(event.playerID).set_ready();
-        
-        
+
+
         if(phase == 0) phase_00(event);                 // Phase 00 logic (Name)
         else if(phase == 1) phase_01(event);            // Phase 01 logic (Bet 01)
         else if(phase == 2) phase_02(event);            // Phase 02 logic (Draw)
@@ -386,7 +386,7 @@ public class Game {
         else if(phase == 4) phase_04(event);            // Phase 04 logic (Showdown)
         else if(phase == 5) phase_05(event);            // Phase 05 logic (idk)
 
-        if(event.event == UserEventType.FOLD){  
+        if(event.event == UserEventType.FOLD){
             if(nonFoldedPlayers.size() == 1 && phase != 0)
             {
                 // if all other players fold
@@ -406,34 +406,34 @@ public class Game {
 
     public void determine_player_message(){
         if(phase == 0) {
-            playerMessage = "Phase: PreGame" 
+            playerMessage = "Phase: PreGame"
                           + "\n"
                           + "Waiting for players to ready up...";
         }
         else if(phase == 1){
             playerMessage = "Phase: First Bet Phase"
-            + "\n" 
+            + "\n"
             + "Turn: " + players.get(turn).get_name();
-        } 
-            
+        }
+
         else if(phase == 2){
             playerMessage = "Phase: Draw Phase"
-            + "\n" 
+            + "\n"
             + "Turn: " + players.get(turn).get_name();
-        } 
-            
+        }
+
         else if(phase == 3){
             playerMessage = "Phase: Second Bet Phase"
-            + "\n" 
+            + "\n"
             + "Turn: " + players.get(turn).get_name();
-        } 
-            
+        }
+
         else if(phase == 4){
             playerMessage = "Phase: Showdown"
-            + "\n" 
+            + "\n"
             + "Turn: " + players.get(turn).get_name();
-        } 
-            
+        }
+
         else if(phase == 5){
             if(winner != -1){
               playerMessage = "Winner: Player "
@@ -824,7 +824,7 @@ public class Game {
     public ArrayList<Player> nonFoldedPlayers = new ArrayList<>();
     private ArrayList<Player> player_queue = new ArrayList<>();         // Players who have not entere the game due to player cap
 
-    private ArrayList<Card> deck = new ArrayList<>();                   // stored cards not in players hands
+    public ArrayList<Card> deck = new ArrayList<>();                   // stored cards not in players hands
     private ArrayList<Hand> hands = new ArrayList<>();
 
     // store non folded players seperately

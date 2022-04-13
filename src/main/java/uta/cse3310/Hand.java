@@ -7,7 +7,7 @@ import uta.cse3310.Card.Value;
 import uta.cse3310.Card.Suite;
 import java.util.Map;
 
-import javax.lang.model.util.ElementScanner14;
+//import javax.lang.model.util.ElementScanner14;
 
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -42,7 +42,7 @@ public class Hand {
 
     }
 
-    
+
     public static void sortHand(Card cards[]) {
         Card temp;
         for (int i = 0; i < cards.length; i++) {
@@ -55,7 +55,7 @@ public class Hand {
             }
         }
     }
-    
+
     public void mapping(EnumMap<Value, Integer> cardValueMap, HashMap<String, Integer> handValue) // hashmaps to hold
                                                                                                   // enum "value" for
                                                                                                   // comparisons
@@ -74,7 +74,7 @@ public class Hand {
         cardValueMap.put(Value.JACK, 11);
         cardValueMap.put(Value.QUEEN, 12);
         cardValueMap.put(Value.KING, 13);
-    
+
         // use hashmap to put values to hand names
         handValue.put("High Card", 1);
         handValue.put("Pair", 2);
@@ -87,8 +87,8 @@ public class Hand {
         handValue.put("Straight Flush", 9);
         handValue.put("Royal Flush", 10);
     }
-    
-    
+
+
     // adding idea here to sort and determine hand value - alyssa
     private int calcHand(Player p) {
         /* 1 - royal flush
@@ -230,7 +230,7 @@ public class Hand {
         {
             return players.get(bestrankindex);
         }
-   
+
     }
 
     private String determineHand(EnumMap<Value, Integer> cardValueMap, HashMap<String, Integer> handValue) // only works
