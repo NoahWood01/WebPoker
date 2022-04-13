@@ -70,8 +70,12 @@ public class Game {
     // print to console the winner.
     // only checks between first two players
     // will need to expand for more players
-    public void determine_winner(){
+    public void determine_winner() 
+    {
         //String winner = "";
+        Player WinningPlayer = Hand.whoWins(nonFoldedPlayers);
+        winner++;
+        /*
         for(int i = 0; i < players.size(); i++){
             if(!players.get(i).get_fold())
             {
@@ -81,7 +85,7 @@ public class Game {
 
         }
 
-/*
+
         for(int i = 0; i < hands.size(); i++){
             if(hands.get(i).is_equal(hands.get(i+1)) == true)
             {
@@ -100,7 +104,7 @@ public class Game {
                 winner = i + 1;
             }
         }
-*/
+
 
         // only compare when there is not 1 player
         if(nonFoldedPlayers.size() > 1)
@@ -122,7 +126,7 @@ public class Game {
                 winner = 1;
             }
         }
-
+*/
         // update winner wallet
         winnings = pot.reward_pot();
         if(winner != -1)

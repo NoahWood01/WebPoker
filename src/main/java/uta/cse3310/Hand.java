@@ -16,14 +16,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class Hand {
-    public Card[] cards = new Card[5];
+    public static Card[] cards = new Card[5];
     public Value first_compare = null;
     public Value second_compare = null;
     public Value third_compare = null;
     public Value fourth_compare = null;
     public Value fifth_compare = null;
-    private int HandRank = -1;
-    private int HighCardValue;
+    private static int HandRank = -1;
+    private static int HighCardValue;
+    public static int otherbestindex;
+    public static int besthighcardindex;
 
     // first variable for comparision if both hands are the same
     // represents tiebrackers
@@ -55,7 +57,7 @@ public class Hand {
             }
         }
     }
-
+/*
     public void mapping(EnumMap<Value, Integer> cardValueMap, HashMap<String, Integer> handValue) // hashmaps to hold
                                                                                                   // enum "value" for
                                                                                                   // comparisons
@@ -88,9 +90,9 @@ public class Hand {
         handValue.put("Royal Flush", 10);
     }
 
-
+*/
     // adding idea here to sort and determine hand value - alyssa
-    private int calcHand(Player p) {
+    private static int calcHand(Player p) {
         /* 1 - royal flush
         2 - straight flush
         3 - four of a kind
@@ -130,45 +132,78 @@ public class Hand {
         } else if (valuearr[0].ordinal() == ((Card.getValue(valuearr[4]).ordinal()) - 4)) {
             handname = "Straight Flush";
             HandRank = 2;
+            HighCardValue = valuearr[4].ordinal();
         } else {
             handname = "Flush";
             HandRank = 5;
+            HighCardValue = valuearr[4].ordinal();
         }
     }
     // done with suites, test values
     // test 4 of a kind
     boolean FourKind = false, ThreeKind = false, TwoPair = false, Pair = false, Straight = false, FullHouse = false,
-            HighCard = false;if((valuearr[0]==valuearr[3]||valuearr[1]==valuearr[4])&&!flush) // test four of a kind
+            HighCard = false;
+    if((valuearr[0]==valuearr[3]||valuearr[1]==valuearr[4])&&!flush) // test four of a kind
     {
         handname = "Four of a Kind";
         FourKind = true;
         HandRank = 3;
-    }else if((valuearr[0]==valuearr[2]&&(!FourKind))||(valuearr[1]==valuearr[4]&&(!FourKind))) // test
-                                                                                               // three
-                                                                                               // of a
-                                                                                               // kind
+        if (valuearr[4].ordinal() > valuearr[0].ordinal())
+        {
+            HighCardValue = valuearr[4].ordinal();
+        }
+        else
+        {
+            HighCardValue = valuearr[0].ordinal();
+        }
+    }else if((valuearr[0]==valuearr[2]&&(!FourKind))||(valuearr[1]==valuearr[4]&&(!FourKind))) // test                                                                                        
     {
         handname = "Three of a Kind";
         HandRank = 7;
         ThreeKind = true;
+        if (valuearr[4].ordinal() > valuearr[0].ordinal())
+        {
+            HighCardValue = valuearr[4].ordinal();
+        }
+        else
+        {
+            HighCardValue = valuearr[0].ordinal();
+        }
     }else if(((valuearr[0]==valuearr[1])&&(valuearr[2]==valuearr[3])&&(!FourKind))||(valuearr[1]==valuearr[2])&&(valuearr[3]==valuearr[4])&&(!FourKind))
     {
         handname = "Two Pair";
         HandRank = 8;
         TwoPair = true;
+        if (valuearr[4].ordinal() > valuearr[0].ordinal())
+        {
+            HighCardValue = valuearr[4].ordinal();
+        }
+        else
+        {
+            HighCardValue = valuearr[0].ordinal();
+        }
     }else if(!FourKind&&!ThreeKind&&!TwoPair) // test regular pair
     {
-        if (valuearr[0] == valuearr[1] || valuearr[1] == valuearr[2] || valuearr[2] == valuearr[3]
-                || valuearr[3] == valuearr[4]) {
+        if (valuearr[0] == valuearr[1] || valuearr[1] == valuearr[2] || valuearr[2] == valuearr[3] || valuearr[3] == valuearr[4]) 
+        {
             handname = "Pair";
             HandRank = 9;
             Pair = true;
-        } else if (valuearr[0].ordinal() == ((Card.getValue(valuearr[4]).ordinal()) - 4)) // testing straight with
-                                                                                          // ordinal values
+             if (valuearr[4].ordinal() > valuearr[0].ordinal())
+             {
+                HighCardValue = valuearr[4].ordinal();
+            }
+            else
+            {
+                HighCardValue = valuearr[0].ordinal();
+            }
+        } 
+        else if (valuearr[0].ordinal() == ((Card.getValue(valuearr[4]).ordinal()) - 4)) // testing straight                                                                                     
         {
             handname = "Straight";
             HandRank = 6;
             Straight = true;
+            HighCardValue = valuearr[4].ordinal();
         } else {
             handname = "High Card";
             HighCard = true;
@@ -182,57 +217,84 @@ public class Hand {
         handname = "Full House";
         FullHouse = true;
         HandRank = 4;
-    }return HandRank;
+        if (valuearr[4].ordinal() > valuearr[0].ordinal())
+        {
+            HighCardValue = valuearr[4].ordinal();
+        }
+        else
+        {
+            HighCardValue = valuearr[0].ordinal();
+        }
+    }
+    return HandRank;
     }
 
-    public int getHighCard(Player p)
+    public static int getHighCard(Player p)
     {
         return HighCardValue;
     }
 
-    public Player whoWins(ArrayList<Player> players)
+    public static Player whoWins(ArrayList<Player> players)
     {
         int playerhandrank[] = new int[players.size()];
         int playerhighcard[] = new int[players.size()];
-        for(int i = 0; i < players.size(); i++)
-        {
+        for (int i = 0; i < players.size(); i++) {
             playerhandrank[i] = calcHand(players.get(i)); // calculate each hand of each player
         }
         // find best rank
         int bestrank = playerhandrank[0];
         int bestrankindex = 0;
-        for (int i = 0; i < playerhandrank.length; i++)
-        {
+        boolean rankdups = false;
+        boolean tie = false;
+        for (int i = 0; i < playerhandrank.length; i++) {
             if (bestrank > playerhandrank[i]) {
                 bestrank = playerhandrank[i];
                 bestrankindex = i;
             }
         }
-        int besthighcardindex = 0;
-        if (bestrank == 10) // who has best high card?
+        for (int i = bestrankindex; i < playerhandrank.length; i++) {
+            if (playerhandrank[bestrankindex] == playerhandrank[bestrankindex + 1]) {
+                rankdups = true; // if there is a tie
+            }
+        }
+        if (bestrank == 10 || rankdups) // who has best high card?
         {
-            for (int i = 0; i < players.size(); i++)
-            {
+            for (int i = 0; i < players.size(); i++) {
                 playerhighcard[i] = getHighCard(players.get(i));
             }
             int besthighcard = playerhighcard[0];
-            for (int i = 0; i < playerhighcard.length; i++)
-            {
-                if(besthighcard < playerhighcard[i])
-                {
+            for (int i = 0; i < playerhighcard.length; i++) {
+                if (besthighcard < playerhighcard[i]) {
                     besthighcard = playerhighcard[i];
                     besthighcardindex = i;
                 }
             }
-            return players.get(besthighcardindex);
+            for (int i = besthighcardindex; i < playerhighcard.length; i++) {
+                if (playerhighcard[i] == playerhighcard[i + 1]) {
+                    tie = true; // if there is a tie
+                    otherbestindex = i + 1;
+                }
+            }
         }
-        else
+        // else
+        //{
+        //  return players.get(bestrankindex);
+        //}
+        if(!(tie) && !(rankdups))
         {
             return players.get(bestrankindex);
         }
+        else if (!(tie) && rankdups)
+        {
+            return players.get(besthighcardindex);
+        }
+        else // if tie -- not done
+        {
+            return players.get(besthighcardindex);
+        }
 
     }
-
+/*
     private String determineHand(EnumMap<Value, Integer> cardValueMap, HashMap<String, Integer> handValue) // only works
                                                                                                            // with
                                                                                                            // sorted
@@ -466,5 +528,6 @@ public class Hand {
             }
         }
     }
+    */
 
 }
