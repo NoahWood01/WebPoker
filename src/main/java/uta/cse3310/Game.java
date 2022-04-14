@@ -204,6 +204,11 @@ public class Game {
                 {
                     p.add_card(draw_card());
                 }
+                //Reset wallets to 100 if they ran out of money between games
+                if(p.get_wallet() <= 0)
+                {
+                    p.set_wallet(100);
+                }
                 place_ante(p.id);
                 p.set_cards();
                 nonFoldedPlayers.add(p);
@@ -230,8 +235,16 @@ public class Game {
             boolean moveOn = false;
             if(event.event == UserEventType.BET)
             {
-                place_bet(event.playerID, event);
-                moveOn = true;
+                if(currentplayer.get_wallet() == 0)
+                {
+                    moveOn = true;
+                }
+                else
+                {
+                    place_bet(event.playerID, event);
+                    moveOn = true;
+                }
+                //moveOn = true;
             }
             else if(event.event == UserEventType.STAND)
             {
@@ -315,8 +328,16 @@ public class Game {
             boolean moveOn = false;
             if(event.event == UserEventType.BET)
             {
-                place_bet(event.playerID, event);
-                moveOn = true;
+                if(currentplayer.get_wallet() == 0) //Skip a player who has no money to bet
+                {
+                    moveOn = true;
+                }
+                else
+                {
+                    place_bet(event.playerID, event);
+                    moveOn = true;
+                }
+                //moveOn = true;
             }
             else if(event.event == UserEventType.STAND)
             {
@@ -849,6 +870,11 @@ public class Game {
 
     public void place_bet(int playerId, UserEvent event){
         Player workingPlayer = get_player(playerId);
+        //Check if player is betting more than they have, change bet to whatever is left in their wallet.
+        if(event.amount_to_bet > workingPlayer.get_wallet())
+        {
+            event.amount_to_bet = workingPlayer.get_wallet();
+        }
         workingPlayer.subtract_wallet(event.amount_to_bet);
         workingPlayer.set_current_bet(event.amount_to_bet);
         pot.add_to_pot(event.amount_to_bet);

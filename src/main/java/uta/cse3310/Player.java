@@ -32,10 +32,12 @@ public class Player {
     }
     public void set_stand(){ this.stand = true; }
     public void set_ready(){ this.ready = true; }
+    public void set_hasBet(boolean has_bet){ hasBet = true; }
+    public void set_hasRaised(boolean has_raised){ hasRaised = true; }
 
     public void add_card(Card card){ this.hand.add(card); }
     public void add_wallet(int bet){ this.wallet += bet; }
-
+    public void set_wallet(int amount){ wallet = amount; }
     public void subtract_wallet(int bet){ this.wallet -= bet; }
 
     /*************************************
@@ -51,6 +53,9 @@ public class Player {
     public boolean get_fold(){ return this.folded; }
     public int get_bet(){ return this.currentBet; }
     public boolean get_ready(){ return this.ready; }
+    public boolean get_hasBet(){ return hasBet; }
+    public boolean get_hasRaised(){ return hasRaised; }
+    public int get_wallet(){ return wallet; }
 
     /*************************************
 
@@ -82,4 +87,6 @@ public class Player {
     public boolean folded = false;                         // boolean to check if the player has folded in the round
     private boolean stand = false;
     public boolean ready = false;
+    public boolean hasBet = false;
+    public boolean hasRaised = false;
 }
