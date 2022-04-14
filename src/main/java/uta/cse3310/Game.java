@@ -246,9 +246,10 @@ public class Game {
                 }
                 //moveOn = true;
             }
-            else if(event.event == UserEventType.STAND)
+            else if(event.event == UserEventType.STAND && all_bets_equal())
             {
                 player_stand(currentplayer);
+                currentplayer.hasBet = true;
                 moveOn = true;
             }
             else if(event.event == UserEventType.FOLD)
@@ -262,8 +263,9 @@ public class Game {
                 nextPlayer();
                 turn++;
                 // every player made a single turn
-                if(turn >= players.size())
+                if(all_players_bet())
                 {
+                    set_all_hasBet();
                     turn = 0;
                     currentplayer = getStartingPlayer();
                     phase++;
@@ -307,7 +309,7 @@ public class Game {
                 nextPlayer();
                 turn++;
                 // every player made a single turn
-                if(turn >= players.size())
+                if(currentplayer == startingplayer)
                 {
                     turn = 0;
                     currentplayer = getStartingPlayer();
@@ -339,9 +341,10 @@ public class Game {
                 }
                 //moveOn = true;
             }
-            else if(event.event == UserEventType.STAND)
+            else if(event.event == UserEventType.STAND && all_bets_equal())
             {
                 player_stand(currentplayer);
+                currentplayer.hasBet = true;
                 moveOn = true;
             }
             else if(event.event == UserEventType.FOLD)
@@ -355,8 +358,9 @@ public class Game {
                 nextPlayer();
                 turn++;
                 // every player made a single turn
-                if(turn >= players.size())
+                if(all_players_bet())
                 {
+                    set_all_hasBet();
                     currentplayer = getStartingPlayer();
                     turn = 0;
                     phase = 5;
@@ -531,6 +535,16 @@ public class Game {
      */
     public boolean update()
     {
+        while(phase == 0 && players.size() < 5 && player_queue.size() > 0)
+        {
+            Player workingPlayer = player_queue.get(0);
+            remove_player_queue(0);
+            addPlayer(workingPlayer);
+            if(players.size() == 5)
+            {
+                return true;
+            }
+        }
         if(players.size() == 0 || timeRemaining == -1)
         {
             return false;
@@ -538,12 +552,6 @@ public class Game {
         if(players.size() >= 2 && timeRemaining > 0)
         {
             timeRemaining--;
-        }
-        while(phase == 0 && players.size() < 5 && player_queue.size() > 0)
-        {
-            Player workingPlayer = player_queue.get(0);
-            remove_player_queue(0);
-            addPlayer(workingPlayer);
         }
 
         if(timeRemaining == 0 && phase != 0)
@@ -605,13 +613,12 @@ public class Game {
     public boolean all_bets_equal()
     {
         int tempBet = nonFoldedPlayers.get(0).get_bet();
-        for(int i = 1; i < nonFoldedPlayers.size(); i++)
+        for(Player p : nonFoldedPlayers)
         {
-            if(tempBet != nonFoldedPlayers.get(i).get_bet())
+            if(p.currentBet != max_player_bet() && p.wallet != 0)
             {
                 return false;
             }
-            tempBet = nonFoldedPlayers.get(i).get_bet();
         }
         return true;
     }
@@ -635,6 +642,7 @@ public class Game {
 
     public Player next_player_bet_player()
     {
+        /*
         Player temp = nonFoldedPlayers.get(0);
         for(int i = 1; i < nonFoldedPlayers.size(); i++)
         {
@@ -649,6 +657,57 @@ public class Game {
             temp = nonFoldedPlayers.get(i);
         }
         return startingplayer;
+        */
+        if(all_bets_equal())
+        {
+            nextPlayer();
+        }
+        else
+        {
+            nextPlayer();
+            while(currentplayer.wallet == 0 && !all_bets_equal())
+            {
+                nextPlayer();
+            }
+            if(currentplayer.currentBet < max_player_bet())
+            {
+                return currentplayer;
+            }
+        }
+        return currentplayer;
+    }
+
+    public boolean all_players_bet()
+    {
+        for(Player p : players)
+        {
+            if(p.hasBet == false)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void set_all_hasBet()
+    {
+        for(Player p : players)
+        {
+            p.hasBet = false;
+        }
+    }
+
+    public int max_player_bet()
+    {
+        int temp = -1;
+        for(Player p : nonFoldedPlayers)
+        {
+            if(p.currentBet > temp)
+            {
+                temp = p.currentBet;
+            }
+        }
+        return temp;
     }
 
     public boolean all_players_ready()
@@ -913,6 +972,7 @@ public class Game {
 
     public void place_bet(int playerId, UserEvent event){
         Player workingPlayer = get_player(playerId);
+        workingPlayer.hasBet = true;
         //Check if player is betting more than they have, change bet to whatever is left in their wallet.
         if(event.amount_to_bet > workingPlayer.get_wallet())
         {
