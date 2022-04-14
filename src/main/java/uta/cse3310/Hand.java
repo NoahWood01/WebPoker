@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class Hand {
-    public static Card[] cards = new Card[5];
+    public Card[] cards = new Card[5];
     public Value first_compare = null;
     public Value second_compare = null;
     public Value third_compare = null;
@@ -106,24 +106,29 @@ public class Hand {
         */
     String handname = " ";
     // split into two arrays - suite arr and value arr
-    Suite[] suitearr = new Suite[5];for(
-    int i = 0;i<5;i++)
+    Suite[] suitearr = new Suite[5];
+
+    for(int i = 0;i<5;i++)
     {
         suitearr[i] = Card.getSuite(cards[i].suite);
-    }Arrays.sort(suitearr);
+    }
+
+    Arrays.sort(suitearr);
 
     // sort value
-    Value[] valuearr = new Value[5];for(
-    int i = 0;i<5;i++)
+    Value[] valuearr = new Value[5]; 
+    for(int i = 0;i<5;i++)
     {
         valuearr[i] = Card.getValue(cards[i].value);
-    }Arrays.sort(valuearr);
+    }
+    Arrays.sort(valuearr);
 
     // testing for a flush
     boolean flush = false;if(suitearr[0]==suitearr[4])
     {
         flush = true;
-    }if(flush) // what kind of flush?
+    }
+    if(flush) // what kind of flush?
     {
         if (valuearr[0] == Card.Value.ACE && valuearr[4] == Card.Value.KING) // ascending order
         {
@@ -156,7 +161,8 @@ public class Hand {
         {
             HighCardValue = valuearr[0].ordinal();
         }
-    }else if((valuearr[0]==valuearr[2]&&(!FourKind))||(valuearr[1]==valuearr[4]&&(!FourKind))) // test
+    }
+    else if((valuearr[0]==valuearr[2]&&(!FourKind))||(valuearr[1]==valuearr[4]&&(!FourKind))) // test
     {
         handname = "Three of a Kind";
         HandRank = 7;
@@ -169,7 +175,8 @@ public class Hand {
         {
             HighCardValue = valuearr[0].ordinal();
         }
-    }else if(((valuearr[0]==valuearr[1])&&(valuearr[2]==valuearr[3])&&(!FourKind))||(valuearr[1]==valuearr[2])&&(valuearr[3]==valuearr[4])&&(!FourKind))
+    }
+    else if(((valuearr[0]==valuearr[1])&&(valuearr[2]==valuearr[3])&&(!FourKind))||(valuearr[1]==valuearr[2])&&(valuearr[3]==valuearr[4])&&(!FourKind))
     {
         handname = "Two Pair";
         HandRank = 8;
@@ -182,7 +189,8 @@ public class Hand {
         {
             HighCardValue = valuearr[0].ordinal();
         }
-    }else if(!FourKind&&!ThreeKind&&!TwoPair) // test regular pair
+    }
+    else if(!FourKind&&!ThreeKind&&!TwoPair) // test regular pair
     {
         if (valuearr[0] == valuearr[1] || valuearr[1] == valuearr[2] || valuearr[2] == valuearr[3] || valuearr[3] == valuearr[4])
         {
@@ -236,6 +244,9 @@ public class Hand {
 
     public static Player whoWins(ArrayList<Player> players)
     {
+
+
+
         int playerhandrank[] = new int[players.size()];
         int playerhighcard[] = new int[players.size()];
         for (int i = 0; i < players.size(); i++) {
@@ -269,7 +280,7 @@ public class Hand {
                     besthighcardindex = i;
                 }
             }
-            for (int i = besthighcardindex; i < playerhighcard.length; i++) {
+            for (int i = besthighcardindex; i < playerhighcard.length-1; i++) {
                 if (playerhighcard[i] == playerhighcard[i + 1]) {
                     tie = true; // if there is a tie
                     otherbestindex = i + 1;

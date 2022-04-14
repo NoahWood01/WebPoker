@@ -81,20 +81,17 @@ public class Game {
         // SETTING TO DEFAULT PLAYER IN ARRAY BC whoWinds doesnt work
         // so other code can be added
 
-        winningPlayer = nonFoldedPlayers.get(0);
 
-
-        /*
         for(int i = 0; i < players.size(); i++){
             if(!players.get(i).get_fold())
             {
                 Hand h = new Hand(players.get(i).Cards);
                 hands.add(h);
             }
-
         }
 
-
+        winningPlayer = Hand.whoWins(nonFoldedPlayers);
+/*
         for(int i = 0; i < hands.size(); i++){
             if(hands.get(i).is_equal(hands.get(i+1)) == true)
             {
@@ -135,7 +132,7 @@ public class Game {
                 winner = 1;
             }
         }
-*/
+
         // update winner wallet
         winnings = pot.reward_pot();
         if(winner != -1)
@@ -150,6 +147,7 @@ public class Game {
             nonFoldedPlayers.get(1).add_wallet(pot.reward_pot()/2);
             pot.empty_pot();
         }
+*/
 
 
         // After we determine the winner we need to
