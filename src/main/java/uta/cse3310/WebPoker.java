@@ -84,13 +84,20 @@ public class WebPoker extends WebSocketServer {
     synchronized(mutex)
     {
         newID = game.get_next_id();
-      if(numPlayers >= 5){
+      if(game.players.size() >= 5){
         player = new Player(newID);          // New player is created and given no id
         game.add_player_queue(player);            // Player is added to a queue waiting to enter a game
       }
-      else{
+      else if( game.phase == 0)
+      {
         player = new Player(newID);          // New player is created and given their unique Id
         game.addPlayer(player);                   // Player is added to the game
+      }
+      else
+      {
+          // add to queue if a game is in session
+          player = new Player(newID);          // New player is created and given no id
+          game.add_player_queue(player);
       }
     }
 
@@ -110,17 +117,75 @@ public class WebPoker extends WebSocketServer {
     {
         int idx = conn.getAttachment();
 
-
         //game.rearrange_ids();
         System.out.println("removed player index " + idx);
 
-        if(game.get_player_queue_size() > 0){
-          game.players.set(idx, game.get_player_queue());         // Set the player wiating in the queue into the removed players position
-          game.remove_player_queue(0);                            // Remove the player from the queue
+        if(game.get_player_queue_size() > 0)
+        {
+            if(game.phase != 0 )
+            {
+                // disconnected player is in game.players
+                if( game.is_id_in_players(idx) )
+                {
+                    if(game.nonFoldedPlayers.contains(game.get_player(idx)))
+                    {
+                        game.nonFoldedPlayers.remove(game.get_player(idx));
+                    }
+                    game.removePlayer(idx);
+                }
+                else // player is in queue
+                {
+                    // remove player with corresponding id
+                    // from the queue
+                    for(Player p : game.player_queue)
+                    {
+                        if(p.get_id() == idx)
+                        {
+                            game.player_queue.remove(p);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                //game.players.set(idx, game.get_player_queue());         // Set the player wiating in the queue into the removed players position
+                Player workingPlayer = null;
+                for(Player p : game.player_queue)
+                {
+                    if(p.get_id() == idx)
+                    {
+                        workingPlayer = p;
+                    }
+                }
+                if(workingPlayer != null)
+                {
+                    game.addPlayer(workingPlayer);
+                    game.remove_player_queue(0);  // Remove the player from the queue
+                }
+            }
+
         }
         else{
-          game.nonFoldedPlayers.remove(game.get_player(idx));
-          game.removePlayer(idx);
+            // must use try and catch in cases where the player that disconnected
+            // is not in the arrays (could be folded)
+            try
+            {
+                game.nonFoldedPlayers.remove(game.get_player(idx));
+            }
+            catch(Exception e)
+            {
+                System.out.println(e);
+            }
+            try
+            {
+                game.removePlayer(idx);
+            }
+            catch(Exception e)
+            {
+                System.out.println(e);
+            }
+
+
           numPlayers--;
         }
 

@@ -57,7 +57,7 @@ public class Hand {
             }
         }
     }
-/*
+
     public void mapping(EnumMap<Value, Integer> cardValueMap, HashMap<String, Integer> handValue) // hashmaps to hold
                                                                                                   // enum "value" for
                                                                                                   // comparisons
@@ -90,7 +90,7 @@ public class Hand {
         handValue.put("Royal Flush", 10);
     }
 
-*/
+
     // adding idea here to sort and determine hand value - alyssa
     private static int calcHand(Player p) {
         /* 1 - royal flush
@@ -156,7 +156,7 @@ public class Hand {
         {
             HighCardValue = valuearr[0].ordinal();
         }
-    }else if((valuearr[0]==valuearr[2]&&(!FourKind))||(valuearr[1]==valuearr[4]&&(!FourKind))) // test                                                                                        
+    }else if((valuearr[0]==valuearr[2]&&(!FourKind))||(valuearr[1]==valuearr[4]&&(!FourKind))) // test
     {
         handname = "Three of a Kind";
         HandRank = 7;
@@ -184,7 +184,7 @@ public class Hand {
         }
     }else if(!FourKind&&!ThreeKind&&!TwoPair) // test regular pair
     {
-        if (valuearr[0] == valuearr[1] || valuearr[1] == valuearr[2] || valuearr[2] == valuearr[3] || valuearr[3] == valuearr[4]) 
+        if (valuearr[0] == valuearr[1] || valuearr[1] == valuearr[2] || valuearr[2] == valuearr[3] || valuearr[3] == valuearr[4])
         {
             handname = "Pair";
             HandRank = 9;
@@ -197,8 +197,8 @@ public class Hand {
             {
                 HighCardValue = valuearr[0].ordinal();
             }
-        } 
-        else if (valuearr[0].ordinal() == ((Card.getValue(valuearr[4]).ordinal()) - 4)) // testing straight                                                                                     
+        }
+        else if (valuearr[0].ordinal() == ((Card.getValue(valuearr[4]).ordinal()) - 4)) // testing straight
         {
             handname = "Straight";
             HandRank = 6;
@@ -294,7 +294,7 @@ public class Hand {
         }
 
     }
-/*
+
     private String determineHand(EnumMap<Value, Integer> cardValueMap, HashMap<String, Integer> handValue) // only works
                                                                                                            // with
                                                                                                            // sorted
@@ -528,6 +528,5 @@ public class Hand {
             }
         }
     }
-    */
 
 }

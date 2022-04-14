@@ -70,11 +70,20 @@ public class Game {
     // print to console the winner.
     // only checks between first two players
     // will need to expand for more players
-    public void determine_winner() 
+    public void determine_winner()
     {
         //String winner = "";
-        Player WinningPlayer = Hand.whoWins(nonFoldedPlayers);
-        winner++;
+        //winningPlayer = Hand.whoWins(nonFoldedPlayers);
+        //winner = winningPlayer.get_id();
+
+
+
+        // SETTING TO DEFAULT PLAYER IN ARRAY BC whoWinds doesnt work
+        // so other code can be added
+
+        winningPlayer = nonFoldedPlayers.get(0);
+
+
         /*
         for(int i = 0; i < players.size(); i++){
             if(!players.get(i).get_fold())
@@ -382,6 +391,13 @@ public class Game {
         if(event.event == UserEventType.SORT)  sort_cards(event.playerID, event);
         if(event.event == UserEventType.READY) players.get(event.playerID).set_ready();
 
+        // if player is in queue and NAME event happens
+        if( !is_id_in_players(event.playerID) && event.event == UserEventType.NAME)
+        {
+            // note this does not add the player to game.players
+            // only sets their name
+            create_player(event.playerID, event);
+        }
 
         if(phase == 0) phase_00(event);                 // Phase 00 logic (Name)
         else if(phase == 1) phase_01(event);            // Phase 01 logic (Bet 01)
@@ -489,6 +505,13 @@ public class Game {
         {
             timeRemaining--;
         }
+        while(phase == 0 && players.size() < 5 && player_queue.size() > 0)
+        {
+            Player workingPlayer = player_queue.get(0);
+            remove_player_queue(0);
+            addPlayer(workingPlayer);
+        }
+
         if(timeRemaining == 0 && phase != 0)
         {
             fold_current_player();
@@ -530,6 +553,7 @@ public class Game {
             set_players_notReady();
             timeRemaining = -1;
         }
+        determine_player_message();
         return true;
     }
 
@@ -721,6 +745,18 @@ public class Game {
         return null;
     }
 
+    public boolean is_id_in_players(int id)
+    {
+        for(Player p : players)
+        {
+            if(p.get_id() == id)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**************************************
      *
      * Deck Builders
@@ -826,7 +862,7 @@ public class Game {
 
     public ArrayList<Player> players = new ArrayList<>();               // players of the game
     public ArrayList<Player> nonFoldedPlayers = new ArrayList<>();
-    private ArrayList<Player> player_queue = new ArrayList<>();         // Players who have not entere the game due to player cap
+    public ArrayList<Player> player_queue = new ArrayList<>();         // Players who have not entere the game due to player cap
 
     public ArrayList<Card> deck = new ArrayList<>();                   // stored cards not in players hands
     private ArrayList<Hand> hands = new ArrayList<>();
