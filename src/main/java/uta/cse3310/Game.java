@@ -797,6 +797,18 @@ public class Game {
         return null;
     }
 
+    public Player get_player_in_queue(int id)
+    {
+        for( Player p : player_queue)
+        {
+            if(p.get_id() == id)
+            {
+                return p;
+            }
+        }
+        return null;
+    }
+
     public boolean is_id_in_players(int id)
     {
         for(Player p : players)

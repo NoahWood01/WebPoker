@@ -127,7 +127,8 @@ public class WebPoker extends WebSocketServer {
                 // disconnected player is in game.players
                 if( game.is_id_in_players(idx) )
                 {
-                    if(game.nonFoldedPlayers.contains(game.get_player(idx)))
+                    Player workingPlayer = game.get_player(idx);
+                    if(workingPlayer != null && game.nonFoldedPlayers.contains(workingPlayer))
                     {
                         game.nonFoldedPlayers.remove(game.get_player(idx));
                     }
@@ -146,23 +147,25 @@ public class WebPoker extends WebSocketServer {
                     }
                 }
             }
-            else
+            else if( !game.is_id_in_players(idx)) // DCed player is in queue
             {
                 //game.players.set(idx, game.get_player_queue());         // Set the player wiating in the queue into the removed players position
-                Player workingPlayer = null;
-                for(Player p : game.player_queue)
+                Player workingPlayer = game.get_player_in_queue(idx);
+                game.player_queue.remove(workingPlayer);
+                // Remove the player from the queue
+            }
+            else // DCed player is in game
+            {
+                Player workingPlayer = game.get_player(idx);
+                if(workingPlayer != null && game.nonFoldedPlayers.contains(workingPlayer))
                 {
-                    if(p.get_id() == idx)
-                    {
-                        workingPlayer = p;
-                    }
+                    game.nonFoldedPlayers.remove(game.get_player(idx));
                 }
-                if(workingPlayer != null)
-                {
-                    game.removePlayer(idx);
-                    game.addPlayer(workingPlayer);
-                    game.remove_player_queue(0);  // Remove the player from the queue
-                }
+                game.removePlayer(idx);
+                // add first in queue
+                Player newPlayer = game.player_queue.get(0);
+                game.player_queue.remove(newPlayer);
+                game.players.add(newPlayer);
             }
 
         }
