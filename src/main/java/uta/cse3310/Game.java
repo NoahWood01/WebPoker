@@ -393,6 +393,8 @@ public class Game {
             players.get(i).folded = false;
             empty_hand(players.get(i));
         }
+        deck.clear();
+        create_deck();
         shuffle_deck();
         winnings = 0;
         phase = 0;
@@ -408,16 +410,27 @@ public class Game {
 
         System.out.println("\n\n" + msg + "\n\n");
 
-        // any player can sort at any time
-        if(event.event == UserEventType.SORT)  sort_cards(event.playerID, event);
-        if(event.event == UserEventType.READY) players.get(event.playerID).set_ready();
-
         // if player is in queue and NAME event happens
         if( !is_id_in_players(event.playerID) && event.event == UserEventType.NAME)
         {
             // note this does not add the player to game.players
             // only sets their name
-            create_player(event.playerID, event);
+            for(Player p : player_queue)
+            {
+                if(p.get_id() == event.playerID)
+                {
+                    p.set_name(event.name);
+                }
+            }
+            return;
+        }
+
+        // any player can sort at any time
+        if(event.event == UserEventType.SORT)  sort_cards(event.playerID, event);
+        if(event.event == UserEventType.READY)
+        {
+            Player workingPlayer = get_player(event.playerID);
+            workingPlayer.set_ready();
         }
 
         if(phase == 0) phase_00(event);                 // Phase 00 logic (Name)
@@ -454,31 +467,31 @@ public class Game {
         else if(phase == 1){
             playerMessage = "Phase: First Bet Phase"
             + "\n"
-            + "Turn: " + players.get(turn).get_name();
+            + "Turn: " + currentplayer.get_name();
         }
 
         else if(phase == 2){
             playerMessage = "Phase: Draw Phase"
             + "\n"
-            + "Turn: " + players.get(turn).get_name();
+            + "Turn: " + currentplayer.get_name();
         }
 
         else if(phase == 3){
             playerMessage = "Phase: Second Bet Phase"
             + "\n"
-            + "Turn: " + players.get(turn).get_name();
+            + "Turn: " + currentplayer.get_name();
         }
 
         else if(phase == 4){
             playerMessage = "Phase: Showdown"
             + "\n"
-            + "Turn: " + players.get(turn).get_name();
+            + "Turn: " + currentplayer.get_name();
         }
 
         else if(phase == 5){
             if(winner != -1){
               playerMessage = "Winner: Player "
-              + winner + " (" + players.get(winner).get_name() + ")"
+              + winningPlayer.get_id() + " (" + winningPlayer.get_name() + ")"
               + " won " + winnings + " chips";
             }
             else{
@@ -743,10 +756,28 @@ public class Game {
             {
                 return i;
             }
-            if(i == players.size())
+            if(i == players.size() && player_queue.size() == 0)
             {
                 return i;
             }
+            for(Player p : player_queue)
+            {
+                // id is found in players/cant use so move on
+                if(p.get_id() != i)
+                {
+                    flag = false;
+                }
+                else
+                {
+                    flag = true;
+                    break;
+                }
+            }
+            if(flag == false)
+            {
+                return i;
+            }
+
             id = i;
         }
         // if all used add one to biggests id number

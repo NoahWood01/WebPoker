@@ -110,7 +110,7 @@
 
       // display whose turn it is
       document.getElementById("phaseNumber").innerHTML = obj.playerMessage;
-      
+
       /*
       var x = document.getElementById("stand_fold_display");
       if(x.style.display === "none")
@@ -130,7 +130,7 @@
         + "Player Id: "     + playerObj.id;
       // display the amount in the pot
       document.getElementById("pot").innerHTML = "Total Pot: " + obj.pot.pot;
-      
+
       if(obj.timeRemaining > -1)
       {
           document.getElementById("timeRemaining").innerHTML = " Time Left: " + obj.timeRemaining;
@@ -166,6 +166,7 @@
       {
         playerTotalBetString += "Player " + player.id + " (" + player.name
                              + ") Current Bet: " + player.currentBet
+                             + " Wallet: " + player.wallet
                              + " ready: " + player.ready
                              + "\n";
       });

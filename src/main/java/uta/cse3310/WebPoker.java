@@ -159,6 +159,7 @@ public class WebPoker extends WebSocketServer {
                 }
                 if(workingPlayer != null)
                 {
+                    game.removePlayer(idx);
                     game.addPlayer(workingPlayer);
                     game.remove_player_queue(0);  // Remove the player from the queue
                 }
