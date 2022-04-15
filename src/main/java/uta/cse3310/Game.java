@@ -76,21 +76,14 @@ public class Game {
         //winningPlayer = Hand.whoWins(nonFoldedPlayers);
         //winner = winningPlayer.get_id();
 
-
-
         // SETTING TO DEFAULT PLAYER IN ARRAY BC whoWinds doesnt work
         // so other code can be added
 
 
-        for(int i = 0; i < players.size(); i++){
-            if(!players.get(i).get_fold())
-            {
-                Hand h = new Hand(players.get(i).Cards);
-                hands.add(h);
-            }
-        }
+        Hand hand = new Hand(players.get(0).Cards);
 
-        winningPlayer = Hand.whoWins(nonFoldedPlayers);
+        winningPlayer = hand.whoWins(nonFoldedPlayers);
+        winner = winningPlayer.get_id();
 /*
         for(int i = 0; i < hands.size(); i++){
             if(hands.get(i).is_equal(hands.get(i+1)) == true)
@@ -502,7 +495,7 @@ public class Game {
               + " won " + pot.get_pot()/2 + " chips";
             }
         }
-        /*
+/*
             playerMessage = "Player Wallet: " + players[playerID].wallet
                                               + "\n"
                                               + "Player Name: " + players[playerID].name
@@ -675,8 +668,7 @@ public class Game {
         return currentplayer;
     }
 
-    public boolean all_players_bet()
-    {
+    public boolean all_players_bet(){
         for(Player p : players)
         {
             if(p.hasBet == false)
@@ -687,16 +679,14 @@ public class Game {
         return true;
     }
 
-    public void set_all_hasBet()
-    {
+    public void set_all_hasBet(){
         for(Player p : players)
         {
             p.hasBet = false;
         }
     }
 
-    public int max_player_bet()
-    {
+    public int max_player_bet(){
         int temp = -1;
         for(Player p : nonFoldedPlayers)
         {
@@ -708,8 +698,7 @@ public class Game {
         return temp;
     }
 
-    public boolean all_players_ready()
-    {
+    public boolean all_players_ready(){
         for(int i = 0; i < players.size(); i++)
         {
             if(players.get(i).get_ready() != true)
@@ -720,8 +709,7 @@ public class Game {
         return true;
     }
 
-    public int num_players_ready()
-    {
+    public int num_players_ready(){
         int count = 0;
         for(int i = 0; i < players.size(); i++)
         {
@@ -733,8 +721,7 @@ public class Game {
         return count;
     }
 
-    public void set_players_notReady()
-    {
+    public void set_players_notReady(){
         for(int i = 0; i < players.size(); i++)
         {
             players.get(i).ready = false;
