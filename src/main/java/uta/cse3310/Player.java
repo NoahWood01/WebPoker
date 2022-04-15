@@ -81,6 +81,8 @@ public class Player {
 
     private String name;                                    // Player name
 
+    public Hand pHand;
+
     ArrayList<Card> hand = new ArrayList<>();               // Array list for players hand to be passed to cards
     uta.cse3310.Card Cards[] = new uta.cse3310.Card[5];
 

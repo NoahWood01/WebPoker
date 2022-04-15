@@ -80,10 +80,49 @@ public class Game {
         // so other code can be added
 
 
-        Hand hand = new Hand(players.get(0).Cards);
+        //Hand hand = new Hand(players.get(0).Cards);
 
-        winningPlayer = hand.whoWins(nonFoldedPlayers);
-        winner = winningPlayer.get_id();
+        //winningPlayer = hand.whoWins(nonFoldedPlayers);
+        //winner = winningPlayer.get_id();
+
+        for(Player p : nonFoldedPlayers)
+        {
+            p.pHand = new Hand(p.Cards);
+        }
+
+        int i = nonFoldedPlayers.size()-1;
+        boolean tie = false;
+        while( nonFoldedPlayers.size() > 1 && i >= 1)
+        {
+            if(nonFoldedPlayers.get(i).pHand.is_equal(nonFoldedPlayers.get(i-1).pHand))
+            {
+                if(nonFoldedPlayers.size() == 2)
+                {
+                    tie = true;
+                    break;
+                }
+            }
+            else if(nonFoldedPlayers.get(i).pHand.is_better_than(nonFoldedPlayers.get(i-1).pHand))
+            {
+                nonFoldedPlayers.remove(i-1);
+            }
+            else
+            {
+                nonFoldedPlayers.remove(i);
+            }
+            i--;
+        }
+        if(!tie)
+        {
+            winningPlayer = nonFoldedPlayers.get(0);
+            winner = winningPlayer.get_id();
+        }
+        else
+        {
+            winner = -1;
+
+        }
+
 /*
         for(int i = 0; i < hands.size(); i++){
             if(hands.get(i).is_equal(hands.get(i+1)) == true)
@@ -125,6 +164,7 @@ public class Game {
                 winner = 1;
             }
         }
+        */
 
         // update winner wallet
         winnings = pot.reward_pot();
@@ -140,7 +180,7 @@ public class Game {
             nonFoldedPlayers.get(1).add_wallet(pot.reward_pot()/2);
             pot.empty_pot();
         }
-*/
+
 
 
         // After we determine the winner we need to
