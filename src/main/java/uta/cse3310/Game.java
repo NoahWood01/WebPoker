@@ -475,23 +475,24 @@ public class Game {
         else if(phase == 4) phase_04(event);            // Phase 04 logic (Showdown)
         else if(phase == 5) phase_05(event);            // Phase 05 logic (idk)
 
-        if(event.event == UserEventType.FOLD){
-            if(nonFoldedPlayers.size() == 1 && phase != 0)
-            {
-                // if all other players fold
-                // last one standing wins
-                winner = nonFoldedPlayers.get(0).get_id();
-                determine_winner();
-                phase = 5;
-                nonFoldedPlayers.clear();
-                turn = -1;
-                set_players_notReady();
-                timeRemaining = -1;
 
-                determine_player_message();
-            }
+        if(nonFoldedPlayers.size() == 1 && phase != 0)
+        {
+            // if all other players fold
+            // last one standing wins
+            winner = nonFoldedPlayers.get(0).get_id();
+            determine_winner();
+            phase = 5;
+            nonFoldedPlayers.clear();
+            turn = -1;
+            set_players_notReady();
+            timeRemaining = -1;
+            winningPlayer.pHand = new Hand(winningPlayer.Cards);
+            winningPlayer.pHand.get_handName();
+            determine_player_message();
         }
     }
+
 
     public void determine_player_message(){
         if(phase == 0) {
@@ -625,6 +626,8 @@ public class Game {
             turn = -1;
             set_players_notReady();
             timeRemaining = -1;
+            winningPlayer.pHand = new Hand(winningPlayer.Cards);
+            winningPlayer.pHand.get_handName();
         }
         determine_player_message();
         return true;

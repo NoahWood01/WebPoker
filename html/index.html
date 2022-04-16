@@ -3,60 +3,64 @@
 <meta charset="utf-8">
 
 <head>
-  <title>WebPoker Group 5</title>
+  <title>MavPoker</title>
   <link rel="stylesheet" href="page_style.css">
 </head>
 
 <body>
+  <big id="titleText" style="text-align:center">
+    <p style="text-align:center"><big>MavPoker</big></p>
+</big>
+  <hr style="height:5px; width:100%; border-width:0; color:black; background-color:black">
   <p>
-    Welcome to WebPoker with Group 5 of CSE3310.
+      <div id="waitingBody" style="text-align:center">
+          <p id="waitingText" style="text-align:center"></p>
+          <p id="waitingQueue" style="text-align:center"></p>
+      </div>
   </p>
-  <p>
-
-    <!input id="send_text" type="text">
-    <!input type="button" name="send_button" value="send" onclick="send()">
-  </p>
-  <div id="nameInput">
-    <p>
-      name:
-      <input id="sendName" type="text">
-      <input type="button" name="sendName" value="Name" onclick="sendName()">
-    </p>
-  </div>
-  <div id="info_display" style="width: auto;">
-      <p id="phaseNumber"       style="width: auto; white-space: pre-line;"></p>
-      <p id="readyDisplay"      style="width: auto; white-space: pre-line;"></p>
-      <p id="turnNumber"        style="width: auto; white-space: pre-line;"></p>
-      <p id="timeRemaining"     style="width: auto; white-space: pre-line;"></p>
-      <p id ="timeWarning"      style="width: auto; white-space: pre-line;"></p>
-      <p id="info"              style="width: auto; white-space: pre-line;"></p>
-      <p id="playersTotalBets"  style="width: auto; white-space: pre-line;"></p>
-      <p id="pot"               style="width: auto; white-space: pre-line;"></p>
-  </div>
-  <t id="cardstext">Your Cards:</t>
-  <p id="cards">
-      <input type="checkbox" id="card1checkbox">
-      <img id="card1" src="" width="100px">
-      <input type="checkbox" id="card2checkbox">
-      <img id="card2" src="" width="100px">
-      <input type="checkbox" id="card3checkbox">
-      <img id="card3" src="" width="100px">
-      <input type="checkbox" id="card4checkbox">
-      <img id="card4" src="" width="100px">
-      <input type="checkbox" id="card5checkbox">
-      <img id="card5" src="" width="100px">
-  </p>
-  <div id="stand_fold_display">
-    <input type="button" id="sendReady" value="Ready"   onclick="sendEvent(0)">
-    <input type="button" id="sendStand" value="Check"   onclick="sendEvent(1)">
-    <input type="button" id="sendFold"  value="Fold"    onclick="sendEvent(2)">
-    <input type="button" id="sendBet1"   value="Bet 05"  onclick="sendEvent(3)">
-    <input type="button" id="sendBet2"   value="Bet 10"  onclick="sendEvent(4)">
-    <input type="button" id="sendBet3"   value="Bet 20"  onclick="sendEvent(5)">
-    <input type="button" id="sendDraw"  value="Draw"    onclick="sendEvent(7)">
-    <input type="button" id="sendSort"   value="Sort"    onclick="sendEvent(6)">
-
-  </div>
+  <a id="bodyText">
+      <div id="nameInput">
+        <p style="text-align:center">
+          Name:
+          <input id="sendName" type="text" style="text-align:center">
+          <input type="button" name="sendName" value="Connect" onclick="sendName()" >
+        </p>
+      </div>
+      <div id="info_display" style="width: auto;">
+          <p id="phaseNumber"       style="width: auto; white-space: pre-line;"></p>
+          <p id="readyDisplay"      style="width: auto; white-space: pre-line;"></p>
+          <p id="turnNumber"        style="width: auto; white-space: pre-line;"></p>
+          <p id="timeRemaining"     style="width: auto; white-space: pre-line;"></p>
+          <p id ="timeWarning"      style="width: auto; white-space: pre-line;"></p>
+          <p id="info"              style="width: auto; white-space: pre-line;"></p>
+          <p id="playersTotalBets"  style="width: auto; white-space: pre-line;"></p>
+          <p id="pot"               style="width: auto; white-space: pre-line;"></p>
+      </div>
+      <t id="cardstext">Your Cards:</t>
+      <p id="cards" style="text-align:center">
+          <input type="checkbox" id="card1checkbox">
+          <img id="card1" src="" width="100px">
+          <input type="checkbox" id="card2checkbox">
+          <img id="card2" src="" width="100px">
+          <input type="checkbox" id="card3checkbox">
+          <img id="card3" src="" width="100px">
+          <input type="checkbox" id="card4checkbox">
+          <img id="card4" src="" width="100px">
+          <input type="checkbox" id="card5checkbox">
+          <img id="card5" src="" width="100px">
+      </p>
+      <div id="stand_fold_display" style="text-align:center">
+        <input type="button" id="sendReady" value="Ready"   onclick="sendEvent(0)" style="text-align:center">
+        <input type="button" id="sendStand" value="Check"   onclick="sendEvent(1)" style="text-align:center">
+        <input type="button" id="sendFold"  value="Fold"    onclick="sendEvent(2)" style="text-align:center">
+        <input type="button" id="sendBet1"   value="Bet 05"  onclick="sendEvent(3)" style="text-align:center">
+        <input type="button" id="sendBet2"   value="Bet 10"  onclick="sendEvent(4)" style="text-align:center">
+        <input type="button" id="sendBet3"   value="Bet 20"  onclick="sendEvent(5)" style="text-align:center">
+        <input type="button" id="sendDraw"  value="Draw"    onclick="sendEvent(7)" style="text-align:center">
+        <input type="button" id="sendSort"   value="Sort"    onclick="sendEvent(6)" style="text-align:center">
+      </div>
+  </a>
+  <hr style="height:5px; width:100%; border-width:0; color:black; background-color:black">
 
 </body>
 
@@ -114,12 +118,16 @@
       // the term LUT means "look up table".  you will see it sometimes in code written last
       // century.
 
+
+
       for(var i = 0; i < obj.players.length; i++)
       {
           if(obj.players[i].id == playerID)
           {
               playerObj = obj.players[i];
               inQueue = false;
+              document.getElementById('bodyText').style.display = "block";
+              document.getElementById('waitingBody').style.display = "none";
               //console.log(playerObj);
           }
       }
@@ -129,74 +137,26 @@
           {
               playerObj = obj.players[i];
               inQueue = true;
+              document.getElementById('bodyText').style.display = "none";
+              document.getElementById('waitingBody').style.display = "block";
               //console.log(playerObj);
           }
+      }
+      if(obj.players.length == 5)
+      {
+          document.getElementById('waitingText').innerHTML = "Waiting for player spot to open up..."
+            + "\n" + "Players in game (" + obj.players.length + "/5)";
+      }
+      else
+      {
+          document.getElementById('waitingQueue').innerHTML = "Waiting for round to end...";
       }
 
       // display whose turn it is
       document.getElementById("phaseNumber").innerHTML = obj.playerMessage;
 
       // conditionals to hide or display buttons
-      if(obj.phase == 0)
-      {
-          document.getElementById('cards').style.display = "none";
-          document.getElementById('cardstext').style.display = "none";
-          document.getElementById('sendReady').style.display = "block";
-          document.getElementById('sendStand').style.display = "none";
-          document.getElementById('sendFold').style.display = "none";
-          document.getElementById('sendBet1').style.display = "none";
-          document.getElementById('sendBet2').style.display = "none";
-          document.getElementById('sendBet3').style.display = "none";
-          document.getElementById('sendDraw').style.display = "none";
-          document.getElementById('sendSort').style.display = "none";
-      }
-      else if(obj.phase == 1)
-      {
-          document.getElementById('cards').style.display = "block";
-          document.getElementById('cardstext').style.display = "block";
-          document.getElementById('sendReady').style.display = "none";
-          document.getElementById('sendStand').style.display = "block";
-          document.getElementById('sendFold').style.display = "block";
-          document.getElementById('sendBet1').style.display = "block";
-          document.getElementById('sendBet2').style.display = "block";
-          document.getElementById('sendBet3').style.display = "block";
-          document.getElementById('sendDraw').style.display = "none";
-          document.getElementById('sendSort').style.display = "block";
-      }
-      else if(obj.phase == 2)
-      {
-          document.getElementById('sendReady').style.display = "none";
-          document.getElementById('sendStand').style.display = "none";
-          document.getElementById('sendFold').style.display = "none";
-          document.getElementById('sendBet1').style.display = "none";
-          document.getElementById('sendBet2').style.display = "none";
-          document.getElementById('sendBet3').style.display = "none";
-          document.getElementById('sendDraw').style.display = "block";
-          document.getElementById('sendSort').style.display = "block";
-      }
-      else if(obj.phase == 3)
-      {
-          document.getElementById('sendReady').style.display = "none";
-          document.getElementById('sendStand').style.display = "block";
-          document.getElementById('sendFold').style.display = "block";
-          document.getElementById('sendBet1').style.display = "block";
-          document.getElementById('sendBet2').style.display = "block";
-          document.getElementById('sendBet3').style.display = "block";
-          document.getElementById('sendDraw').style.display = "none";
-          document.getElementById('sendSort').style.display = "block";
-      }
-      else if(obj.phase >= 4)
-      {
-          document.getElementById('sendReady').style.display = "block";
-          document.getElementById('sendStand').style.display = "none";
-          document.getElementById('sendFold').style.display = "none";
-          document.getElementById('sendBet1').style.display = "none";
-          document.getElementById('sendBet2').style.display = "none";
-          document.getElementById('sendBet3').style.display = "none";
-          document.getElementById('sendDraw').style.display = "none";
-          document.getElementById('sendSort').style.display = "none";
-      }
-
+      updateButtons(obj);
 
       document.getElementById("info").innerHTML
         = "Player Wallet: " + playerObj.wallet
@@ -207,24 +167,7 @@
       // display the amount in the pot
       document.getElementById("pot").innerHTML = "Total Pot: " + obj.pot.pot;
 
-      if(obj.timeRemaining > -1)
-      {
-          document.getElementById("timeRemaining").innerHTML = " Time Left: " + obj.timeRemaining;
-      }
-      else
-      {
-          document.getElementById("timeRemaining").innerHTML = "";
-      }
-
-
-      if(obj.timeRemaining <= 10 && obj.timeRemaining > -1)
-      {
-          document.getElementById("timeWarning").innerHTML = "Please make a choice or you will be folded!";
-      }
-      else
-      {
-          document.getElementById("timeWarning").innerHTML = "";
-      }
+      displayTime(obj, playerObj);
 
       document.getElementById("info").innerHTML
         = "Player Wallet: " + playerObj.wallet
@@ -240,8 +183,8 @@
       var playerTotalBetString = "";
       obj.players.forEach(player =>
       {
-        playerTotalBetString += "Player " + player.id + " (" + player.name
-                             + ") Current Bet: " + player.currentBet
+        playerTotalBetString += "Player " + player.id + " " + player.name
+                             + "  Current Bet: " + player.currentBet
                              + " Wallet: " + player.wallet
                              + " ready: " + player.ready
                              + "\n";
@@ -249,40 +192,11 @@
       document.getElementById("playersTotalBets").innerHTML = playerTotalBetString;
 
       // display the player's cards
-      var player = playerObj;
-      for(var i = 0; i < 5; i++){
-        // if cards are null str becomes empty so nothing is displayed
-        var str = "";
-        if(player.Cards[i] == null) str = "";
-        else{
-            var card = player.Cards[i];
-            if(card.value == "ACE")             str += "A";
-            else if(card.value == "TWO")        str += "2";
-            else if(card.value == "THREE")      str += "3";
-            else if(card.value == "FOUR")       str += "4";
-            else if(card.value == "FIVE")       str += "5";
-            else if(card.value == "SIX")        str += "6";
-            else if(card.value == "SEVEN")      str += "7";
-            else if(card.value == "EIGHT")      str += "8";
-            else if(card.value == "NINE")       str += "9";
-            else if(card.value == "TEN")        str += "T";
-            else if(card.value == "JACK")       str += "J";
-            else if(card.value == "QUEEN")      str += "Q";
-            else if(card.value == "KING")       str += "K";
+      displayCards(playerObj);
 
-            if(card.suite == "SPADES")         str += "S";
-            else if(card.suite == "HEARTS")    str += "H";
-            else if(card.suite == "CLUBS")     str += "C";
-            else if(card.suite == "DIAMONDS")  str += "D";
 
-            str += ".svg";
-        }
-
-        var cardnumber = "card" + (i+1);
-        document.getElementById(cardnumber).src = str;
-      }
     }
-    console.log("the cardIdx is " + cardIdx);
+    //console.log("the cardIdx is " + cardIdx);
   }
 
   // send info from the buttons where
@@ -455,5 +369,142 @@
     console.log("X display: " + x.style.display);
     if(x.style.display === "none"){ x.style.display = "block"; }
     else{ x.style.display = "none"; }
+  }
+
+  function displayCards(playerObj)
+  {
+      var player = playerObj;
+      for(var i = 0; i < 5; i++){
+        // if cards are null str becomes empty so nothing is displayed
+        var str = "";
+        if(player.Cards[i] == null) str = "";
+        else
+        {
+            var card = player.Cards[i];
+            if(card.value == "ACE")             str += "A";
+            else if(card.value == "TWO")        str += "2";
+            else if(card.value == "THREE")      str += "3";
+            else if(card.value == "FOUR")       str += "4";
+            else if(card.value == "FIVE")       str += "5";
+            else if(card.value == "SIX")        str += "6";
+            else if(card.value == "SEVEN")      str += "7";
+            else if(card.value == "EIGHT")      str += "8";
+            else if(card.value == "NINE")       str += "9";
+            else if(card.value == "TEN")        str += "T";
+            else if(card.value == "JACK")       str += "J";
+            else if(card.value == "QUEEN")      str += "Q";
+            else if(card.value == "KING")       str += "K";
+
+            if(card.suite == "SPADES")         str += "S";
+            else if(card.suite == "HEARTS")    str += "H";
+            else if(card.suite == "CLUBS")     str += "C";
+            else if(card.suite == "DIAMONDS")  str += "D";
+
+            str += ".svg";
+        }
+        var cardnumber = "card" + (i+1);
+        document.getElementById(cardnumber).src = str;
+      }
+  }
+
+  function updateButtons(obj)
+  {
+      if(obj.phase == 0)
+      {
+          document.getElementById('cards').style.display = "none";
+          document.getElementById('cardstext').style.display = "none";
+          document.getElementById("sendReady").style = "text-align:center";
+          document.getElementById('sendStand').style.display = "none";
+          document.getElementById('sendFold').style.display = "none";
+          document.getElementById('sendBet1').style.display = "none";
+          document.getElementById('sendBet2').style.display = "none";
+          document.getElementById('sendBet3').style.display = "none";
+          document.getElementById('sendDraw').style.display = "none";
+          document.getElementById('sendSort').style.display = "none";
+      }
+      else if(obj.phase == 1)
+      {
+          document.getElementById('cards').style = "text-align:center";
+          document.getElementById('cardstext').style = "text-align:center";
+          document.getElementById('sendReady').style.display = "none";
+          document.getElementById('sendStand').style = "text-align:center";
+          document.getElementById('sendFold').style = "text-align:center";
+          document.getElementById('sendBet1').style = "text-align:center";
+          document.getElementById('sendBet2').style = "text-align:center";
+          document.getElementById('sendBet3').style = "text-align:center";
+          document.getElementById('sendDraw').style.display = "none";
+          document.getElementById('sendSort').style = "text-align:center";
+      }
+      else if(obj.phase == 2)
+      {
+          document.getElementById('cards').style = "text-align:center";
+          document.getElementById('cardstext').style = "text-align:center";
+          document.getElementById('sendReady').style.display = "none";
+          document.getElementById('sendStand').style.display = "none";
+          document.getElementById('sendFold').style.display = "none";
+          document.getElementById('sendBet1').style.display = "none";
+          document.getElementById('sendBet2').style.display = "none";
+          document.getElementById('sendBet3').style.display = "none";
+          document.getElementById('sendDraw').style = "text-align:center";
+          document.getElementById('sendSort').style = "text-align:center";
+      }
+      else if(obj.phase == 3)
+      {
+          document.getElementById('cards').style = "text-align:center";
+          document.getElementById('cardstext').style = "text-align:center";
+          document.getElementById('sendReady').style.display = "none";
+          document.getElementById('sendStand').style = "text-align:center";
+          document.getElementById('sendFold').style = "text-align:center";
+          document.getElementById('sendBet1').style = "text-align:center";
+          document.getElementById('sendBet2').style = "text-align:center";
+          document.getElementById('sendBet3').style = "text-align:center";
+          document.getElementById('sendDraw').style.display = "none";
+          document.getElementById('sendSort').style = "text-align:center";
+      }
+      else if(obj.phase >= 4)
+      {
+          alert(obj.winningPlayer.name + " won with a " + obj.winningPlayer.pHand.handname);
+          document.getElementById('cards').style = "text-align:center";
+          document.getElementById('cardstext').style = "text-align:center";
+          document.getElementById("sendReady").style = "text-align:center";
+          document.getElementById('sendStand').style.display = "none";
+          document.getElementById('sendFold').style.display = "none";
+          document.getElementById('sendBet1').style.display = "none";
+          document.getElementById('sendBet2').style.display = "none";
+          document.getElementById('sendBet3').style.display = "none";
+          document.getElementById('sendDraw').style.display = "none";
+          document.getElementById('sendSort').style.display = "none";
+      }
+
+
+
+
+
+
+
+  }
+
+  function displayTime(obj, playerObj)
+  {
+      if(obj.timeRemaining > -1)
+      {
+          document.getElementById("timeRemaining").innerHTML = " Time Left: " + obj.timeRemaining;
+      }
+      else
+      {
+          document.getElementById("timeRemaining").innerHTML = "";
+      }
+
+
+      if(obj.timeRemaining <= 10 && obj.timeRemaining > -1
+          && playerObj.id == obj.currentplayer.id && obj.phase != 0)
+      {
+          document.getElementById("timeWarning").innerHTML = "Please make a choice or you will be folded!";
+      }
+      else
+      {
+          document.getElementById("timeWarning").innerHTML = "";
+      }
+      document.getElementById('timeWarning').style = "text-align:center";
   }
 </script>

@@ -19,16 +19,16 @@ import java.util.Collections;
 
 public class Hand {
     public Card[] cards = new Card[5];
-    public Value first_compare = null;
-    public Value second_compare = null;
-    public Value third_compare = null;
-    public Value fourth_compare = null;
-    public Value fifth_compare = null;
+    private Value first_compare = null;
+    private Value second_compare = null;
+    private Value third_compare = null;
+    private Value fourth_compare = null;
+    private Value fifth_compare = null;
     private int HandRank = -1;
     private int HighCardValue;
     public int otherbestindex;
     public int besthighcardindex;
-    private String handname;
+    public String handname;
 
     // first variable for comparision if both hands are the same
     // represents tiebrackers
@@ -61,7 +61,7 @@ public class Hand {
     // hashmaps to hold
     // enum "value" for
     // comparisons
-    public void mapping(EnumMap<Value, Integer> cardValueMap, HashMap<String, Integer> handValue) 
+    public void mapping(EnumMap<Value, Integer> cardValueMap, HashMap<String, Integer> handValue)
     {
         // use hashmap to put value to "values"
         cardValueMap.put(Value.ACE, 1);
@@ -116,7 +116,7 @@ public class Hand {
     Arrays.sort(suitearr);
 
     // sort value
-    Value[] valuearr = new Value[5]; 
+    Value[] valuearr = new Value[5];
 
     for(int i = 0;i<5;i++)
     {
@@ -319,7 +319,7 @@ public class Hand {
                     cardValueMap.get(cards[2].value) == 11 && cardValueMap.get(cards[3].value) == 12
                     && cardValueMap.get(cards[4].value) == 13) {
                 handName = "Royal Flush";
-            } 
+            }
             else if (cardValueMap.get(cards[0].value) == cardValueMap.get(cards[1].value) - 1 &&
                     cardValueMap.get(cards[1].value) == cardValueMap.get(cards[2].value) - 1 &&
                     cardValueMap.get(cards[2].value) == cardValueMap.get(cards[3].value) - 1 &&
@@ -327,7 +327,7 @@ public class Hand {
                 // test for straight within the flush
                 handName = "Straight Flush";
                 first_compare = cards[4].value;
-            } 
+            }
             else {
                 // anything else is within a flush
                 handName = "Flush";
@@ -336,7 +336,7 @@ public class Hand {
                 third_compare = cards[2].value;
                 fourth_compare = cards[1].value;
             }
-        } 
+        }
         else if (cardValueMap.get(cards[0].value) == cardValueMap.get(cards[1].value) - 1 &&
                 cardValueMap.get(cards[1].value) == cardValueMap.get(cards[2].value) - 1 &&
                 cardValueMap.get(cards[2].value) == cardValueMap.get(cards[3].value) - 1 &&
@@ -344,7 +344,7 @@ public class Hand {
             // test for straight excluding a straight flush
             handName = "Straight";
             first_compare = cards[4].value;
-        } 
+        }
         else if (cardValueMap.get(cards[0].value) == cardValueMap.get(cards[1].value) &&
                 cardValueMap.get(cards[1].value) == cardValueMap.get(cards[2].value) &&
                 cardValueMap.get(cards[2].value) == cardValueMap.get(cards[3].value)) {
@@ -352,7 +352,7 @@ public class Hand {
             handName = "Four-of-a-kind";
             first_compare = cards[0].value;
             second_compare = cards[4].value;
-        } 
+        }
         else if (cardValueMap.get(cards[1].value) == cardValueMap.get(cards[2].value) &&
                 cardValueMap.get(cards[2].value) == cardValueMap.get(cards[3].value) &&
                 cardValueMap.get(cards[3].value) == cardValueMap.get(cards[4].value)) {
@@ -360,7 +360,7 @@ public class Hand {
             handName = "Four-of-a-kind";
             first_compare = cards[1].value;
             second_compare = cards[0].value;
-        } 
+        }
         else if (cardValueMap.get(cards[0].value) == cardValueMap.get(cards[1].value) &&
                 cardValueMap.get(cards[1].value) == cardValueMap.get(cards[2].value) &&
                 cardValueMap.get(cards[3].value) == cardValueMap.get(cards[4].value)) {
@@ -368,7 +368,7 @@ public class Hand {
             handName = "Full House";
             first_compare = cards[0].value;
             second_compare = cards[3].value;
-        } 
+        }
         else if (cardValueMap.get(cards[0].value) == cardValueMap.get(cards[1].value) &&
                 cardValueMap.get(cards[2].value) == cardValueMap.get(cards[3].value) &&
                 cardValueMap.get(cards[3].value) == cardValueMap.get(cards[4].value)) {
@@ -376,7 +376,7 @@ public class Hand {
             handName = "Full House";
             first_compare = cards[2].value;
             second_compare = cards[0].value;
-        } 
+        }
         else if (cardValueMap.get(cards[0].value) == cardValueMap.get(cards[1].value) &&
                 cardValueMap.get(cards[2].value) == cardValueMap.get(cards[3].value)) {
             // test for 3 of a kind at first 3 cards
@@ -384,7 +384,7 @@ public class Hand {
             first_compare = cards[3].value;
             second_compare = cards[1].value;
             third_compare = cards[4].value;
-        } 
+        }
         else if (cardValueMap.get(cards[0].value) == cardValueMap.get(cards[1].value) &&
                 cardValueMap.get(cards[3].value) == cardValueMap.get(cards[4].value)) {
             // test for 3 of a kind at first 3 cards
@@ -392,7 +392,7 @@ public class Hand {
             first_compare = cards[3].value;
             second_compare = cards[1].value;
             third_compare = cards[2].value;
-        } 
+        }
         else if (cardValueMap.get(cards[1].value) == cardValueMap.get(cards[2].value) &&
                 cardValueMap.get(cards[3].value) == cardValueMap.get(cards[4].value)) {
             // test for 3 of a kind at first 3 cards
@@ -400,7 +400,7 @@ public class Hand {
             first_compare = cards[3].value;
             second_compare = cards[1].value;
             third_compare = cards[0].value;
-        } 
+        }
         else if (cardValueMap.get(cards[0].value) == cardValueMap.get(cards[1].value) &&
                 cardValueMap.get(cards[1].value) == cardValueMap.get(cards[2].value)) {
             // test for 3 of a kind at first 3 cards
@@ -408,7 +408,7 @@ public class Hand {
             first_compare = cards[0].value;
             second_compare = cards[4].value;
             third_compare = cards[3].value;
-        } 
+        }
         else if (cardValueMap.get(cards[1].value) == cardValueMap.get(cards[2].value) &&
                 cardValueMap.get(cards[2].value) == cardValueMap.get(cards[3].value)) {
             // test for 3 of a kind at middle 3 cards
@@ -416,7 +416,7 @@ public class Hand {
             first_compare = cards[1].value;
             second_compare = cards[4].value;
             third_compare = cards[0].value;
-        } 
+        }
         else if (cardValueMap.get(cards[2].value) == cardValueMap.get(cards[3].value) &&
                 cardValueMap.get(cards[3].value) == cardValueMap.get(cards[4].value)) {
             // test for 3 of a kind at last 3 cards
@@ -424,7 +424,7 @@ public class Hand {
             first_compare = cards[2].value;
             second_compare = cards[1].value;
             third_compare = cards[0].value;
-        } 
+        }
         else if (cardValueMap.get(cards[0].value) == cardValueMap.get(cards[1].value)) {
             // test for pair at indeces 0-1
             handName = "Pair";
@@ -432,7 +432,7 @@ public class Hand {
             second_compare = cards[4].value;
             third_compare = cards[3].value;
             fourth_compare = cards[2].value;
-        } 
+        }
         else if (cardValueMap.get(cards[1].value) == cardValueMap.get(cards[2].value)) {
             // test for pair at indeces 1-2
             handName = "Pair";
@@ -440,7 +440,7 @@ public class Hand {
             second_compare = cards[4].value;
             third_compare = cards[3].value;
             fourth_compare = cards[0].value;
-        } 
+        }
         else if (cardValueMap.get(cards[2].value) == cardValueMap.get(cards[3].value)) {
             // test for pair at indeces 2-3
             handName = "Pair";
@@ -448,7 +448,7 @@ public class Hand {
             second_compare = cards[4].value;
             third_compare = cards[1].value;
             fourth_compare = cards[0].value;
-        } 
+        }
         else if (cardValueMap.get(cards[3].value) == cardValueMap.get(cards[4].value)) {
             // test for pair at indeced 3-4
             handName = "Pair";
@@ -456,7 +456,7 @@ public class Hand {
             second_compare = cards[2].value;
             third_compare = cards[1].value;
             fourth_compare = cards[0].value;
-        } 
+        }
         else {
             // all else is just a high card
             handName = "High Card";
@@ -466,8 +466,19 @@ public class Hand {
             fourth_compare = cards[1].value;
             fifth_compare = cards[0].value;
         }
-
+        handname = handName;
         return handName;
+    }
+
+    public String get_handName()
+    {
+        EnumMap<Value, Integer> cardValueMap = new EnumMap<Value, Integer>(Value.class);
+        HashMap<String, Integer> handValue = new HashMap<>();
+
+        mapping(cardValueMap, handValue); // pass in maps to map all values
+        Hand.sortHand(this.cards); // sort hand1 based on card values
+
+        return this.determineHand(cardValueMap, handValue);
     }
 
     public boolean is_better_than(Hand H) {
@@ -487,39 +498,39 @@ public class Hand {
 
         if(handValue.get(H1) > handValue.get(H2)){
             return true;
-        } 
+        }
         else if (handValue.get(H1) == handValue.get(H2)) {
             if (first_compare != null && cardValueMap.get(first_compare) > cardValueMap.get(H.first_compare)) {
                 return true;
-            } 
+            }
             else if (first_compare != null && cardValueMap.get(first_compare) < cardValueMap.get(H.first_compare)) {
                 return false;
-            } 
+            }
             else if (second_compare != null
                     && cardValueMap.get(second_compare) > cardValueMap.get(H.second_compare)) {
                 return true;
-            } 
+            }
             else if (second_compare != null
                     && cardValueMap.get(second_compare) < cardValueMap.get(H.second_compare)) {
                 return false;
-            } 
+            }
             else if (third_compare != null && cardValueMap.get(third_compare) > cardValueMap.get(H.third_compare)) {
                 return true;
-            } 
+            }
             else if (third_compare != null && cardValueMap.get(third_compare) < cardValueMap.get(H.third_compare)) {
                 return false;
-            } 
+            }
             else if (fourth_compare != null
                     && cardValueMap.get(fourth_compare) > cardValueMap.get(H.fourth_compare)) {
                 return true;
-            } 
+            }
             else if (fourth_compare != null
                     && cardValueMap.get(fourth_compare) < cardValueMap.get(H.fourth_compare)) {
                 return false;
-            } 
+            }
             else if (fifth_compare != null && cardValueMap.get(fifth_compare) > cardValueMap.get(H.fifth_compare)) {
                 return true;
-            } 
+            }
             else if (fifth_compare != null && cardValueMap.get(fifth_compare) < cardValueMap.get(H.fifth_compare)) {
                 return false;
             }
@@ -544,28 +555,28 @@ public class Hand {
 
         if (handValue.get(H1) != handValue.get(H2)) {
             return false;
-        } 
+        }
         else {
             if (first_compare != null && cardValueMap.get(first_compare) != cardValueMap.get(H.first_compare)) {
                 return false;
-            } 
+            }
             else if (second_compare != null
                     && cardValueMap.get(second_compare) != cardValueMap.get(H.second_compare)) {
                 return false;
-            } 
+            }
             else if (third_compare != null && cardValueMap.get(third_compare) != cardValueMap.get(H.third_compare)) {
                 return false;
-            } 
+            }
             else if (fourth_compare != null
                     && cardValueMap.get(fourth_compare) != cardValueMap.get(H.fourth_compare)) {
                 return false;
-            } 
+            }
             else if (fifth_compare != null && cardValueMap.get(fifth_compare) != cardValueMap.get(H.fifth_compare)) {
                 return false;
-            } 
+            }
             else if (fifth_compare != null && cardValueMap.get(fifth_compare) != cardValueMap.get(H.fifth_compare)) {
                 return false;
-            } 
+            }
             else {
                 return true; // all necessary comparisons are equal
             }
