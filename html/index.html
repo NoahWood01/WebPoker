@@ -33,27 +33,29 @@
       <p id="playersTotalBets"  style="width: auto; white-space: pre-line;"></p>
       <p id="pot"               style="width: auto; white-space: pre-line;"></p>
   </div>
-  <p>
-    Your Cards:
+  <t id="cardstext">Your Cards:</t>
+  <p id="cards">
+      <input type="checkbox" id="card1checkbox">
+      <img id="card1" src="" width="100px">
+      <input type="checkbox" id="card2checkbox">
+      <img id="card2" src="" width="100px">
+      <input type="checkbox" id="card3checkbox">
+      <img id="card3" src="" width="100px">
+      <input type="checkbox" id="card4checkbox">
+      <img id="card4" src="" width="100px">
+      <input type="checkbox" id="card5checkbox">
+      <img id="card5" src="" width="100px">
   </p>
-  <img id="card1" src="" width="100px">
-  <img id="card2" src="" width="100px">
-  <img id="card3" src="" width="100px">
-  <img id="card4" src="" width="100px">
-  <img id="card5" src="" width="100px">
   <div id="stand_fold_display">
-    <input type="button" name="sendReady" value="Ready"   onclick="sendEvent(0)">
-    <input type="button" name="sendStand" value="Stand"   onclick="sendEvent(1)">
-    <input type="button" name="sendFold"  value="Fold"    onclick="sendEvent(2)">
-    <input type="button" name="sendBet"   value="Bet 05"  onclick="sendEvent(3)">
-    <input type="button" name="sendBet"   value="Bet 10"  onclick="sendEvent(4)">
-    <input type="button" name="sendBet"   value="Bet 20"  onclick="sendEvent(5)">
-    <input type="button" name="sendBet"   value="Sort"    onclick="sendEvent(6)">
-    <p>
-      Draw cards (give the card index no spaces) (ex: 123):
-      <input id="send_index" type="text">
-      <input type="button" name="sendDraw" value="Draw" onclick="sendEvent(7)">
-    </p>
+    <input type="button" id="sendReady" value="Ready"   onclick="sendEvent(0)">
+    <input type="button" id="sendStand" value="Check"   onclick="sendEvent(1)">
+    <input type="button" id="sendFold"  value="Fold"    onclick="sendEvent(2)">
+    <input type="button" id="sendBet1"   value="Bet 05"  onclick="sendEvent(3)">
+    <input type="button" id="sendBet2"   value="Bet 10"  onclick="sendEvent(4)">
+    <input type="button" id="sendBet3"   value="Bet 20"  onclick="sendEvent(5)">
+    <input type="button" id="sendDraw"  value="Draw"    onclick="sendEvent(7)">
+    <input type="button" id="sendSort"   value="Sort"    onclick="sendEvent(6)">
+
   </div>
 
 </body>
@@ -64,6 +66,7 @@
   var name;
   var playerObj;
   var cardIdx = 0;
+  var inQueue;
 
   var serverUrl ="ws://" + window.location.hostname + ":8880";
   var connection = new WebSocket(serverUrl);
@@ -76,6 +79,18 @@
     console.log("message: " + evt.data);
     var msg;
     msg = evt.data;
+    inQueue = true;
+
+    document.getElementById('sendReady').style.display = "none";
+    document.getElementById('sendStand').style.display = "none";
+    document.getElementById('sendFold').style.display = "none";
+    document.getElementById('sendBet1').style.display = "none";
+    document.getElementById('sendBet2').style.display = "none";
+    document.getElementById('sendBet3').style.display = "none";
+    document.getElementById('sendDraw').style.display = "none";
+    document.getElementById('sendSort').style.display = "none";
+    document.getElementById('cards').style.display = "none";
+    document.getElementById('cardstext').style.display = "none";
 
     // This is a hack for this example.
     // The only time the WebPoker server sends data just
@@ -104,6 +119,16 @@
           if(obj.players[i].id == playerID)
           {
               playerObj = obj.players[i];
+              inQueue = false;
+              //console.log(playerObj);
+          }
+      }
+      for(var i = 0; i < obj.player_queue.length; i++)
+      {
+          if(obj.players[i].id == playerID)
+          {
+              playerObj = obj.players[i];
+              inQueue = true;
               //console.log(playerObj);
           }
       }
@@ -111,17 +136,68 @@
       // display whose turn it is
       document.getElementById("phaseNumber").innerHTML = obj.playerMessage;
 
-      /*
-      var x = document.getElementById("stand_fold_display");
-      if(x.style.display === "none")
+      // conditionals to hide or display buttons
+      if(obj.phase == 0)
       {
-          x.style.display = "block";
+          document.getElementById('cards').style.display = "none";
+          document.getElementById('cardstext').style.display = "none";
+          document.getElementById('sendReady').style.display = "block";
+          document.getElementById('sendStand').style.display = "none";
+          document.getElementById('sendFold').style.display = "none";
+          document.getElementById('sendBet1').style.display = "none";
+          document.getElementById('sendBet2').style.display = "none";
+          document.getElementById('sendBet3').style.display = "none";
+          document.getElementById('sendDraw').style.display = "none";
+          document.getElementById('sendSort').style.display = "none";
       }
-      else
+      else if(obj.phase == 1)
       {
-          x.style.display = "none";
+          document.getElementById('cards').style.display = "block";
+          document.getElementById('cardstext').style.display = "block";
+          document.getElementById('sendReady').style.display = "none";
+          document.getElementById('sendStand').style.display = "block";
+          document.getElementById('sendFold').style.display = "block";
+          document.getElementById('sendBet1').style.display = "block";
+          document.getElementById('sendBet2').style.display = "block";
+          document.getElementById('sendBet3').style.display = "block";
+          document.getElementById('sendDraw').style.display = "none";
+          document.getElementById('sendSort').style.display = "block";
       }
-      */
+      else if(obj.phase == 2)
+      {
+          document.getElementById('sendReady').style.display = "none";
+          document.getElementById('sendStand').style.display = "none";
+          document.getElementById('sendFold').style.display = "none";
+          document.getElementById('sendBet1').style.display = "none";
+          document.getElementById('sendBet2').style.display = "none";
+          document.getElementById('sendBet3').style.display = "none";
+          document.getElementById('sendDraw').style.display = "block";
+          document.getElementById('sendSort').style.display = "block";
+      }
+      else if(obj.phase == 3)
+      {
+          document.getElementById('sendReady').style.display = "none";
+          document.getElementById('sendStand').style.display = "block";
+          document.getElementById('sendFold').style.display = "block";
+          document.getElementById('sendBet1').style.display = "block";
+          document.getElementById('sendBet2').style.display = "block";
+          document.getElementById('sendBet3').style.display = "block";
+          document.getElementById('sendDraw').style.display = "none";
+          document.getElementById('sendSort').style.display = "block";
+      }
+      else if(obj.phase >= 4)
+      {
+          document.getElementById('sendReady').style.display = "block";
+          document.getElementById('sendStand').style.display = "none";
+          document.getElementById('sendFold').style.display = "none";
+          document.getElementById('sendBet1').style.display = "none";
+          document.getElementById('sendBet2').style.display = "none";
+          document.getElementById('sendBet3').style.display = "none";
+          document.getElementById('sendDraw').style.display = "none";
+          document.getElementById('sendSort').style.display = "none";
+      }
+
+
       document.getElementById("info").innerHTML
         = "Player Wallet: " + playerObj.wallet
         + "\n"
@@ -262,16 +338,78 @@
     else if(option == 7){                           // event type is DRAW
       eventType = "DRAW";
 
+      console.log(document.getElementById('card1checkbox').checked)
+      if(document.getElementById('card1checkbox').checked == true)
+      {
+          for(var i = 0; i < 3; i++)
+          {
+              if(indexes[i] == 0)
+              {
+                  indexes[i] = 1;
+                  break;
+              }
+          }
+      }
+      if(document.getElementById('card2checkbox').checked == true)
+      {
+          for(var i = 0; i < 3; i++)
+          {
+              if(indexes[i] == 0)
+              {
+                  indexes[i] = 2;
+                  break;
+              }
+          }
+      }
+      if(document.getElementById('card3checkbox').checked == true)
+      {
+          for(var i = 0; i < 3; i++)
+          {
+              if(indexes[i] == 0)
+              {
+                  indexes[i] = 3;
+                  break;
+              }
+          }
+      }
+      if(document.getElementById('card4checkbox').checked == true)
+      {
+          for(var i = 0; i < 3; i++)
+          {
+              if(indexes[i] == 0)
+              {
+                  indexes[i] = 4;
+                  break;
+              }
+          }
+      }
+      if(document.getElementById('card5checkbox').checked == true)
+      {
+          for(var i = 0; i < 3; i++)
+          {
+              if(indexes[i] == 0)
+              {
+                  indexes[i] = 5;
+                  break;
+              }
+          }
+      }
+
+      for(var i; i < 3; i++)
+      {
+          if(indexes[i] != 0)
+          {
+              amountDraw++;
+              break;
+          }
+      }
+      document.getElementById('card1checkbox').checked = false;
+      document.getElementById('card2checkbox').checked = false;
+      document.getElementById('card3checkbox').checked = false;
+      document.getElementById('card4checkbox').checked = false;
+      document.getElementById('card5checkbox').checked = false;
       // get the indexes of the cards
-      var str = document.getElementById("send_index").value;
-      arr = str.split("");
-      var iteration = arr.length;
-
-      if(arr.length > 3) iteration = 3;                                             // Prevent for loop from iterating more than 3 times
-
-      for(var i = 0; i < iteration; i++) indexes[i] = parseInt(arr[i], 10);         // parse and store the indexes as ints
     }
-
     // create the object to be sent to the game server
     const msg = {
         event: eventType,
