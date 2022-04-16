@@ -131,68 +131,72 @@
               //console.log(playerObj);
           }
       }
-      for(var i = 0; i < obj.player_queue.length; i++)
+      if(obj.player_queue.length != 0)
       {
-          if(obj.players[i].id == playerID)
+          for(var i = 0; i < obj.player_queue.length; i++)
           {
-              playerObj = obj.players[i];
-              inQueue = true;
-              document.getElementById('bodyText').style.display = "none";
-              document.getElementById('waitingBody').style.display = "block";
-              //console.log(playerObj);
+            try
+            {
+              if(obj.players_queue[i].id == playerID)
+              {
+                  playerObj = obj.players_queue[i];
+                  inQueue = true;
+                  document.getElementById('bodyText').style.display = "none";
+                  document.getElementById('waitingBody').style.display = "block";
+                  //console.log(playerObj);
+              }
+            } catch(error)
+            {
+              console.log(error);
+            }
           }
       }
-      if(obj.players.length == 5)
+      
+      if(obj.players.length == 5 && inQueue == true)
       {
           document.getElementById('waitingText').innerHTML = "Waiting for player spot to open up..."
             + "\n" + "Players in game (" + obj.players.length + "/5)";
       }
-      else
+      else if(inQueue == true)
       {
           document.getElementById('waitingQueue').innerHTML = "Waiting for round to end...";
       }
-
-      // display whose turn it is
-      document.getElementById("phaseNumber").innerHTML = obj.playerMessage;
-
-      // conditionals to hide or display buttons
-      updateButtons(obj);
-
-      document.getElementById("info").innerHTML
-        = "Player Wallet: " + playerObj.wallet
-        + "\n"
-        + "Player Name: "   + playerObj.name
-        + "\n"
-        + "Player Id: "     + playerObj.id;
-      // display the amount in the pot
-      document.getElementById("pot").innerHTML = "Total Pot: " + obj.pot.pot;
-
-      displayTime(obj, playerObj);
-
-      document.getElementById("info").innerHTML
-        = "Player Wallet: " + playerObj.wallet
-        + "\n"
-        + "Player Name: "   + playerObj.name
-        + "\n"
-        + "Player Id: "     + playerObj.id;
-
-      // display the amount in the pot
-      document.getElementById("pot").innerHTML = "Total Pot: " + obj.pot.pot;
-
-      // display the total bets of all players
-      var playerTotalBetString = "";
-      obj.players.forEach(player =>
+      else 
       {
-        playerTotalBetString += "Player " + player.id + " " + player.name
-                             + "  Current Bet: " + player.currentBet
-                             + " Wallet: " + player.wallet
-                             + " ready: " + player.ready
-                             + "\n";
-      });
-      document.getElementById("playersTotalBets").innerHTML = playerTotalBetString;
+          // display whose turn it is
+          document.getElementById("phaseNumber").innerHTML = obj.playerMessage;
 
-      // display the player's cards
-      displayCards(playerObj);
+          // conditionals to hide or display buttons
+          updateButtons(obj);
+
+          document.getElementById("info").innerHTML
+            = "Player Wallet: " + playerObj.wallet
+            + "\n"
+            + "Player Name: "   + playerObj.name
+            + "\n"
+            + "Player Id: "     + playerObj.id;
+          // display the amount in the pot
+          document.getElementById("pot").innerHTML = "Total Pot: " + obj.pot.pot;
+
+          displayTime(obj, playerObj);
+
+          // display the total bets of all players
+          var playerTotalBetString = "";
+          obj.players.forEach(player =>
+          {
+            playerTotalBetString += "Player " + player.id + " " + player.name
+                                + "  Current Bet: " + player.currentBet
+                                + " Wallet: " + player.wallet
+                                + " ready: " + player.ready
+                                + "\n";
+          });
+          document.getElementById("playersTotalBets").innerHTML = playerTotalBetString;
+
+          // display the player's cards
+          displayCards(playerObj);
+      }
+
+      
 
 
     }
