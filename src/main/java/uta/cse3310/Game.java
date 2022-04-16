@@ -123,61 +123,20 @@ public class Game {
 
         }
 
-/*
-        for(int i = 0; i < hands.size(); i++){
-            if(hands.get(i).is_equal(hands.get(i+1)) == true)
-            {
-                System.out.println("TIE");
-                // will add tie logic shortly
-                winner = -1;
-            }
-            else if(hands.get(i).is_better_than(hands.get(i+1)))
-            {
-                System.out.println("player " + i + " wins");
-                winner = i;
-            }
-            else
-            {
-                System.out.println("Player " + (i+1) + " wins");
-                winner = i + 1;
-            }
-        }
-
-
-        // only compare when there is not 1 player
-        if(nonFoldedPlayers.size() > 1)
-        {
-            if(hands.get(0).is_equal(hands.get(1)) == true)
-            {
-                System.out.println("TIE");
-                // will add tie logic shortly
-                winner = -1;
-            }
-            else if(hands.get(0).is_better_than(hands.get(1)))
-            {
-                System.out.println("player " + "0" + " wins");
-                winner = 0;
-            }
-            else
-            {
-                System.out.println("Player " + "1" + " wins");
-                winner = 1;
-            }
-        }
-        */
-
         // update winner wallet
         winnings = pot.reward_pot();
         if(winner != -1)
         {
             Player workingPlayer = get_player(winner);
-            workingPlayer.add_wallet(pot.reward_pot());
+            workingPlayer.add_wallet(winnings);
+            winStr = String.valueOf(winnings);
             pot.empty_pot();
         }
         else
         {
             nonFoldedPlayers.get(0).add_wallet(pot.reward_pot()/2);
             nonFoldedPlayers.get(1).add_wallet(pot.reward_pot()/2);
+            winStr = String.valueOf(winnings/2);
             pot.empty_pot();
         }
 
@@ -431,7 +390,7 @@ public class Game {
         deck.clear();
         create_deck();
         shuffle_deck();
-        winnings = 0;
+
         phase = 0;
 
         determine_player_message();
@@ -528,33 +487,14 @@ public class Game {
             if(winner != -1){
               playerMessage = "Winner: Player "
               + winningPlayer.get_id() + " (" + winningPlayer.get_name() + ")"
-              + " won " + winnings + " chips";
+              + " won " + winStr + " chips";
             }
             else{
               // tie situation
               playerMessage = "Tie! Both Players"
-              + " won " + pot.get_pot()/2 + " chips";
+              + " won " + winnings/2 + " chips";
             }
         }
-/*
-            playerMessage = "Player Wallet: " + players[playerID].wallet
-                                              + "\n"
-                                              + "Player Name: " + players[playerID].name
-                                              + "\n"
-                                              + "Player Id: " + players[playerID].id
-                                              + "Total Pot: " + pot.pot;
-
-          var x = document.getElementById("stand_fold_display");
-
-          if(x.style.display === "none")
-          {
-              x.style.display = "block";
-          }
-          else
-          {
-              x.style.display = "none";
-          }
-*/
     }
 
     /*
@@ -1040,7 +980,8 @@ public class Game {
     int turn = -1;
     // do not change these or display will break
     int winner = -1;
-    int winnings;
+    int winnings = -1;
+    String winStr = "";
     // 0 will be pregame
     // 1 will be first bet phase
     // 2 wil be draw phase

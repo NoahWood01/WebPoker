@@ -463,7 +463,16 @@
       }
       else if(obj.phase >= 4)
       {
-          alert(obj.winningPlayer.name + " won with a " + obj.winningPlayer.pHand.handname);
+          if(obj.winner != -1)
+          {
+              alert(obj.winningPlayer.name + " won" + " with a "
+                + obj.winningPlayer.pHand.handname);
+          }
+          else
+          {
+              alert("Tie!");
+          }
+
           document.getElementById('cards').style = "text-align:center";
           document.getElementById('cardstext').style = "text-align:center";
           document.getElementById("sendReady").style = "text-align:center";
@@ -475,13 +484,6 @@
           document.getElementById('sendDraw').style.display = "none";
           document.getElementById('sendSort').style.display = "none";
       }
-
-
-
-
-
-
-
   }
 
   function displayTime(obj, playerObj)
@@ -500,6 +502,10 @@
           && playerObj.id == obj.currentplayer.id && obj.phase != 0)
       {
           document.getElementById("timeWarning").innerHTML = "Please make a choice or you will be folded!";
+      }
+      else if( obj.phase != 0 && playerObj.id == obj.currentplayer.id )
+      {
+          document.getElementById("timeWarning").innerHTML = "It is your turn";
       }
       else
       {
