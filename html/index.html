@@ -9,7 +9,7 @@
 
 <body>
   <big id="titleText" style="text-align:center">
-    <p style="text-align:center"><big>MavPoker</big></p>
+    <p style="text-align:center"><big><big><b>MavPoker</b></big></big></p>
 </big>
   <hr style="height:5px; width:100%; border-width:0; color:black; background-color:black">
   <p>
@@ -52,6 +52,7 @@
       <div id="stand_fold_display" style="text-align:center">
         <input type="button" id="sendReady" value="Ready"   onclick="sendEvent(0)" style="text-align:center">
         <input type="button" id="sendStand" value="Check"   onclick="sendEvent(1)" style="text-align:center">
+        <input type="button" id="sendCall" value="Call"   onclick="sendEvent(8)" style="text-align:center">
         <input type="button" id="sendFold"  value="Fold"    onclick="sendEvent(2)" style="text-align:center">
         <input type="button" id="sendBet1"   value="Bet 05"  onclick="sendEvent(3)" style="text-align:center">
         <input type="button" id="sendBet2"   value="Bet 10"  onclick="sendEvent(4)" style="text-align:center">
@@ -62,6 +63,42 @@
   </a>
   <hr style="height:5px; width:100%; border-width:0; color:black; background-color:black">
 
+  <input type="button" id="infoButton" value="Toggle Info" onclick="toggleInfo()" style="text-align:center">
+  <p id="info">
+    <big><b id="info1">Five Card Draw Poker</b></big>
+    <p id="info1text">
+      This version of Five Card Draw is played with a standard 52-card deck with two to five players.
+    </p>
+    <big id="info2">
+      <b>First Phase Betting</b>
+    </big>
+    <p id="info2text">
+      Before given cards, each player must play an ante into the pot. Once the ante is placed, all players 
+      will receive their cards and the first phase of betting will begin. Each player can 
+      place a bet that all players must match or they will have to fold, unless they have bet their entire wallet.
+    </p>
+    <big id="info3">
+      <b>Second Phase Drawing</b>
+    </big>
+    <p id="info3text">
+      During this phase, all players may swap up to three cards in their hand in hopes of getting better cards. No bets
+      are placed during this round.
+    </p>
+    <big id="info4">
+      <b>Third Phase Betting</b>
+    </big>
+    <p id="info4text">
+      Like in the first bet phase, all players each player can 
+      place a bet that all players must match or they will have to fold, unless they have bet their entire wallet.
+    </p>
+    <big id="info5">
+      <b>Last Phase Showdown</b>
+    </big>
+    <p id="info5text">
+      After the second betting phase, the pot will be awarded to the highest ranking hand with tie breakers going 
+      down to all five cards if needed. If there is still a tie, the pot will be split between the winning players.
+    </p>
+  </p>
 </body>
 
 </html>
@@ -71,6 +108,7 @@
   var playerObj;
   var cardIdx = 0;
   var inQueue;
+  var infoToggle = false;
 
   var serverUrl ="ws://" + window.location.hostname + ":8880";
   var connection = new WebSocket(serverUrl);
@@ -88,6 +126,7 @@
     document.getElementById('sendReady').style.display = "none";
     document.getElementById('sendStand').style.display = "none";
     document.getElementById('sendFold').style.display = "none";
+    document.getElementById('sendCall').style.display = "none";
     document.getElementById('sendBet1').style.display = "none";
     document.getElementById('sendBet2').style.display = "none";
     document.getElementById('sendBet3').style.display = "none";
@@ -95,6 +134,7 @@
     document.getElementById('sendSort').style.display = "none";
     document.getElementById('cards').style.display = "none";
     document.getElementById('cardstext').style.display = "none";
+    document.getElementById('infoButton').style = "text-align:center";
 
     // This is a hack for this example.
     // The only time the WebPoker server sends data just
@@ -328,6 +368,10 @@
       document.getElementById('card5checkbox').checked = false;
       // get the indexes of the cards
     }
+    else if(option == 8)
+    {
+      eventType = "CALL";
+    }
     // create the object to be sent to the game server
     const msg = {
         event: eventType,
@@ -419,6 +463,7 @@
           document.getElementById('cardstext').style.display = "none";
           document.getElementById("sendReady").style = "text-align:center";
           document.getElementById('sendStand').style.display = "none";
+          document.getElementById('sendCall').style.display = "none";
           document.getElementById('sendFold').style.display = "none";
           document.getElementById('sendBet1').style.display = "none";
           document.getElementById('sendBet2').style.display = "none";
@@ -432,6 +477,7 @@
           document.getElementById('cardstext').style = "text-align:center";
           document.getElementById('sendReady').style.display = "none";
           document.getElementById('sendStand').style = "text-align:center";
+          document.getElementById('sendCall').style = "text-align:center";
           document.getElementById('sendFold').style = "text-align:center";
           document.getElementById('sendBet1').style = "text-align:center";
           document.getElementById('sendBet2').style = "text-align:center";
@@ -445,6 +491,7 @@
           document.getElementById('cardstext').style = "text-align:center";
           document.getElementById('sendReady').style.display = "none";
           document.getElementById('sendStand').style.display = "none";
+          document.getElementById('sendCall').style.display = "none";
           document.getElementById('sendFold').style.display = "none";
           document.getElementById('sendBet1').style.display = "none";
           document.getElementById('sendBet2').style.display = "none";
@@ -458,6 +505,7 @@
           document.getElementById('cardstext').style = "text-align:center";
           document.getElementById('sendReady').style.display = "none";
           document.getElementById('sendStand').style = "text-align:center";
+          document.getElementById('sendCall').style = "text-align:center";
           document.getElementById('sendFold').style = "text-align:center";
           document.getElementById('sendBet1').style = "text-align:center";
           document.getElementById('sendBet2').style = "text-align:center";
@@ -482,11 +530,44 @@
           document.getElementById("sendReady").style = "text-align:center";
           document.getElementById('sendStand').style.display = "none";
           document.getElementById('sendFold').style.display = "none";
+          document.getElementById('sendCall').style.display = "none";
           document.getElementById('sendBet1').style.display = "none";
           document.getElementById('sendBet2').style.display = "none";
           document.getElementById('sendBet3').style.display = "none";
           document.getElementById('sendDraw').style.display = "none";
           document.getElementById('sendSort').style.display = "none";
+      }
+  }
+
+  function toggleInfo()
+  {
+      if(infoToggle == false)
+      {
+        infoToggle = true;
+        document.getElementById('info1').style.display = "none";
+        document.getElementById('info2').style.display = "none";
+        document.getElementById('info3').style.display = "none";
+        document.getElementById('info4').style.display = "none";
+        document.getElementById('info5').style.display = "none";
+        document.getElementById('info1text').style.display = "none";
+        document.getElementById('info2text').style.display = "none";
+        document.getElementById('info3text').style.display = "none";
+        document.getElementById('info4text').style.display = "none";
+        document.getElementById('info5text').style.display = "none";
+      }
+      else 
+      {
+        infoToggle = false;
+        document.getElementById('info1').style.display = "block";
+        document.getElementById('info2').style.display = "block";
+        document.getElementById('info3').style.display = "block";
+        document.getElementById('info4').style.display = "block";
+        document.getElementById('info5').style.display = "block";
+        document.getElementById('info1text').style.display = "block";
+        document.getElementById('info2text').style.display = "block";
+        document.getElementById('info3text').style.display = "block";
+        document.getElementById('info4text').style.display = "block";
+        document.getElementById('info5text').style.display = "block";
       }
   }
 

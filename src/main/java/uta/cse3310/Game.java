@@ -210,7 +210,7 @@ public class Game {
         }
         else if(players.size() >= 2 && num_players_ready() >= 2)
         {
-            timeRemaining = 10;
+            timeRemaining = 30;
         }
 
         determine_player_message();
@@ -236,8 +236,15 @@ public class Game {
                 }
                 //moveOn = true;
             }
+            else if(event.event == UserEventType.CALL)
+            {
+                call_bet(event.playerID, event);
+                System.out.println("WORKING");
+                moveOn = true;
+            }
             else if(event.event == UserEventType.STAND && all_bets_equal())
             {
+                System.out.println("WORKING");
                 player_stand(currentplayer);
                 currentplayer.hasBet = true;
                 moveOn = true;
@@ -330,6 +337,11 @@ public class Game {
                     moveOn = true;
                 }
                 //moveOn = true;
+            }
+            else if(event.event == UserEventType.CALL)
+            {
+                call_bet(event.playerID, event);
+                moveOn = true;
             }
             else if(event.event == UserEventType.STAND && all_bets_equal())
             {
@@ -512,10 +524,14 @@ public class Game {
             Player workingPlayer = player_queue.get(0);
             remove_player_queue(0);
             addPlayer(workingPlayer);
-            if(players.size() == 5)
+            if(players.size() == 5 || player_queue.size() == 0)
             {
                 return true;
             }
+        }
+        if(players.size() == 0)
+        {
+            phase = 0;
         }
         if(players.size() == 0 || timeRemaining == -1)
         {
@@ -945,6 +961,24 @@ public class Game {
         if(event.amount_to_bet > workingPlayer.get_wallet())
         {
             event.amount_to_bet = workingPlayer.get_wallet();
+        }
+        workingPlayer.subtract_wallet(event.amount_to_bet);
+        workingPlayer.set_current_bet(event.amount_to_bet);
+        pot.add_to_pot(event.amount_to_bet);
+    }
+
+    public void call_bet(int playerId, UserEvent event)
+    {
+        Player workingPlayer = get_player(playerId);
+        workingPlayer.hasBet = true;
+        int betDifference = max_player_bet() - workingPlayer.currentBet;
+        if( betDifference >= 0 && (workingPlayer.wallet - betDifference) >= 0)
+        {
+            event.amount_to_bet = betDifference;
+        }
+        else 
+        {
+            event.amount_to_bet = workingPlayer.wallet;
         }
         workingPlayer.subtract_wallet(event.amount_to_bet);
         workingPlayer.set_current_bet(event.amount_to_bet);
