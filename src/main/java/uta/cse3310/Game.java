@@ -92,6 +92,7 @@ public class Game {
 
         int i = nonFoldedPlayers.size()-1;
         boolean tie = false;
+        int failingCounter = 0;
         while( nonFoldedPlayers.size() > 1 && i >= 1)
         {
             if(nonFoldedPlayers.get(i).pHand.is_equal(nonFoldedPlayers.get(i-1).pHand))
@@ -111,6 +112,12 @@ public class Game {
                 nonFoldedPlayers.remove(i);
             }
             i--;
+            // shouldn't be needed but just in case.
+            failingCounter++;
+            if(failingCounter >= 25)
+            {
+                break;
+            }
         }
         if(!tie)
         {
@@ -139,8 +146,6 @@ public class Game {
             winStr = String.valueOf(winnings/2);
             pot.empty_pot();
         }
-
-
 
         // After we determine the winner we need to
         // Save the winner
@@ -239,12 +244,10 @@ public class Game {
             else if(event.event == UserEventType.CALL)
             {
                 call_bet(event.playerID, event);
-                System.out.println("WORKING");
                 moveOn = true;
             }
             else if(event.event == UserEventType.STAND && all_bets_equal())
             {
-                System.out.println("WORKING");
                 player_stand(currentplayer);
                 currentplayer.hasBet = true;
                 moveOn = true;
@@ -446,26 +449,11 @@ public class Game {
         else if(phase == 4) phase_04(event);            // Phase 04 logic (Showdown)
         else if(phase == 5) phase_05(event);            // Phase 05 logic (idk)
 
-
-        if(nonFoldedPlayers.size() == 1 && phase != 0)
-        {
-            // if all other players fold
-            // last one standing wins
-            winner = nonFoldedPlayers.get(0).get_id();
-            determine_winner();
-            phase = 5;
-            nonFoldedPlayers.clear();
-            turn = -1;
-            set_players_notReady();
-            timeRemaining = -1;
-            winningPlayer.pHand = new Hand(winningPlayer.Cards);
-            winningPlayer.pHand.get_handName();
-            determine_player_message();
-        }
     }
 
 
     public void determine_player_message(){
+        highestBet = max_player_bet();
         if(phase == 0) {
             playerMessage = "Phase: PreGame"
                           + "\n"
@@ -519,7 +507,7 @@ public class Game {
      */
     public boolean update()
     {
-        while(phase == 0 && players.size() < 5 && player_queue.size() > 0)
+        while((phase == 0 || phase == 5) && players.size() < 5 && player_queue.size() > 0)
         {
             Player workingPlayer = player_queue.get(0);
             remove_player_queue(0);
@@ -570,7 +558,7 @@ public class Game {
             }
         }
 
-        if(nonFoldedPlayers.size() == 1 && phase != 0)
+        if(nonFoldedPlayers.size() == 1 && phase != 0 && phase != 5)
         {
             // if all other players fold
             // last one standing wins
@@ -668,7 +656,7 @@ public class Game {
     }
 
     public boolean all_players_bet(){
-        for(Player p : players)
+        for(Player p : nonFoldedPlayers)
         {
             if(p.hasBet == false)
             {
@@ -735,6 +723,7 @@ public class Game {
         currentplayer.folded = true;
         //nonFoldedPlayers.remove(players.get(turn));
         nonFoldedPlayers.remove(currentplayer);
+        startingplayer = nonFoldedPlayers.get(0);
         turn = next_player_bet();
         currentplayer = next_player_bet_player();
         timeRemaining = 30;
@@ -1012,6 +1001,7 @@ public class Game {
     // round - these are used with javascript to determine certain displays
     public int phase;
     int turn = -1;
+    public int highestBet;
     // do not change these or display will break
     int winner = -1;
     int winnings = -1;

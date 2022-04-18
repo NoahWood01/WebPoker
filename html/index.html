@@ -30,11 +30,12 @@
           <p id="phaseNumber"       style="width: auto; white-space: pre-line;"></p>
           <p id="readyDisplay"      style="width: auto; white-space: pre-line;"></p>
           <p id="turnNumber"        style="width: auto; white-space: pre-line;"></p>
-          <p id="timeRemaining"     style="width: auto; white-space: pre-line;"></p>
-          <p id ="timeWarning"      style="width: auto; white-space: pre-line;"></p>
+          <b><p id="timeRemaining"     style="width: auto; white-space: pre-line;"></p></b>
+          <b><p id ="timeWarning"      style="width: auto; white-space: pre-line;"></p></b>
+          <p id="turnHelp"          style="width: auto; white-space: pre-line;"></p>
           <p id="info"              style="width: auto; white-space: pre-line;"></p>
           <p id="playersTotalBets"  style="width: auto; white-space: pre-line;"></p>
-          <p id="pot"               style="width: auto; white-space: pre-line;"></p>
+          <b><p id="pot"               style="width: auto; white-space: pre-line;"></p></b>
       </div>
       <t id="cardstext">Your Cards:</t>
       <p id="cards" style="text-align:center">
@@ -64,7 +65,7 @@
   <hr style="height:5px; width:100%; border-width:0; color:black; background-color:black">
 
   <input type="button" id="infoButton" value="Toggle Info" onclick="toggleInfo()" style="text-align:center">
-  <p id="info">
+  <p id="infoToggle">
     <big><b id="info1">Five Card Draw Poker</b></big>
     <p id="info1text">
       This version of Five Card Draw is played with a standard 52-card deck with two to five players.
@@ -296,7 +297,6 @@
     else if(option == 7){                           // event type is DRAW
       eventType = "DRAW";
 
-      console.log(document.getElementById('card1checkbox').checked)
       if(document.getElementById('card1checkbox').checked == true)
       {
           for(var i = 0; i < 3; i++)
@@ -590,12 +590,31 @@
       }
       else if( obj.phase != 0 && playerObj.id == obj.currentplayer.id )
       {
-          document.getElementById("timeWarning").innerHTML = "It is your turn";
+          document.getElementById("timeWarning").innerHTML = "It is your turn!";
       }
       else
       {
           document.getElementById("timeWarning").innerHTML = "";
       }
+
+      if(obj.phase == 1 && playerObj.id == obj.currentplayer.id)
+      {
+        document.getElementById('turnHelp').innerHTML = "Your bet must match the highest to keep playing. Total per player: " + obj.highestBet;
+      }
+      else if(obj.phase == 2 && playerObj.id == obj.currentplayer.id)
+      {
+        document.getElementById('turnHelp').innerHTML = "Draw up to 3 selected cards.";
+      }
+      else if(obj.phase == 3 && playerObj.id == obj.currentplayer.id)
+      {
+        document.getElementById('turnHelp').innerHTML = "Your bet must match the highest to keep playing. Total per player: " + obj.highestBet;
+      }
+      else 
+      {
+        document.getElementById('turnHelp').innerHTML = "";
+      }
+
       document.getElementById('timeWarning').style = "text-align:center";
+      document.getElementById('turnHelp').style = "text-align:center";
   }
 </script>
