@@ -87,6 +87,7 @@ public class Player {
     uta.cse3310.Card Cards[] = new uta.cse3310.Card[5];
 
     public boolean folded = false;                         // boolean to check if the player has folded in the round
+    public boolean canCheck = true;
     private boolean stand = false;
     public boolean ready = false;
     public boolean hasBet = false;

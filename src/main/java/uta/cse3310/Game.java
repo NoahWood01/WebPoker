@@ -620,28 +620,20 @@ public class Game {
 
     public Player next_player_bet_player()
     {
-        /*
-        Player temp = nonFoldedPlayers.get(0);
-        for(int i = 1; i < nonFoldedPlayers.size(); i++)
-        {
-            if(temp.get_bet() < nonFoldedPlayers.get(i).get_bet())
-            {
-                return temp;
-            }
-            else if(temp.get_bet() > nonFoldedPlayers.get(i).get_bet())
-            {
-                return nonFoldedPlayers.get(i);
-            }
-            temp = nonFoldedPlayers.get(i);
-        }
-        return startingplayer;
-        */
         if(all_bets_equal())
         {
+            for(Player p : nonFoldedPlayers)
+            {
+                p.canCheck = true;
+            }
             nextPlayer();
         }
         else
         {
+            for(Player p : nonFoldedPlayers)
+            {
+                p.canCheck = false;
+            }
             nextPlayer();
             while(currentplayer.wallet == 0 && !all_bets_equal())
             {
@@ -670,6 +662,7 @@ public class Game {
         for(Player p : players)
         {
             p.hasBet = false;
+            p.canCheck = true;
         }
     }
 
@@ -946,14 +939,17 @@ public class Game {
     public void place_bet(int playerId, UserEvent event){
         Player workingPlayer = get_player(playerId);
         workingPlayer.hasBet = true;
+        int amount = event.amount_to_bet;
+        call_bet(playerId, event);
         //Check if player is betting more than they have, change bet to whatever is left in their wallet.
-        if(event.amount_to_bet > workingPlayer.get_wallet())
+        if(amount > workingPlayer.get_wallet())
         {
-            event.amount_to_bet = workingPlayer.get_wallet();
+            amount = workingPlayer.get_wallet();
         }
-        workingPlayer.subtract_wallet(event.amount_to_bet);
-        workingPlayer.set_current_bet(event.amount_to_bet);
-        pot.add_to_pot(event.amount_to_bet);
+        
+        workingPlayer.subtract_wallet(amount);
+        workingPlayer.set_current_bet(amount);
+        pot.add_to_pot(amount);
     }
 
     public void call_bet(int playerId, UserEvent event)

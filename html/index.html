@@ -9,7 +9,9 @@
 
 <body>
   <big id="titleText" style="text-align:center">
-    <p style="text-align:center"><big><big><b>MavPoker</b></big></big></p>
+    <p style="text-align:center"><img id="mav1" src="UT_Arlington_Mavericks_logo.png" width="100px">
+      <big><big><b>MavPoker</b></big></big>
+      <img id="mav2" src="UT_Arlington_Mavericks_logo.png" width="100px"></p>
 </big>
   <hr style="height:5px; width:100%; border-width:0; color:black; background-color:black">
   <p>
@@ -35,7 +37,9 @@
           <p id="turnHelp"          style="width: auto; white-space: pre-line;"></p>
           <p id="info"              style="width: auto; white-space: pre-line;"></p>
           <p id="playersTotalBets"  style="width: auto; white-space: pre-line;"></p>
-          <b><p id="pot"               style="width: auto; white-space: pre-line;"></p></b>
+          <b>
+            <img id="chips" src="chips.png" width="150px">
+            <p id="pot"               style="width: auto; white-space: pre-line;"></p></b>
       </div>
       <t id="cardstext">Your Cards:</t>
       <p id="cards" style="text-align:center">
@@ -111,8 +115,9 @@
   var inQueue;
   var infoToggle = false;
 
-  var serverUrl ="ws://" + window.location.hostname + ":8880";
+  var serverUrl ="ws://" + window.location.hostname + ":8885";
   var connection = new WebSocket(serverUrl);
+  
 
   connection.onopen = function (evt){
     console.log("open");
@@ -135,6 +140,7 @@
     document.getElementById('sendSort').style.display = "none";
     document.getElementById('cards').style.display = "none";
     document.getElementById('cardstext').style.display = "none";
+    document.getElementById('chips').src = "";
     document.getElementById('infoButton').style = "text-align:center";
 
     // This is a hack for this example.
@@ -208,7 +214,17 @@
           document.getElementById("phaseNumber").innerHTML = obj.playerMessage;
 
           // conditionals to hide or display buttons
-          updateButtons(obj);
+          updateButtons(obj, playerObj);
+
+          if(playerObj.ready)
+          {
+            document.getElementById("sendReady").disabled = true;
+          }
+          else 
+          {
+            document.getElementById("sendReady").disabled = false;
+          }
+          
 
           document.getElementById("info").innerHTML
             = "Player Wallet: " + playerObj.wallet
@@ -218,6 +234,8 @@
             + "Player Id: "     + playerObj.id;
           // display the amount in the pot
           document.getElementById("pot").innerHTML = "Total Pot: " + obj.pot.pot;
+          document.getElementById('chips').src = "chips.png";
+
 
           displayTime(obj, playerObj);
 
@@ -228,7 +246,7 @@
             playerTotalBetString += "Player " + player.id + " " + player.name
                                 + "  Current Bet: " + player.currentBet
                                 + " Wallet: " + player.wallet
-                                + " ready: " + player.ready
+                                + " ready: " + (player.ready?"Yes":"No")
                                 + "\n";
           });
           document.getElementById("playersTotalBets").innerHTML = playerTotalBetString;
@@ -236,9 +254,6 @@
           // display the player's cards
           displayCards(playerObj);
       }
-
-      
-
 
     }
     //console.log("the cardIdx is " + cardIdx);
@@ -455,7 +470,7 @@
       }
   }
 
-  function updateButtons(obj)
+  function updateButtons(obj, playerObj)
   {
       if(obj.phase == 0)
       {
@@ -536,6 +551,40 @@
           document.getElementById('sendBet3').style.display = "none";
           document.getElementById('sendDraw').style.display = "none";
           document.getElementById('sendSort').style.display = "none";
+      }
+
+      if(!playerObj.canCheck)
+      {
+        document.getElementById("sendStand").disabled = true;
+        document.getElementById("sendCall").disabled = false;
+      }
+      else 
+      {
+        document.getElementById("sendCall").disabled = true;
+        document.getElementById("sendStand").disabled = false;
+      }
+
+      if(obj.phase != 0 && obj.currentplayer.id == playerObj.id)
+      {
+        document.getElementById("sendReady").disabled = false;
+        //document.getElementById("sendStand").disabled = false;
+        document.getElementById("sendFold").disabled = false;
+        //document.getElementById("sendCall").disabled = false;
+        document.getElementById("sendBet1").disabled = false;
+        document.getElementById("sendBet2").disabled = false;
+        document.getElementById("sendBet3").disabled = false;
+        document.getElementById("sendDraw").disabled = false;
+      }
+      else 
+      {
+        document.getElementById("sendReady").disabled = true;
+        document.getElementById("sendStand").disabled = true;
+        document.getElementById("sendFold").disabled = true;
+        document.getElementById("sendCall").disabled = true;
+        document.getElementById("sendBet1").disabled = true;
+        document.getElementById("sendBet2").disabled = true;
+        document.getElementById("sendBet3").disabled = true;
+        document.getElementById("sendDraw").disabled = true;
       }
   }
 
