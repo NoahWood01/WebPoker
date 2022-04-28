@@ -124,7 +124,7 @@
   }
 
   connection.onmessage = function(evt) {
-    console.log("message: " + evt.data);
+    //console.log("message: " + evt.data);
     var msg;
     msg = evt.data;
     inQueue = true;
@@ -398,7 +398,7 @@
         give_card_indexes: indexes
     };
     connection.send(JSON.stringify(msg));
-    console.log(JSON.stringify(msg));
+    //console.log(JSON.stringify(msg));
   }
 
   function send() {
@@ -406,7 +406,7 @@
       text: document.getElementById("send_text").value,
     };
     connection.send(JSON.stringify(msg));
-    console.log(JSON.stringify(msg));
+    //console.log(JSON.stringify(msg));
   }
 
   function sendName(){
@@ -420,7 +420,7 @@
       give_card_indexes: [-1,-1,-1]
     };
     connection.send(JSON.stringify(msg));
-    console.log(JSON.stringify(msg));
+    //console.log(JSON.stringify(msg));
 
     // this shows how to hid html elements.
     // like when the name is entered
@@ -428,8 +428,8 @@
     // but this is just a demonstration
 
     var x = document.getElementById("nameInput");
-    console.log("X: " + x);
-    console.log("X display: " + x.style.display);
+    //console.log("X: " + x);
+    //console.log("X display: " + x.style.display);
     if(x.style.display === "none"){ x.style.display = "block"; }
     else{ x.style.display = "none"; }
   }
