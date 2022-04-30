@@ -243,8 +243,8 @@
           var playerTotalBetString = "";
           obj.players.forEach(player =>
           {
-            playerTotalBetString += "Player " + player.id + " " + player.name
-                                + "  Current Bet: " + player.currentBet
+            playerTotalBetString += "id: " + player.id + " | " + player.name
+                                + " | Current Bet: " + player.currentBet
                                 + " Wallet: " + player.wallet
                                 + " ready: " + (player.ready?"Yes":"No")
                                 + "\n";
@@ -440,9 +440,15 @@
       for(var i = 0; i < 5; i++){
         // if cards are null str becomes empty so nothing is displayed
         var str = "";
-        if(player.Cards[i] == null) str = "";
+        var checkboxnum = "card"+(i+1)+"checkbox";
+        if(player.Cards[i] == null) 
+        {
+          str = "";
+          document.getElementById('cards').style.display = "none";
+        }
         else
         {
+            document.getElementById('cards').style.display = "text-align:center";
             var card = player.Cards[i];
             if(card.value == "ACE")             str += "A";
             else if(card.value == "TWO")        str += "2";
@@ -464,6 +470,7 @@
             else if(card.suite == "DIAMONDS")  str += "D";
 
             str += ".svg";
+            
         }
         var cardnumber = "card" + (i+1);
         document.getElementById(cardnumber).src = str;
@@ -585,6 +592,14 @@
         document.getElementById("sendBet2").disabled = true;
         document.getElementById("sendBet3").disabled = true;
         document.getElementById("sendDraw").disabled = true;
+      }
+      if(playerObj.folded)
+      {
+        document.getElementById("sendSort").disabled = true;
+      }
+      if(!playerObj.folded) 
+      {
+        document.getElementById("sendSort").disabled = false;
       }
   }
 

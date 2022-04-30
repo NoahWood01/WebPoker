@@ -64,7 +64,11 @@ public class Game {
     }
 
     public void player_stand(Player p){ p.set_stand(); }
-    public void player_fold(Player p){ empty_hand(p); }
+    public void player_fold(Player p)
+    {
+        p.folded = true; 
+        empty_hand(p); 
+    }
 
     // determine tthe winner between two players
     // print to console the winner.
@@ -519,7 +523,19 @@ public class Game {
         }
         if(players.size() == 0)
         {
+            // no players in game
             phase = 0;
+            pot.empty_pot();
+            timeRemaining = -1;
+            nonFoldedPlayers.clear();
+            player_queue.clear();
+            deck.clear();
+            create_deck();
+            shuffle_deck();
+            winningPlayer = null;
+            currentplayer = null;
+            startingplayer = null;
+            return true;
         }
         if(players.size() == 0 || timeRemaining == -1)
         {
@@ -705,6 +721,7 @@ public class Game {
         for(int i = 0; i < players.size(); i++)
         {
             players.get(i).ready = false;
+            players.get(i).folded = false;
             players.get(i).currentBet = 0;
         }
         return;
@@ -762,9 +779,19 @@ public class Game {
         {
             return 0;
         }
-        for(int i = 0; i < players.size(); i++)
+        // temporarly store players in both game and queue
+        ArrayList<Player> allPlayers = new ArrayList<>();
+        for(Player p : players)
         {
-            for(Player p : players)
+            allPlayers.add(p);
+        }
+        for(Player p : player_queue)
+        {
+            allPlayers.add(p);
+        }
+        for(int i = 0; i < allPlayers.size(); i++)
+        {
+            for(Player p : allPlayers)
             {
                 // id is found in players/cant use so move on
                 if(p.get_id() != i)
@@ -785,6 +812,7 @@ public class Game {
             {
                 return i;
             }
+            /*
             for(Player p : player_queue)
             {
                 // id is found in players/cant use so move on
@@ -798,11 +826,12 @@ public class Game {
                     break;
                 }
             }
+            
             if(flag == false)
             {
                 return i;
             }
-
+            */
             id = i;
         }
         // if all used add one to biggests id number
